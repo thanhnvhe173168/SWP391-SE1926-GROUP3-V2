@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package BrandController;
+package controller.CategoryController;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,8 +17,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author Admin
  */
-@WebServlet(name="UpdateBrand", urlPatterns={"/UpdateBrand"})
-public class UpdateBrand extends HttpServlet {
+@WebServlet(name="CreateCategory", urlPatterns={"/createcategory"})
+public class CreateCategory extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -35,10 +35,10 @@ public class UpdateBrand extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UpdateBrand</title>");  
+            out.println("<title>Servlet CreateCategory</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UpdateBrand at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet CreateCategory at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
