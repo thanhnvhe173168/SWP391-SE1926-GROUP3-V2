@@ -17,8 +17,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author Admin
  */
-@WebServlet(name = "CreateBrand", urlPatterns = {"/createBrand"})
-public class CreateBrand extends HttpServlet {
+@WebServlet(name = "DeleteBrand", urlPatterns = {"/deleteBrand"})
+public class DeleteBrand extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,6 +31,7 @@ public class CreateBrand extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -45,7 +46,12 @@ public class CreateBrand extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/admin/CreateBrand.jsp").forward(request, response);
+        BrandDAO brandDao = new BrandDAO();
+        int brandId = Integer.parseInt(request.getParameter("brandId"));
+        int check = brandDao.deleteBrand(brandId);
+        if (check > 0) {
+            response.sendRedirect("getListBrand");
+        }
     }
 
     /**
@@ -59,20 +65,7 @@ public class CreateBrand extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BrandDAO brandDao = new BrandDAO();
-        String brandName = request.getParameter("brandName");
-        boolean checkExist = brandDao.checkExistBrandName(brandName, 0);
-        if (checkExist) {
-            String message = "Tên nhãn hiệu đã tồn tại";
-            request.setAttribute("message", message);
-            request.setAttribute("brandName", brandName);
-            request.getRequestDispatcher("/admin/CreateBrand.jsp").forward(request, response);
-            return;
-        }
-        int check = brandDao.createBrand(brandName);
-        if (check > 0) {
-            response.sendRedirect("getListBrand");
-        }
+        processRequest(request, response);
     }
 
     /**

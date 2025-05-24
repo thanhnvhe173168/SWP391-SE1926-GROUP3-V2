@@ -12,13 +12,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Brand;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "CreateBrand", urlPatterns = {"/createBrand"})
-public class CreateBrand extends HttpServlet {
+@WebServlet(name = "UpdateBrand", urlPatterns = {"/updateBrand"})
+public class UpdateBrand extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,6 +32,7 @@ public class CreateBrand extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -45,7 +47,11 @@ public class CreateBrand extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/admin/CreateBrand.jsp").forward(request, response);
+        BrandDAO brandDao = new BrandDAO();
+        int brandId = Integer.parseInt(request.getParameter("brandId"));
+        Brand brand = brandDao.getBrandById(brandId);
+        request.setAttribute("brand", brand);
+        request.getRequestDispatcher("/admin/UpdateBrand.jsp").forward(request, response);
     }
 
     /**
@@ -60,16 +66,19 @@ public class CreateBrand extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         BrandDAO brandDao = new BrandDAO();
+        int brandId = Integer.parseInt(request.getParameter("brandId"));
         String brandName = request.getParameter("brandName");
-        boolean checkExist = brandDao.checkExistBrandName(brandName, 0);
+        boolean checkExist = brandDao.checkExistBrandName(brandName, brandId);
         if (checkExist) {
+            Brand brand = brandDao.getBrandById(brandId);
             String message = "Tên nhãn hiệu đã tồn tại";
             request.setAttribute("message", message);
             request.setAttribute("brandName", brandName);
-            request.getRequestDispatcher("/admin/CreateBrand.jsp").forward(request, response);
+            request.setAttribute("brand", brand);
+            request.getRequestDispatcher("/admin/UpdateBrand.jsp").forward(request, response);
             return;
         }
-        int check = brandDao.createBrand(brandName);
+        int check = brandDao.updateBrand(brandId, brandName);
         if (check > 0) {
             response.sendRedirect("getListBrand");
         }
