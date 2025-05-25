@@ -17,8 +17,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author Admin
  */
-@WebServlet(name = "CreateCategory", urlPatterns = {"/createCategory"})
-public class CreateCategory extends HttpServlet {
+@WebServlet(name = "DeleteCategory", urlPatterns = {"/deleteCategory"})
+public class DeleteCategory extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,6 +31,7 @@ public class CreateCategory extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -45,7 +46,12 @@ public class CreateCategory extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/admin/CreateCategory.jsp").forward(request, response);
+        CategoryDAO categoryDao = new CategoryDAO();
+        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+        int check = categoryDao.deleteCategory(categoryId);
+        if (check > 0) {
+            response.sendRedirect("getListCategory");
+        }
     }
 
     /**
@@ -59,20 +65,7 @@ public class CreateCategory extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CategoryDAO categoryDao = new CategoryDAO();
-        String categoryName = request.getParameter("categoryName");
-        boolean checkExist = categoryDao.checkExistCategoryName(categoryName, 0);
-        if (checkExist) {
-            String message = "Tên danh mục sản phẩm đã tồn tại";
-            request.setAttribute("message", message);
-            request.setAttribute("categoryName", categoryName);
-            request.getRequestDispatcher("/admin/CreateCategory.jsp").forward(request, response);
-            return;
-        }
-        int check = categoryDao.createCategory(categoryName);
-        if (check > 0) {
-            response.sendRedirect("getListCategory");
-        }
+        processRequest(request, response);
     }
 
     /**
