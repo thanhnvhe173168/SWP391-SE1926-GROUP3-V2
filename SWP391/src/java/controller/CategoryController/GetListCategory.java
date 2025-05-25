@@ -12,13 +12,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.ResultSet;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "CreateCategory", urlPatterns = {"/createCategory"})
-public class CreateCategory extends HttpServlet {
+@WebServlet(name = "GetListCategory", urlPatterns = {"/getListCategory"})
+public class GetListCategory extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,7 +46,10 @@ public class CreateCategory extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/admin/CreateCategory.jsp").forward(request, response);
+        CategoryDAO categoryDao = new CategoryDAO();
+        ResultSet rsCategory = categoryDao.getListCategory();
+        request.setAttribute("rsCategory", rsCategory);
+        request.getRequestDispatcher("/admin/CategoryManagement.jsp").forward(request, response);
     }
 
     /**
@@ -59,20 +63,7 @@ public class CreateCategory extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CategoryDAO categoryDao = new CategoryDAO();
-        String categoryName = request.getParameter("categoryName");
-        boolean checkExist = categoryDao.checkExistCategoryName(categoryName, 0);
-        if (checkExist) {
-            String message = "Tên danh mục sản phẩm đã tồn tại";
-            request.setAttribute("message", message);
-            request.setAttribute("categoryName", categoryName);
-            request.getRequestDispatcher("/admin/CreateCategory.jsp").forward(request, response);
-            return;
-        }
-        int check = categoryDao.createCategory(categoryName);
-        if (check > 0) {
-            response.sendRedirect("getListCategory");
-        }
+        processRequest(request, response);
     }
 
     /**
