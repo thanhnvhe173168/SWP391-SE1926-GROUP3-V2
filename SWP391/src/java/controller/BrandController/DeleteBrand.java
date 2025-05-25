@@ -4,7 +4,7 @@
  */
 package controller.BrandController;
 
-import dao.BrandDAO;
+import dal.BrandDAO1;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -46,7 +46,7 @@ public class DeleteBrand extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BrandDAO brandDao = new BrandDAO();
+        BrandDAO1 brandDao = new BrandDAO1();
         int brandId = Integer.parseInt(request.getParameter("brandId"));
         int check = brandDao.deleteBrand(brandId);
         if (check > 0) {
