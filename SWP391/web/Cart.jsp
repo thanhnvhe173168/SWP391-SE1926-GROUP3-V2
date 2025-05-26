@@ -17,33 +17,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Giỏ hàng</title>
         <link rel="stylesheet" href="styles.css" />
-        <style>
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-            }
-            th, td {
-                padding: 12px;
-                border: 1px solid #ccc;
-                text-align: center;
-            }
-            th {
-                background-color: #f4f4f4;
-            }
-            .total-row td {
-                font-weight: bold;
-                color: green;
-            }
-            .remove-btn {
-                background-color: #dc3545;
-                color: white;
-                padding: 5px 10px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-        </style>
+        
     </head>
     <body>
         <h2>Giỏ hàng</h2>
