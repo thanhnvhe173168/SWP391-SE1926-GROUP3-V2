@@ -5,7 +5,6 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Brand"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -17,31 +16,23 @@
     <body>
         <%
             String message = (String) request.getAttribute("message");
-            String brandName = (String) request.getAttribute("brandName");
-            Brand brand = (Brand) request.getAttribute("brand");
+            String categoryName = (String) request.getAttribute("categoryName");
         %>
         <div class="d-flex">
             <jsp:include page="/components/AdminSidebar.jsp"></jsp:include>
                 <div style="height: calc(100vh - 86px); overflow: hidden auto;" class="container">
-                    <p style="color: #dd3726; font-size: 40px; font-weight: 700">Chỉnh sửa nhãn hiệu</p>
+                    <p style="color: #dd3726; font-size: 40px; font-weight: 700">Thêm mới danh mục sản phẩm</p>
                     <div class="container">
-                        <form method="post" action="updateBrand" id="updateBrand">
-                            <input 
-                                type="hidden" 
-                                class="form-control"
-                                id="brandId" 
-                                name="brandId" 
-                                value="<%=brand.getBrandID()%>"
-                            >
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Tên nhãn hiệu</label>
-                            <input 
-                                type="text" 
-                                required 
-                                class="form-control"
-                                id="brandName" 
-                                name="brandName" 
-                                value="<%=brandName!= null ? brandName : brand.getBrandName()%>"
+                        <form method="post" action="createCategory" id="createCategory">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Tên danh mục sản phẩm</label>
+                                <input 
+                                    type="text" 
+                                    required 
+                                    class="form-control"
+                                    id="categoryName" 
+                                    name="categoryName" 
+                                    value="<%=categoryName!= null ? categoryName : ""%>"
                                 >
                         </div>
                         <%if(message != null) {%>
@@ -56,7 +47,7 @@
                                 >
                                 Trở lại
                             </button>
-                            <button type="submit" class="btn btn-primary">Chỉnh sửa</button>
+                            <button type="submit" class="btn btn-primary">Thêm mới</button>
                         </div>
                     </form>
                 </div>
@@ -64,7 +55,7 @@
         </div>
         <script>
             function handleRedirect() {
-                window.location.href = "getListBrand";
+                window.location.href = "getListCategory";
             }
         </script>
     </body>

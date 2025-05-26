@@ -12,13 +12,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Category;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "CreateCategory", urlPatterns = {"/createCategory"})
-public class CreateCategory extends HttpServlet {
+@WebServlet(name = "UpdateCategory", urlPatterns = {"/updateCategory"})
+public class UpdateCategory extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,7 +46,11 @@ public class CreateCategory extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/admin/CreateCategory.jsp").forward(request, response);
+        CategoryDAO categoryDao = new CategoryDAO();
+        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+        Category category = categoryDao.getCategoryById(categoryId);
+        request.setAttribute("category", category);
+        request.getRequestDispatcher("/admin/UpdateCategory.jsp").forward(request, response);
     }
 
     /**
@@ -60,16 +65,19 @@ public class CreateCategory extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         CategoryDAO categoryDao = new CategoryDAO();
+        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
         String categoryName = request.getParameter("categoryName");
-        boolean checkExist = categoryDao.checkExistCategoryName(categoryName, 0);
+        boolean checkExist = categoryDao.checkExistCategoryName(categoryName, categoryId);
         if (checkExist) {
+            Category category = categoryDao.getCategoryById(categoryId);
             String message = "Tên danh mục sản phẩm đã tồn tại";
             request.setAttribute("message", message);
             request.setAttribute("categoryName", categoryName);
-            request.getRequestDispatcher("/admin/CreateCategory.jsp").forward(request, response);
+            request.setAttribute("category", category);
+            request.getRequestDispatcher("/admin/UpdateCategory.jsp").forward(request, response);
             return;
         }
-        int check = categoryDao.createCategory(categoryName);
+        int check = categoryDao.updateCategory(categoryId, categoryName);
         if (check > 0) {
             response.sendRedirect("getListCategory");
         }
