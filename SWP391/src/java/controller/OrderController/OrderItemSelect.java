@@ -2,20 +2,26 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller;
+package controller.OrderController;
 
+import dao.CartDetailDAO;
+import dao.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import model.*;
 
 /**
  *
  * @author Window 11
  */
-public class ShowProdcut extends HttpServlet {
+public class OrderItemSelect extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,10 +40,10 @@ public class ShowProdcut extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ShowProdcut</title>");            
+            out.println("<title>Servlet OrderItemSelect</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ShowProdcut at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet OrderItemSelect at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -55,7 +61,21 @@ public class ShowProdcut extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        CartDetailDAO cartdetaildao = new CartDetailDAO();
+        UserDAO userdao = new UserDAO();
+        List<CartDetail> listordering =new ArrayList<>();
+        List<CartDetail> listcart =cartdetaildao.ListCart(1);
+        BigDecimal total=new BigDecimal(0);
+        for(CartDetail cd : listcart){
+            if(cd.isIsSelect()==true){
+                listordering.add(cd);
+                total=total.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
+            }
+        }
+        request.setAttribute("listordering", listordering);
+        request.setAttribute("total", total);
+        request.getRequestDispatcher("user/order.jsp").forward(request, response);
     }
 
     /**

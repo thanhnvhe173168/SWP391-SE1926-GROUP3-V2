@@ -2,11 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package model;
-
-import dal.CartDetailDAO;
-import dal.LaptopDAO;
-import dal.UserDAO;
+package controller.CartController;
+import model.*;
+import dao.CartDetailDAO;
+import dao.LaptopDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -33,19 +33,7 @@ public class QuantityChange extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet QuantityChange</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet QuantityChange at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -80,19 +68,19 @@ public class QuantityChange extends HttpServlet {
                                 listcartdetail.remove(cd);
                                 cartdetaildao.Remove(cd);
                             }
-                            request.getRequestDispatcher("Cart").forward(request, response);
+                            request.getRequestDispatcher("UppdateTotalwhenchange").forward(request, response);
                             return;
                         }
                         if (action.equals("inc")) {
                             if (quantity < cd.getLaptop().getStock()) {
                                 cd.setQuantity(quantity + 1);
                                 cartdetaildao.updateQuantity(cd.getCart().getCartID(), id, cd.getQuantity());
-                                request.getRequestDispatcher("Cart").forward(request, response);
+                                request.getRequestDispatcher("UppdateTotalwhenchange").forward(request, response);
                                 return;
                             } else {
                                 String mess = "Vượt quá lượng hàng trong kho";
                                 request.setAttribute("mess", mess);
-                                request.getRequestDispatcher("Cart").forward(request, response);
+                                request.getRequestDispatcher("CartSeverlet").forward(request, response);
                                 return;
                             }
                         }

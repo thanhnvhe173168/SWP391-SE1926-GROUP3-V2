@@ -2,7 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package dal;
+package dao;
+import config.ConnectDB;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ import model.Laptop;
  * @author Window 11
  */
 
-public class LaptopDAO extends DBContext{
+public class LaptopDAO extends ConnectDB{
     BrandDAO branddao=new BrandDAO();
     CategoryDAO categorydao =new CategoryDAO();
     CPUDAO cpudao=new CPUDAO();
@@ -24,7 +25,7 @@ public class LaptopDAO extends DBContext{
         Laptop laptop=new Laptop();
         String sql="select * from Laptop where LaptopID=?";
         try{
-            PreparedStatement st=connection.prepareStatement(sql);
+            PreparedStatement st=connect.prepareStatement(sql);
             st.setInt(1, LaptopID);
             ResultSet rs=st.executeQuery();
             while(rs.next()){

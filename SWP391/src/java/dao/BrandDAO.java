@@ -2,7 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package dal;
+package dao;
+import config.ConnectDB;
 import model.Brand;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,12 +14,12 @@ import java.util.List;
  *
  * @author Window 11
  */
-public class BrandDAO extends DBContext{
+public class BrandDAO extends ConnectDB{
     public List<Brand> AllBrand(){
     List<Brand> list = new ArrayList<>();
         String sql = "select * from Brand";
         try {
-            PreparedStatement st = connection.prepareStatement(sql);
+            PreparedStatement st = connect.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 Brand b = new Brand();
@@ -37,7 +38,7 @@ public class BrandDAO extends DBContext{
         Brand b = new Brand();
         String sql = "select * from Brand where BrandID=?";
         try {
-            PreparedStatement st = connection.prepareStatement(sql);
+            PreparedStatement st = connect.prepareStatement(sql);
             st.setInt(1, brandid);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {

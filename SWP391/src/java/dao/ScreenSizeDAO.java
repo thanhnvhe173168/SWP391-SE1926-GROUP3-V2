@@ -2,7 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package dal;
+package dao;
+import config.ConnectDB;
 import model.ScreenSize;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,12 +14,12 @@ import java.util.List;
  *
  * @author Window 11
  */
-public class ScreenSizeDAO extends DBContext{
+public class ScreenSizeDAO extends ConnectDB{
     public List<ScreenSize> AllScreen(){
         List<ScreenSize> list= new ArrayList<>();
         String sql="select * from ScreenSize";
         try{
-            PreparedStatement st= connection.prepareStatement(sql);
+            PreparedStatement st= connect.prepareStatement(sql);
             ResultSet rs=st.executeQuery();
             while(rs.next()){
                 ScreenSize screen =new ScreenSize();
@@ -36,7 +37,7 @@ public class ScreenSizeDAO extends DBContext{
         ScreenSize screen =new ScreenSize();
         String sql="select * from ScreenSize where ScreenID=?";
         try{
-            PreparedStatement st= connection.prepareStatement(sql);
+            PreparedStatement st= connect.prepareStatement(sql);
             st.setInt(1, screenid);
             ResultSet rs=st.executeQuery();
             while(rs.next()){

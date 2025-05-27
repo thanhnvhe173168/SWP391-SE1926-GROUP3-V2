@@ -4,7 +4,7 @@
  */
 package controller.BrandController;
 
-import dal.BrandDAO1;
+import dao.BrandDAO1;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;

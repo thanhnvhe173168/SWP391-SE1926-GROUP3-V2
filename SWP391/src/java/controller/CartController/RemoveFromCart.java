@@ -2,24 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.BrandController;
-
-import dao.BrandDAO1;
+package controller.CartController;
+import model.*;
+import dao.CartDetailDAO;
+import dao.LaptopDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
- * @author Admin
+ * @author Window 11
  */
-@WebServlet(name = "GetListBrand", urlPatterns = {"/getListBrand"})
-public class GetListBrand extends HttpServlet {
+public class RemoveFromCart extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,6 +33,19 @@ public class GetListBrand extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet RemoveFromCart</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet RemoveFromCart at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -46,10 +60,24 @@ public class GetListBrand extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BrandDAO1 brandDao = new BrandDAO1();
-        ResultSet rsBrand = brandDao.getListBrand();
-        request.setAttribute("rsBrand", rsBrand);
-        request.getRequestDispatcher("/admin/BrandManagement.jsp").forward(request, response);
+        LaptopDAO laptopdao = new LaptopDAO();
+        CartDetailDAO cartdetaildao = new CartDetailDAO();
+        UserDAO userdao = new UserDAO();
+        String id_raw = request.getParameter("id");
+        List<CartDetail> listcartdetail = new ArrayList<>();
+        listcartdetail = cartdetaildao.ListCart(1);
+        try {
+            int id=Integer.parseInt(id_raw);
+            for(CartDetail cd : listcartdetail){
+                if(cd.getLaptop().getLaptopID()==id){
+                    cartdetaildao.Remove(cd);
+                    request.getRequestDispatcher("Cart").forward(request, response);
+                    return;
+                }
+            }
+    }catch(Exception e){
+            System.out.println(e.getMessage());
+    }
     }
 
     /**
@@ -63,8 +91,10 @@ public class GetListBrand extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
     }
+
+
 
     /**
      * Returns a short description of the servlet.

@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package dal;
+package dao;
 
+import config.ConnectDB;
 import model.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,12 +13,12 @@ import java.sql.SQLException;
  *
  * @author Window 11
  */
-public class UserDAO extends DBContext{
+public class UserDAO extends ConnectDB{
     public User GetUserID(String email){
         User user =new User();
         String sql="select * from User where email=?";
         try{
-            PreparedStatement st=connection.prepareStatement(sql);
+            PreparedStatement st=connect.prepareStatement(sql);
             st.setString(1, email);
             ResultSet rs=st.executeQuery();
             while(rs.next()){

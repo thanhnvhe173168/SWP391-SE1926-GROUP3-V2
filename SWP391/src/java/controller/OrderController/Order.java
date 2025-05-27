@@ -1,25 +1,28 @@
-/*
+    /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.BrandController;
+package controller.OrderController;
 
-import dao.BrandDAO1;
+import dao.CartDetailDAO;
+import dao.LaptopDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.ResultSet;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import model.*;
 
 /**
  *
- * @author Admin
+ * @author Window 11
  */
-@WebServlet(name = "GetListBrand", urlPatterns = {"/getListBrand"})
-public class GetListBrand extends HttpServlet {
+public class Order extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,6 +35,19 @@ public class GetListBrand extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet Order</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet Order at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -46,10 +62,25 @@ public class GetListBrand extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BrandDAO1 brandDao = new BrandDAO1();
-        ResultSet rsBrand = brandDao.getListBrand();
-        request.setAttribute("rsBrand", rsBrand);
-        request.getRequestDispatcher("/admin/BrandManagement.jsp").forward(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        String id_raw=request.getParameter("id");
+        CartDetailDAO cartdetaildao = new CartDetailDAO();
+        UserDAO userdao = new UserDAO();
+        List<CartDetail> listordering =new ArrayList<>();
+        CartDetail cd =new CartDetail();
+        try{
+           int id=Integer.parseInt(id_raw);
+           cd=cartdetaildao.GetCartDetail(id);
+           listordering.add(cd);
+        }
+        catch(NumberFormatException e){
+            System.out.println(e.getMessage());
+        }
+        BigDecimal total =new BigDecimal("0");
+        total=cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity()));
+        request.setAttribute("total", total);
+        request.setAttribute("listordering", listordering);
+        request.getRequestDispatcher("user/order.jsp").forward(request, response);
     }
 
     /**

@@ -2,25 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package model;
+package controller.CartController;
 
-import dal.CartDetailDAO;
-import dal.LaptopDAO;
-import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author Window 11
  */
-public class RemoveFromCart extends HttpServlet {
+public class AddToCart extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +34,10 @@ public class RemoveFromCart extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RemoveFromCart</title>");            
+            out.println("<title>Servlet AddToCart</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet RemoveFromCart at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AddToCart at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -60,24 +55,7 @@ public class RemoveFromCart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LaptopDAO laptopdao = new LaptopDAO();
-        CartDetailDAO cartdetaildao = new CartDetailDAO();
-        UserDAO userdao = new UserDAO();
-        String id_raw = request.getParameter("id");
-        List<CartDetail> listcartdetail = new ArrayList<>();
-        listcartdetail = cartdetaildao.ListCart(1);
-        try {
-            int id=Integer.parseInt(id_raw);
-            for(CartDetail cd : listcartdetail){
-                if(cd.getLaptop().getLaptopID()==id){
-                    cartdetaildao.Remove(cd);
-                    request.getRequestDispatcher("Cart").forward(request, response);
-                    return;
-                }
-            }
-    }catch(Exception e){
-            System.out.println(e.getMessage());
-    }
+        processRequest(request, response);
     }
 
     /**
@@ -91,10 +69,8 @@ public class RemoveFromCart extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        processRequest(request, response);
     }
-
-
 
     /**
      * Returns a short description of the servlet.
