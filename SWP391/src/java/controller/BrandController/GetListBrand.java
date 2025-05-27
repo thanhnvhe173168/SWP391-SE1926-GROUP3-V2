@@ -4,7 +4,7 @@
  */
 package controller.BrandController;
 
-import dao.BrandDAO;
+import dal.BrandDAO1;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -46,7 +46,7 @@ public class GetListBrand extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BrandDAO brandDao = new BrandDAO();
+        BrandDAO1 brandDao = new BrandDAO1();
         ResultSet rsBrand = brandDao.getListBrand();
         request.setAttribute("rsBrand", rsBrand);
         request.getRequestDispatcher("/admin/BrandManagement.jsp").forward(request, response);

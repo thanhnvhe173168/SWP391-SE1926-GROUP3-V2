@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package dao;
+package dal;
 
 import config.ConnectDB;
 import java.sql.PreparedStatement;
@@ -14,7 +14,7 @@ import model.Brand;
  *
  * @author Admin
  */
-public class BrandDAO extends ConnectDB {
+public class BrandDAO1 extends ConnectDB {
 
     public ResultSet getListBrand() {
         ResultSet rs = null;
@@ -105,4 +105,6 @@ public class BrandDAO extends ConnectDB {
         }
         return n;
     }
+    
+    
 }

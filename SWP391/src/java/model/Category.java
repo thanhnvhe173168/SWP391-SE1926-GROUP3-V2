@@ -6,35 +6,34 @@ package model;
 
 /**
  *
- * @author Admin
+ * @author Window 11
  */
 public class Category {
-
-    int CategoryID;
-    String CategoryName;
+    private int categoryID;
+    private String categoryName;
 
     public Category() {
     }
 
-    public Category(int CategoryID, String CategoryName) {
-        this.CategoryID = CategoryID;
-        this.CategoryName = CategoryName;
+    public Category(int categoryID, String categoryName) {
+        this.categoryID = categoryID;
+        this.categoryName = categoryName;
     }
 
     public int getCategoryID() {
-        return CategoryID;
+        return categoryID;
     }
 
-    public void setCategoryID(int CategoryID) {
-        this.CategoryID = CategoryID;
+    public void setCategoryID(int categoryID) {
+        this.categoryID = categoryID;
     }
 
     public String getCategoryName() {
-        return CategoryName;
+        return categoryName;
     }
 
-    public void setCategoryName(String CategoryName) {
-        this.CategoryName = CategoryName;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
 }

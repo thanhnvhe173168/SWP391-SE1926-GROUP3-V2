@@ -2,23 +2,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.BrandController;
+package controller;
 
-import dal.BrandDAO1;
+import dal.CartDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.CartDetail;
 
 /**
  *
- * @author Admin
+ * @author Window 11
  */
-@WebServlet(name = "CreateBrand", urlPatterns = {"/createBrand"})
-public class CreateBrand extends HttpServlet {
+public class Cart extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,6 +32,12 @@ public class CreateBrand extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession(); 
+        CartDetailDAO cartdetialdao=new CartDetailDAO();
+        List<CartDetail> listcartdetail=cartdetialdao.ListCart(1);
+        session.setAttribute("listcartdetail", listcartdetail);
+        request.getRequestDispatcher("Cart.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -45,7 +52,7 @@ public class CreateBrand extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/admin/CreateBrand.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -59,20 +66,7 @@ public class CreateBrand extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BrandDAO1 brandDao = new BrandDAO1();
-        String brandName = request.getParameter("brandName");
-        boolean checkExist = brandDao.checkExistBrandName(brandName, 0);
-        if (checkExist) {
-            String message = "Tên nhãn hiệu đã tồn tại";
-            request.setAttribute("message", message);
-            request.setAttribute("brandName", brandName);
-            request.getRequestDispatcher("/admin/CreateBrand.jsp").forward(request, response);
-            return;
-        }
-        int check = brandDao.createBrand(brandName);
-        if (check > 0) {
-            response.sendRedirect("getListBrand");
-        }
+        processRequest(request, response);
     }
 
     /**
