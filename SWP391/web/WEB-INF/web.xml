@@ -12,6 +12,10 @@
         <servlet-name>AddToCart</servlet-name>
         <servlet-class>controller.AddToCart</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UserList</servlet-name>
+        <servlet-class>controller.User.UserList</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Cart</servlet-name>
         <url-pattern>/cart</url-pattern>
@@ -19,5 +23,9 @@
     <servlet-mapping>
         <servlet-name>AddToCart</servlet-name>
         <url-pattern>/addtocart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserList</servlet-name>
+        <url-pattern>/userlist</url-pattern>
     </servlet-mapping>
 </web-app>
