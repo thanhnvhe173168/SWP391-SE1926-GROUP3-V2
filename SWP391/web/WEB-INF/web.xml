@@ -2,7 +2,7 @@
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <servlet>
         <servlet-name>Cart</servlet-name>
-        <servlet-class>controller.Cart</servlet-class>
+        <servlet-class>controller.CartController.Cart</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AddtoCart</servlet-name>
@@ -10,11 +10,11 @@
     </servlet>
     <servlet>
         <servlet-name>AddToCart</servlet-name>
-        <servlet-class>controller.AddToCart</servlet-class>
+        <servlet-class>controller.CartController.AddToCart</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UserList</servlet-name>
-        <servlet-class>controller.User.UserList</servlet-class>
+        <servlet-class>controller.CartController.UserList</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Cart</servlet-name>
