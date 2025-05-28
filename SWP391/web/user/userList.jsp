@@ -36,29 +36,30 @@
 </head>
 <body>
     <h2 style="text-align:center;">Danh sách người dùng</h2>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Tên đăng nhập</th>
-        <th>Họ tên</th>
-        <th>Mật khẩu</th>
-    </tr>
-    <%
-        List<User> users = (List<User>) request.getAttribute("users");
-        if (users != null) {
-            for (User user : users) {
-    %>
-    <tr>
-        <td><%= user.getUserID() %></td>
-        <td><%= user.getUserName() %></td>
-        <td><%= user.getFullName() %></td>
-        <td><%= user.getPassword() %></td>
-    </tr>
-    <%
+    <table>
+        <tr>
+            <th>UserID</th>
+            <th>UserName</th>
+            <th>RoleID</th>
+            <th>StatusID</th>
+        </tr>
+        <%
+            List<User> users = (List<User>) request.getAttribute("users");
+            if (users != null) {
+                for (User user : users) {
+        %>
+        <tr>
+            <td><%= user.getUserID() %></td>
+            <td><%= user.getUserName() %></td>
+            <td><%= user.getRoleID() %></td>
+            <td><%= user.getStatusID() %></td> <!-- ✅ Đã sửa -->
+        </tr>
+        <%
+                }
             }
-        }
-    %>
-</table>
+        %>
+    </table>
+
 
 </body>
 </html>
