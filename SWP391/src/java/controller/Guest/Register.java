@@ -4,9 +4,9 @@
  */
 package controller.Guest;
 
-import constant.AccountStatus;
-import constant.Role;
 import dao.UserDAO;
+import enums.AccountStatusEnum;
+import enums.RoleEnum;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -75,7 +75,14 @@ public class Register extends HttpServlet {
             return;
         }
         String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
-        User newUser = new User(fullName, email, phoneNumber, hashPassword, Role.CUSTOMER, AccountStatus.ACTIVE);
+        User newUser = new User(
+                fullName, 
+                email, 
+                phoneNumber, 
+                hashPassword, 
+                RoleEnum.CUSTOMER.getRole(), 
+                AccountStatusEnum.ACTIVE.getAccountStatus()
+        );
         int check = userDao.createUser(newUser);
         if (check > 0) {
             response.sendRedirect("login");
