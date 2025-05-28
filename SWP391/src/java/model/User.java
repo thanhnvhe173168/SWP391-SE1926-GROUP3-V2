@@ -8,27 +8,26 @@ package model;
  *
  * @author Window 11
  */
-    import java.time.LocalDate;
+import java.time.LocalDate;
+import java.util.Date;
 
 public class User {
+
     private int userID;
     private String fullName;
-    private String UserName;
     private String email;
     private String phoneNumber;
     private String password;
-    private LocalDate registrationDate;
+    private Date registrationDate;
     private int roleID;
     private int statusID;
 
-    // Constructors
-    public User() {}
+    public User() {
+    }
 
-    public User(int userID, String fullName, String UserName,String email, String phoneNumber,
-                String password, LocalDate registrationDate, int roleID, int statusID) {
+    public User(int userID, String fullName, String email, String phoneNumber, String password, Date registrationDate, int roleID, int statusID) {
         this.userID = userID;
         this.fullName = fullName;
-        this.UserName= UserName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
@@ -37,7 +36,15 @@ public class User {
         this.statusID = statusID;
     }
 
-    // Getters and Setters
+    public User(String fullName, String email, String phoneNumber, String password, int roleID, int statusID) {
+        this.fullName = fullName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.roleID = roleID;
+        this.statusID = statusID;
+    }
+
     public int getUserID() {
         return userID;
     }
@@ -78,11 +85,11 @@ public class User {
         this.password = password;
     }
 
-    public LocalDate getRegistrationDate() {
+    public Date getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(LocalDate registrationDate) {
+    public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
     }
 
@@ -102,14 +109,4 @@ public class User {
         this.statusID = statusID;
     }
 
-    public String getUserName() {
-        return UserName;
-    }
-
-    public void setUserName(String UserName) {
-        this.UserName = UserName;
-    }
- 
-    
-  
 }

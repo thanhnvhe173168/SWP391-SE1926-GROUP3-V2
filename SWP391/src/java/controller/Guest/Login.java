@@ -2,9 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.BrandController;
+package controller.Guest;
 
-import dao.BrandDAO;
+import constant.Role;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,13 +13,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "CreateBrand", urlPatterns = {"/createBrand"})
-public class CreateBrand extends HttpServlet {
+@WebServlet(name = "Login", urlPatterns = {"/login"})
+public class Login extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,6 +35,7 @@ public class CreateBrand extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -45,7 +50,7 @@ public class CreateBrand extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/admin/CreateBrand.jsp").forward(request, response);
+        request.getRequestDispatcher("/guest/Login.jsp").forward(request, response);
     }
 
     /**
@@ -59,19 +64,27 @@ public class CreateBrand extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BrandDAO brandDao = new BrandDAO();
-        String brandName = request.getParameter("brandName");
-        boolean checkExist = brandDao.checkExistBrandName(brandName, 0);
-        if (checkExist) {
-            String message = "Tên nhãn hiệu đã tồn tại";
-            request.setAttribute("message", message);
-            request.setAttribute("brandName", brandName);
-            request.getRequestDispatcher("/admin/CreateBrand.jsp").forward(request, response);
+        UserDAO userDao = new UserDAO();
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        User user = userDao.checkExistUser(email);
+        if (user == null || !BCrypt.checkpw(password, user.getPassword())) {
+            request.setAttribute("message", "Tài khoản không chính xác");
+            request.getRequestDispatcher("/guest/Login.jsp").forward(request, response);
             return;
         }
-        int check = brandDao.createBrand(brandName);
-        if (check > 0) {
-            response.sendRedirect("getListBrand");
+        HttpSession session = request.getSession();
+        session.setAttribute("user", user);
+        switch (user.getRoleID()) {
+            case Role.ADMIN:
+            case Role.STAFF:
+                response.sendRedirect("getListBrand");
+                break;
+            case Role.CUSTOMER:
+                response.sendRedirect("home");
+                break;
+            default:
+                throw new AssertionError();
         }
     }
 
