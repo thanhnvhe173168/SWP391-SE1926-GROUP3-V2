@@ -2,14 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package constant;
+package enums;
 
 /**
  *
  * @author Admin
  */
-public class LaptopStatus {
+public enum RoleEnum {
 
-    public static final int IN_STOCK = 3;
-    public static final int OUT_STOCK = 4;
+    ADMIN(1),
+    STAFF(2),
+    CUSTOMER(3);
+
+    private final int role;
+
+    RoleEnum(int role) {
+        this.role = role;
+    }
+
+    public int getRole() {
+        return role;
+    }
 }

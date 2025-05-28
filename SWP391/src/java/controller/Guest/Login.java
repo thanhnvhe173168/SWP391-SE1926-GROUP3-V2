@@ -4,8 +4,8 @@
  */
 package controller.Guest;
 
-import constant.Role;
 import dao.UserDAO;
+import enums.RoleEnum;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -76,11 +76,11 @@ public class Login extends HttpServlet {
         HttpSession session = request.getSession();
         session.setAttribute("user", user);
         switch (user.getRoleID()) {
-            case Role.ADMIN:
-            case Role.STAFF:
+            case 1: // Admin
+            case 2: // Staff
                 response.sendRedirect("getListBrand");
                 break;
-            case Role.CUSTOMER:
+            case 3: // Customer
                 response.sendRedirect("home");
                 break;
             default:
