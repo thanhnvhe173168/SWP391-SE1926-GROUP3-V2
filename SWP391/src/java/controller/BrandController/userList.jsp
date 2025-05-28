@@ -52,7 +52,7 @@
             <td><%= user.getUserID() %></td>
             <td><%= user.getUserName() %></td>
             <td><%= user.getRoleID() %></td>
-            <td><%= user.getStatusID() %></td> <!-- ✅ Đã sửa -->
+            <td><%= user.getStatusID() %></td> 
         </tr>
         <%
                 }
