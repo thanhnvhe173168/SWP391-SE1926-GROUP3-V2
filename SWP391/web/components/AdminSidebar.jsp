@@ -35,7 +35,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white <%=currentPage.contains("ProductManagement.jsp") ? "active" : ""%>" href="getListProduct">
+                    <a class="nav-link text-white <%=currentPage.contains("LaptopManagement.jsp") ? "active" : ""%>" href="getListLaptop">
                         <i class="fas fa-box"></i> Quản lý sản phẩm
                     </a>
                 </li>
