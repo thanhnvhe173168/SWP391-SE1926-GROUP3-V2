@@ -8,7 +8,6 @@ package model;
  *
  * @author Window 11
  */
-import java.time.LocalDate;
 import java.util.Date;
 
 public class User {

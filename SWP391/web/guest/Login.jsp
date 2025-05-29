@@ -36,19 +36,20 @@
         <%
            String message = (String) request.getAttribute("message");
         %>
-        <div class="login-container">
-            <h2 class="login-title">Đăng nhập</h2>
-            <form action="login" method="POST">
-                <!-- Email -->
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                    </c>
-                    <!-- Password -->
+        <jsp:include page="/components/Header.jsp"></jsp:include>
+            <div class="login-container">
+                <h2 class="login-title">Đăng nhập</h2>
+                <form action="login" method="POST">
+                    <!-- Email -->
                     <div class="mb-3">
-                        <label for="password" class="form-label">Mật khẩu</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        </c>
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
                     <%if(message != null) {%>
                     <p class="text-danger"><%=message%></p>
                     <%}%>
@@ -59,5 +60,6 @@
             </form>
             <p class="text-center mt-3">Bạn không có tài khoản? <a href="register">Đăng ký</a></p>
         </div>
+        <jsp:include page="/components/Footer.jsp"></jsp:include>
     </body>
 </html>

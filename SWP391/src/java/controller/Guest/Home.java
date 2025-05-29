@@ -4,6 +4,7 @@
  */
 package controller.Guest;
 
+import dao.LaptopDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.ResultSet;
 
 /**
  *
@@ -44,6 +46,20 @@ public class Home extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        LaptopDAO laptopDao = new LaptopDAO();
+        
+        ResultSet rsBrand = laptopDao.getData("Select * from Brand");
+        ResultSet rsCategory = laptopDao.getData("Select * from Category");
+        ResultSet rsCPU = laptopDao.getData("Select * from CPU");
+        ResultSet rsScreen = laptopDao.getData("Select * from ScreenSize");
+        ResultSet rsLaptop = laptopDao.getData("Select * from Laptop");
+        
+        request.setAttribute("rsBrand", rsBrand);
+        request.setAttribute("rsCategory", rsCategory);
+        request.setAttribute("rsCPU", rsCPU);
+        request.setAttribute("rsScreen", rsScreen);
+        request.setAttribute("rsLaptop", rsLaptop);
+        
         request.getRequestDispatcher("/guest/HomePage.jsp").forward(request, response);
     }
 
