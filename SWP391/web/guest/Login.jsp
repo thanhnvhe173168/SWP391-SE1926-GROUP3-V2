@@ -44,19 +44,19 @@
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="email" required>
-                        </c>
-                        <!-- Password -->
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Mật khẩu</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                    <%if(message != null) {%>
-                    <p class="text-danger"><%=message%></p>
-                    <%}%>
-                    <!-- Submit Button -->
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Đăng nhập</button>
                     </div>
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                <%if(message != null) {%>
+                <p class="text-danger"><%=message%></p>
+                <%}%>
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                </div>
             </form>
             <p class="text-center mt-3">Bạn không có tài khoản? <a href="register">Đăng ký</a></p>
         </div>
