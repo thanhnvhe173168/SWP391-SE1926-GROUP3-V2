@@ -69,42 +69,19 @@
             </div>
             <h1 class="text-center mb-4">Our Laptops</h1>
             <div class="row row-cols-1 row-cols-md-3 g-4">
-                <!-- Laptop 1 -->
+                <%while(rsLaptop.next()) {%>
                 <div class="col">
                     <div class="card laptop-card">
-                        <img src="https://via.placeholder.com/300x200?text=Dell+XPS+13" class="card-img-top laptop-image" alt="Dell XPS 13">
+                        <img src="<%=rsLaptop.getString("ImageURL")%>" class="card-img-top laptop-image" alt="Dell XPS 133456246524">
                         <div class="card-body">
-                            <h5 class="card-title">Dell XPS 13</h5>
-                            <p class="card-text">13.4-inch, Intel i7, 16GB RAM, 512GB SSD</p>
-                            <p class="card-text fw-bold">$1,299.99</p>
+                            <h5 class="card-title"><%=rsLaptop.getString("LaptopName")%></h5>
+                            <p class="card-text"><%=rsLaptop.getString("Size")%>, <%=rsLaptop.getString("CPUInfo")%>, <%=rsLaptop.getString("RAM")%>, <%=rsLaptop.getString("HardDrive")%></p>
+                            <p class="card-text fw-bold"><%=rsLaptop.getInt("Price")%></p>
                             <a href="product.jsp?id=1" class="btn btn-primary">View Details</a>
                         </div>
                     </div>
                 </div>
-                <!-- Laptop 2 -->
-                <div class="col">
-                    <div class="card laptop-card">
-                        <img src="https://via.placeholder.com/300x200?text=MacBook+Pro" class="card-img-top laptop-image" alt="MacBook Pro">
-                        <div class="card-body">
-                            <h5 class="card-title">MacBook Pro</h5>
-                            <p class="card-text">14-inch, M1 Pro, 16GB RAM, 1TB SSD</p>
-                            <p class="card-text fw-bold">$1,999.99</p>
-                            <a href="product.jsp?id=2" class="btn btn-primary">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Laptop 3 -->
-                <div class="col">
-                    <div class="card laptop-card">
-                        <img src="https://via.placeholder.com/300x200?text=Lenovo+ThinkPad" class="card-img-top laptop-image" alt="Lenovo ThinkPad">
-                        <div class="card-body">
-                            <h5 class="card-title">Lenovo ThinkPad X1</h5>
-                            <p class="card-text">14-inch, Intel i5, 8GB RAM, 256GB SSD</p>
-                            <p class="card-text fw-bold">$999.99</p>
-                            <a href="product.jsp?id=3" class="btn btn-primary">View Details</a>
-                        </div>
-                    </div>
-                </div>
+                <%}%>
             </div>
         </div>
         <jsp:include page="/components/Footer.jsp"></jsp:include>
