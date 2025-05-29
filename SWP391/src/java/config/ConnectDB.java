@@ -35,6 +35,7 @@ public class ConnectDB {
 
     public ConnectDB() {
         this("jdbc:sqlserver://LINHDO\\SQLEXPRESS:1433;databaseName=LapWeb", "sa", "123");
+        //this("jdbc:sqlserver://localhost\\DESKTOP-3SCD3SC\\SQLEXPRESS01:1433;databaseName= LapWeb", "sa", "123");
     }
 
     public ResultSet getData(String sql) {

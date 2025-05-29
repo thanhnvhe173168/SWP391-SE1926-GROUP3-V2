@@ -109,49 +109,51 @@
         <h1>Đặt hàng</h1>
         <form>
             <c:set var="listorderings" value="${listordering}" />
-                    
-                        <table>
-                            <tr>
-                                <th>Hình ảnh</th>
-                                <th>Tên Laptop</th>
-                                <th>Giá</th>
-                                <th>Số lượng</th>
-                                <th>Thành tiền</th>
-                            </tr>
 
-                            <c:forEach var="item" items="${listorderings}">
-                                <tr>
-                                    <td><button type="button" onclick="window.location.href = 'LaptopInfo?id=${item.getLaptop().getLaptopID()}'"><img src="images/${item.laptop.imageURL}" width="100" alt="${item.laptop.laptopName}" /></button></td>
-                                    <td>${item.laptop.laptopName}</td>
-                                    <td><fmt:formatNumber value="${item.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
-                                <td>
-                                    <button type="button" onclick="window.location.href = 'QuantityChange?action=dec&id=${item.getLaptop().getLaptopID()}'">-</button>
+            <table>
+                <tr>
+                    <th>Hình ảnh</th>
+                    <th>Tên Laptop</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                </tr>
 
-                                    ${item.quantity}
-                                    <button type="button" onclick="window.location.href = 'QuantityChange?action=inc&id=${item.getLaptop().getLaptopID()}'">+</button>
+                <c:forEach var="item" items="${listorderings}">
+                    <tr>
+                        <td><button type="button" onclick="window.location.href = 'LaptopInfo?id=${item.getLaptop().getLaptopID()}'"><img src="images/${item.laptop.imageURL}" width="100" alt="${item.laptop.laptopName}" /></button></td>
+                        <td>${item.laptop.laptopName}</td>
+                        <td><fmt:formatNumber value="${item.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
+                        <td>
+                            <button type="button" onclick="window.location.href = 'QuantityChange?action=dec&id=${item.getLaptop().getLaptopID()}'">-</button>
 
-                                </td>
-                                <td><fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ</td>
-                                </tr>
-                            </c:forEach>
+                            ${item.quantity}
+                            <button type="button" onclick="window.location.href = 'QuantityChange?action=inc&id=${item.getLaptop().getLaptopID()}'">+</button>
 
-                            <tr class="total-row">
-                                <td colspan="4"><strong>Tổng cộng:</strong></td>
-                                <td colspan="1"><strong><fmt:formatNumber value="${total}" type="number" groupingUsed="true"/> VNĐ</strong></td>
+                        </td>
+                        <td><fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ</td>
+                    </tr>
+                </c:forEach>
+
+                <tr class="total-row">
+                    <td colspan="4"><strong>Tổng cộng:</strong></td>
+                    <td colspan="1"><strong><fmt:formatNumber value="${total}" type="number" groupingUsed="true"/> VNĐ</strong></td>
 
 
-                            </tr>
-                        </table>
-                    </form>
-            <%
-                         String mess = (String) request.getAttribute("mess");
-                        if (mess != null) {
-            %>
-            <script>
-                alert("<%= mess %>");
-            </script>
-            <%
-                }
-            %>
+                </tr>
+            </table>
+                    Voucher: <input type="text" name="Voucher" value="" /> 
+                    <button onclick="window.location.href='addvoucher?'">Áp dụng</button>
+        </form>
+        <%
+                     String mess = (String) request.getAttribute("mess");
+                    if (mess != null) {
+        %>
+        <script>
+            alert("<%= mess %>");
+        </script>
+        <%
+            }
+        %>
     </body>
 </html>
