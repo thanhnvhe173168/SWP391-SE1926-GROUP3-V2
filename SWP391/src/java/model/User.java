@@ -1,19 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author Window 11
- */
-    import java.time.LocalDate;
+import java.time.LocalDate;
 
 public class User {
     private int userID;
+    private String userName;
     private String fullName;
-    private String UserName;
     private String email;
     private String phoneNumber;
     private String password;
@@ -21,14 +13,13 @@ public class User {
     private int roleID;
     private int statusID;
 
-    // Constructors
     public User() {}
 
-    public User(int userID, String fullName, String UserName,String email, String phoneNumber,
+    public User(int userID, String userName, String fullName, String email, String phoneNumber,
                 String password, LocalDate registrationDate, int roleID, int statusID) {
         this.userID = userID;
+        this.userName = userName;
         this.fullName = fullName;
-        this.UserName= UserName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
@@ -37,13 +28,21 @@ public class User {
         this.statusID = statusID;
     }
 
-    // Getters and Setters
+    // Getters & Setters
     public int getUserID() {
         return userID;
     }
 
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getFullName() {
@@ -101,15 +100,4 @@ public class User {
     public void setStatusID(int statusID) {
         this.statusID = statusID;
     }
-
-    public String getUserName() {
-        return UserName;
-    }
-
-    public void setUserName(String UserName) {
-        this.UserName = UserName;
-    }
- 
-    
-  
 }
