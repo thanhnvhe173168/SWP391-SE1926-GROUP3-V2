@@ -9,7 +9,6 @@ import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,8 +20,7 @@ import model.User;
  *
  * @author linhd
  */
-@WebServlet(name="AddUser", urlPatterns={"/addUser"})
-public class AddUser extends HttpServlet {
+public class createUser extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -31,7 +29,7 @@ public class AddUser extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String fullName = request.getParameter("fullName");
@@ -126,7 +124,7 @@ public class AddUser extends HttpServlet {
             request.setAttribute("phoneNumber", phoneNumber);
             request.setAttribute("roleID", roleID);
             request.setAttribute("statusID", statusID);
-            request.getRequestDispatcher("UserAdd.jsp").forward(request, response);
+            request.getRequestDispatcher("admin/CreateUser.jsp").forward(request, response);
             return;
         }
 
@@ -137,7 +135,7 @@ public class AddUser extends HttpServlet {
             response.sendRedirect("UserList?success=User added successfully.");
         } catch (Exception e) {
             request.setAttribute("error", "Error when adding user: " + e.getMessage());
-            request.getRequestDispatcher("UserAdd.jsp").forward(request, response);
+            request.getRequestDispatcher("admin/CreateUser.jsp").forward(request, response);
         }
     }
 

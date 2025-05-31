@@ -17,11 +17,12 @@ public class getListUser extends HttpServlet {
         throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        UserDAO dao = new UserDAO();
+         UserDAO dao = new UserDAO();
         List<User> list = dao.getAllUsers();
 
         request.setAttribute("listU", list);
-        request.getRequestDispatcher("userList.jsp").forward(request, response);
+        request.getRequestDispatcher("admin/UserManagement.jsp").forward(request, response);
+    
     }
 
     @Override
