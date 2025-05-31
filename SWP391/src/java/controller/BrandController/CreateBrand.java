@@ -4,7 +4,7 @@
  */
 package controller.BrandController;
 
-import dao.BrandDAO1;
+import dao.BrandDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -59,7 +59,7 @@ public class CreateBrand extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BrandDAO1 brandDao = new BrandDAO1();
+        BrandDAO brandDao = new BrandDAO();
         String brandName = request.getParameter("brandName");
         boolean checkExist = brandDao.checkExistBrandName(brandName, 0);
         if (checkExist) {

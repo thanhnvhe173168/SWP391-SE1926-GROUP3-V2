@@ -4,9 +4,7 @@
  */
 package controller.OrderController;
 
-import dao.CartDetailDAO;
-import dao.LaptopDAO;
-import dao.UserDAO;
+import dao.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -95,6 +93,7 @@ public class Order extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+       
     }
 
     /**
