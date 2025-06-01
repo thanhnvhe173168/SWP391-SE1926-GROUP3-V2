@@ -13,15 +13,15 @@
     </head>
     <body>
         <h2>Chi tiết người dùng</h2>
-        <p><strong>User ID:</strong> ${user.userID}</p>
-        <p><strong>User Name:</strong> ${user.userName}</p>
-        <p><strong>Full Name:</strong> ${user.fullName}</p>
-        <p><strong>Email:</strong> ${user.email}</p>
-        <p><strong>Phone Number:</strong> ${user.phoneNumber}</p>
-        <p><strong>Password:</strong> ${user.password}</p>
-        <p><strong>Registration Date:</strong> ${user.Date}</p>
-        <p><strong>Role ID:</strong> ${user.roleID}</p>
-        <p><strong>Status ID:</strong> ${user.statusID}</p>
+        <p><strong>User ID:</strong> ${list.userID}</p>
+        <p><strong>User Name:</strong> ${list.userName}</p>
+        <p><strong>Full Name:</strong> ${list.fullName}</p>
+        <p><strong>Email:</strong> ${list.email}</p>
+        <p><strong>Phone Number:</strong> ${list.phoneNumber}</p>
+        <p><strong>Password:</strong> ${list.password}</p>
+        <p><strong>Registration Date:</strong> ${list.Date}</p>
+        <p><strong>Role ID:</strong> ${list.roleID}</p>
+        <p><strong>Status ID:</strong> ${list.statusID}</p>
         <br/>
         <a href="getListUser">Quay lại danh sách</a>
     </body>
