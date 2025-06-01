@@ -156,7 +156,6 @@
             <thead>
                 <tr>
                     <th>User ID</th>
-                    <th>Tên người dùng</th>
                     <th>Họ và tên</th>
                     <th>Vai trò</th>
                     <th>Trạng thái</th>
@@ -167,7 +166,6 @@
                 <c:forEach items="${listU}" var="o">
                     <tr>
                         <td>${o.userID}</td>
-                        <td>${o.userName}</td>
                         <td>${o.fullName}</td>
                         <td>
                             <c:choose>

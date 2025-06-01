@@ -1,16 +1,15 @@
 package model;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class User {
 
     private int userID;
-    private String userName;
     private String fullName;
     private String email;
     private String phoneNumber;
     private String password;
-    private LocalDate Date;
+    private Date Date;
     private int roleID;
     private int statusID;
 
@@ -26,10 +25,8 @@ public class User {
         this.statusID = statusID;
     }
 
-    public User(int userID, String userName, String fullName, String email, String phoneNumber,
-            String password, LocalDate Date, int roleID, int statusID) {
+    public User(int userID, String fullName, String email, String phoneNumber, String password, Date Date, int roleID, int statusID) {
         this.userID = userID;
-        this.userName = userName;
         this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -38,11 +35,13 @@ public class User {
         this.roleID = roleID;
         this.statusID = statusID;
     }
-// Constructor rút gọn cho danh sách
-    public User(int userID, String userName, String fullName, int roleID, int statusID) {
+
+    public User(int userID, String fullName, String email, String phoneNumber, Date Date, int roleID, int statusID) {
         this.userID = userID;
-        this.userName = userName;
         this.fullName = fullName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.Date = Date;
         this.roleID = roleID;
         this.statusID = statusID;
     }
@@ -54,14 +53,6 @@ public class User {
 
     public void setUserID(int userID) {
         this.userID = userID;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getFullName() {
@@ -96,11 +87,11 @@ public class User {
         this.password = password;
     }
 
-    public LocalDate getRegistrationDate() {
+    public Date getRegistrationDate() {
         return Date;
     }
 
-    public void setRegistrationDate(LocalDate Date) {
+    public void setRegistrationDate(Date Date) {
         this.Date = Date;
     }
 

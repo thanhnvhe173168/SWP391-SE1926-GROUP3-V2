@@ -32,7 +32,7 @@ public class ViewerUser extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         UserDAO dao = new UserDAO();
-          List<User> list = dao.getViewAllUsers();
+          List<User> list = dao.getListUser();
         request.setAttribute("ViewU", list);
         request.getRequestDispatcher("/admin/ViewUserDetail.jsp").forward(request, response);
     } 
