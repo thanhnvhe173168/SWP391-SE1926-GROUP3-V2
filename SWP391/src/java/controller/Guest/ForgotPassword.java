@@ -5,8 +5,6 @@
 package controller.Guest;
 
 import dao.UserDAO;
-import enums.AccountStatusEnum;
-import enums.RoleEnum;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,15 +12,18 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
 import model.User;
 import org.mindrot.jbcrypt.BCrypt;
+import utils.EmailUtils;
+import utils.PasswordUtils;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "Register", urlPatterns = {"/register"})
-public class Register extends HttpServlet {
+@WebServlet(name = "ForgotPassword", urlPatterns = {"/forgotPassword"})
+public class ForgotPassword extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,6 +36,7 @@ public class Register extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -49,7 +51,7 @@ public class Register extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/guest/Register.jsp").forward(request, response);
+        request.getRequestDispatcher("/guest/ForgotPassword.jsp").forward(request, response);
     }
 
     /**
@@ -64,27 +66,36 @@ public class Register extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         UserDAO userDao = new UserDAO();
-        String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
-        String phoneNumber = request.getParameter("phoneNumber");
-        String password = request.getParameter("password");
-        User checkExist = userDao.checkExistUser(email);
-        System.out.print(checkExist);
-        if (checkExist != null) {
-            request.setAttribute("message", "Email đã tồn tại");
-            request.getRequestDispatcher("/guest/Register.jsp").forward(request, response);
+        User user = userDao.checkExistUser(email);
+        System.out.print(user);
+        if (user == null) {
+            request.setAttribute("error", "Email không tồn tại");
+            request.getRequestDispatcher("/guest/ForgotPassword.jsp").forward(request, response);
             return;
         }
-        String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
+        String newPassword = PasswordUtils.generateRandomPassword();
+        String content = "<h3>Xin chào " + user.getFullName() + ",</h3>"
+                + "<p>Mật khẩu mới của bạn: " + newPassword + "</p>";
+        boolean checkSendMail = EmailUtils.sendEmail(user.getEmail(), "Reset mật khẩu", content);
+        if (checkSendMail) {
+            request.setAttribute("message", "Mật khẩu mới đã được gửi về email của bạn. Vui lòng kiểm tra email để lấy mật khẩu mới.");
+        } else {
+            request.setAttribute("error", "Gửi email thất bại. Vui lòng thử lại sau.");
+            return;
+        }
+        String hashPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(12));
         User newUser = new User(
-                fullName, 
-                email, 
-                phoneNumber, 
-                hashPassword, 
-                RoleEnum.CUSTOMER.getRole(), 
-                AccountStatusEnum.ACTIVE.getAccountStatus()
+                user.getUserID(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                hashPassword,
+                user.getRegistrationDate(),
+                user.getRoleID(),
+                user.getStatusID()
         );
-        int check = userDao.createUser(newUser);
+        int check = userDao.updateUser(newUser);
         if (check > 0) {
             response.sendRedirect("login");
         }

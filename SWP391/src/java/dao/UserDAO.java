@@ -62,9 +62,8 @@ public class UserDAO extends ConnectDB {
         }
         return n;
     }
-    
-    // Lấy danh sách User( chỉ những cột hiển thị trong danh sách) 
 
+    // Lấy danh sách User( chỉ những cột hiển thị trong danh sách) 
     public List<User> getAllUsers() {
         List<User> list = new ArrayList<>();
         String sql = "SELECT UserID, UserName, FullName, RoleID, StatusID FROM Users";
@@ -73,13 +72,13 @@ public class UserDAO extends ConnectDB {
             PreparedStatement ps = connect.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-               User U = new User(
-                   rs.getInt(1),
-                   rs.getString(2),
-                   rs.getString(3),
-                   rs.getInt(4),
-                   rs.getInt(5)
-                   );
+                User U = new User(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getInt(4),
+                        rs.getInt(5)
+                );
                 list.add(U);
             }
         } catch (Exception e) {
@@ -88,26 +87,27 @@ public class UserDAO extends ConnectDB {
 
         return list;
     }
+
     // Lấy chi tiết user theo ID (để dùng khi ấn View)
-    public User getUserByID(int userID){
+    public User getUserByID(int userID) {
         String sql = "select * from Users where UserID = ?";
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-           while(rs.next()){
-               return new User(
-                       rs.getInt("userID"),
-                       rs.getString("userName"),
-                       rs.getString("fullName"),
-                       rs.getString("email"),
-                       rs.getString("phoneNumber"),
-                       rs.getString("password"),
-                       rs.getDate("date").toLocalDate(),
-                       rs.getInt("roleID"),
-                       rs.getInt("statusID")
-               );
-               
-           }
+            while (rs.next()) {
+                return new User(
+                        rs.getInt("userID"),
+                        rs.getString("userName"),
+                        rs.getString("fullName"),
+                        rs.getString("email"),
+                        rs.getString("phoneNumber"),
+                        rs.getString("password"),
+                        rs.getDate("date").toLocalDate(),
+                        rs.getInt("roleID"),
+                        rs.getInt("statusID")
+                );
+
+            }
         } catch (Exception e) {
             System.out.println("getUserByID" + e.getMessage());
         }
@@ -150,8 +150,26 @@ public class UserDAO extends ConnectDB {
         }
         return false;
     }
+
+    public int updateUser(User u) {
+        int n = 0;
+        String sql = "update Users set FullName = ?, PhoneNumber = ?, Password = ?, StatusID = ? where UserID = ?";
+        try {
+            PreparedStatement pre = connect.prepareStatement(sql);
+            pre.setString(1, u.getFullName());
+            pre.setString(2, u.getPhoneNumber());
+            pre.setString(3, u.getPassword());
+            pre.setInt(4, u.getUserID());
+            pre.setInt(5, u.getStatusID());
+            n = pre.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return n;
+    }
+
     public static void main(String[] args) {
-        UserDAO da= new UserDAO();
+        UserDAO da = new UserDAO();
         System.out.println(da.getAllUsers().size());
     }
 }

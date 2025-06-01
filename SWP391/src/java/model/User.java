@@ -26,6 +26,17 @@ public class User {
         this.statusID = statusID;
     }
 
+    public User(int userID, String fullName, String email, String phoneNumber, String password, LocalDate Date, int roleID, int statusID) {
+        this.userID = userID;
+        this.fullName = fullName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.Date = Date;
+        this.roleID = roleID;
+        this.statusID = statusID;
+    }
+
     public User(int userID, String userName, String fullName, String email, String phoneNumber,
             String password, LocalDate Date, int roleID, int statusID) {
         this.userID = userID;
@@ -39,6 +50,7 @@ public class User {
         this.statusID = statusID;
     }
 // Constructor rút gọn cho danh sách
+
     public User(int userID, String userName, String fullName, int roleID, int statusID) {
         this.userID = userID;
         this.userName = userName;
