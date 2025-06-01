@@ -1,38 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-/**
- *
- * @author Window 11
- */
-import java.util.Date;
+import java.time.LocalDate;
 
 public class User {
 
     private int userID;
+    private String userName;
     private String fullName;
     private String email;
     private String phoneNumber;
     private String password;
-    private Date registrationDate;
+    private LocalDate Date;
     private int roleID;
     private int statusID;
 
     public User() {
-    }
-
-    public User(int userID, String fullName, String email, String phoneNumber, String password, Date registrationDate, int roleID, int statusID) {
-        this.userID = userID;
-        this.fullName = fullName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.password = password;
-        this.registrationDate = registrationDate;
-        this.roleID = roleID;
-        this.statusID = statusID;
     }
 
     public User(String fullName, String email, String phoneNumber, String password, int roleID, int statusID) {
@@ -44,12 +26,42 @@ public class User {
         this.statusID = statusID;
     }
 
+    public User(int userID, String userName, String fullName, String email, String phoneNumber,
+            String password, LocalDate Date, int roleID, int statusID) {
+        this.userID = userID;
+        this.userName = userName;
+        this.fullName = fullName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.Date = Date;
+        this.roleID = roleID;
+        this.statusID = statusID;
+    }
+// Constructor rút gọn cho danh sách
+    public User(int userID, String userName, String fullName, int roleID, int statusID) {
+        this.userID = userID;
+        this.userName = userName;
+        this.fullName = fullName;
+        this.roleID = roleID;
+        this.statusID = statusID;
+    }
+
+    // Getters & Setters
     public int getUserID() {
         return userID;
     }
 
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getFullName() {
@@ -84,12 +96,12 @@ public class User {
         this.password = password;
     }
 
-    public Date getRegistrationDate() {
-        return registrationDate;
+    public LocalDate getRegistrationDate() {
+        return Date;
     }
 
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
+    public void setRegistrationDate(LocalDate Date) {
+        this.Date = Date;
     }
 
     public int getRoleID() {
@@ -107,5 +119,4 @@ public class User {
     public void setStatusID(int statusID) {
         this.statusID = statusID;
     }
-
 }

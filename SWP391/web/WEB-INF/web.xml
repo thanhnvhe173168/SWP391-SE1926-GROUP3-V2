@@ -16,6 +16,18 @@
         <servlet-name>UserList</servlet-name>
         <servlet-class>controller.CartController.UserList</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>createUser</servlet-name>
+        <servlet-class>controller.UserController.createUser</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getListUser</servlet-name>
+        <servlet-class>controller.UserController.getListUser</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewerUser</servlet-name>
+        <servlet-class>controller.UserController.ViewerUser</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Cart</servlet-name>
         <url-pattern>/cart</url-pattern>
@@ -27,5 +39,17 @@
     <servlet-mapping>
         <servlet-name>UserList</servlet-name>
         <url-pattern>/userlist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>createUser</servlet-name>
+        <url-pattern>/createUser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getListUser</servlet-name>
+        <url-pattern>/getListUser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewerUser</servlet-name>
+        <url-pattern>/viewerUser</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -15,7 +15,7 @@ import java.sql.Statement;
  *
  * @author admin
  */
-public class ConnectDB {
+public class ConnectDB { 
 
     public Connection connect = null;
 
@@ -34,9 +34,9 @@ public class ConnectDB {
     }
 
     public ConnectDB() {
-        this("jdbc:sqlserver://localhost:1433;databaseName=LapWeb", "sa", "123");
+        this("jdbc:sqlserver://LINHDO\\\\SQLEXPRESS:1433;;databaseName=LaptopWeb", "sa", "123");
     }
-
+ 
     public ResultSet getData(String sql) {
         ResultSet rs = null;
         try {
@@ -62,6 +62,10 @@ public class ConnectDB {
     }
 
     public static void main(String[] args) {
-        new ConnectDB();
+        if(new ConnectDB().connect!=null){
+            System.out.println("connect ok");
+        } else{
+            System.out.println("fail");
+        }
     }
 }
