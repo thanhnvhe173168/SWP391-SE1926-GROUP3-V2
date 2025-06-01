@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -131,8 +132,9 @@ public class createUser extends HttpServlet {
 
         // Nếu không có lỗi thì thêm người dùng
         try {
-            User newUser = new User(0, fullName, fullName, email, phoneNumber, password, LocalDate.now(), roleIDInt, statusIDInt);
-            u.addUser(newUser);
+            String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
+            User newUser = new User(fullName, email, phoneNumber, hashPassword, roleIDInt, statusIDInt);
+            u.createUser(newUser);
             response.sendRedirect("UserList?success=User added successfully.");
         } catch (Exception e) {
             request.setAttribute("error", "Error when adding user: " + e.getMessage());

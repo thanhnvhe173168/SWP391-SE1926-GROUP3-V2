@@ -36,7 +36,7 @@ public class ForgotPassword extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -78,9 +78,8 @@ public class ForgotPassword extends HttpServlet {
         String content = "<h3>Xin chào " + user.getFullName() + ",</h3>"
                 + "<p>Mật khẩu mới của bạn: " + newPassword + "</p>";
         boolean checkSendMail = EmailUtils.sendEmail(user.getEmail(), "Reset mật khẩu", content);
-        if (checkSendMail) {
-            request.setAttribute("message", "Mật khẩu mới đã được gửi về email của bạn. Vui lòng kiểm tra email để lấy mật khẩu mới.");
-        } else {
+        System.err.print("dsvasvasv" + checkSendMail);
+        if (!checkSendMail) {
             request.setAttribute("error", "Gửi email thất bại. Vui lòng thử lại sau.");
             return;
         }

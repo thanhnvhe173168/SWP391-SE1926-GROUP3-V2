@@ -14,7 +14,6 @@
     <body>
         <h2>Chi tiết người dùng</h2>
         <p><strong>User ID:</strong> ${list.userID}</p>
-        <p><strong>User Name:</strong> ${list.userName}</p>
         <p><strong>Full Name:</strong> ${list.fullName}</p>
         <p><strong>Email:</strong> ${list.email}</p>
         <p><strong>Phone Number:</strong> ${list.phoneNumber}</p>

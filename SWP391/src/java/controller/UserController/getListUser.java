@@ -18,7 +18,7 @@ public class getListUser extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
          UserDAO dao = new UserDAO();
-        List<User> list = dao.getAllUsers();
+        List<User> list = dao.getListUser();
 
         request.setAttribute("listU", list);
         request.getRequestDispatcher("admin/UserManagement.jsp").forward(request, response);
