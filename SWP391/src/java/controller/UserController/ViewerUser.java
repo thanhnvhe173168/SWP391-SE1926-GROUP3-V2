@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import model.User;
 
 /**
@@ -30,12 +31,10 @@ public class ViewerUser extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        int userID = Integer.parseInt(request.getParameter("userID"));
         UserDAO dao = new UserDAO();
-        User user = dao.getUserByID(userID);
-        request.setAttribute("user", user);
-        request.getRequestDispatcher("admin/ViewUserDetail.jsp").forward(request, response);
+          List<User> list = dao.getViewAllUsers();
+        request.setAttribute("ViewU", list);
+        request.getRequestDispatcher("/admin/ViewUserDetail.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
