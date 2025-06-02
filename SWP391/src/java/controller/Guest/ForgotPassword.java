@@ -68,7 +68,6 @@ public class ForgotPassword extends HttpServlet {
         UserDAO userDao = new UserDAO();
         String email = request.getParameter("email");
         User user = userDao.checkExistUser(email);
-        System.out.print(user);
         if (user == null) {
             request.setAttribute("error", "Email không tồn tại");
             request.getRequestDispatcher("/guest/ForgotPassword.jsp").forward(request, response);
@@ -78,9 +77,9 @@ public class ForgotPassword extends HttpServlet {
         String content = "<h3>Xin chào " + user.getFullName() + ",</h3>"
                 + "<p>Mật khẩu mới của bạn: " + newPassword + "</p>";
         boolean checkSendMail = EmailUtils.sendEmail(user.getEmail(), "Reset mật khẩu", content);
-        System.err.print("dsvasvasv" + checkSendMail);
         if (!checkSendMail) {
             request.setAttribute("error", "Gửi email thất bại. Vui lòng thử lại sau.");
+            request.getRequestDispatcher("/guest/ForgotPassword.jsp").forward(request, response);
             return;
         }
         String hashPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(12));

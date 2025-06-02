@@ -5,21 +5,20 @@
 
 package controller.UserController;
 
-import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import model.User;
 
 /**
  *
- * @author linhd
+ * @author Admin
  */
-public class ViewerUser extends HttpServlet {
+@WebServlet(name="ViewProfile", urlPatterns={"/viewProfile"})
+public class ViewProfile extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -30,11 +29,7 @@ public class ViewerUser extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        UserDAO dao = new UserDAO();
-          List<User> list = dao.getListUser();
-        request.setAttribute("ViewU", list);
-        request.getRequestDispatcher("/admin/ViewUserDetail.jsp").forward(request, response);
+        request.getRequestDispatcher("/user/UserProfile.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -62,26 +57,6 @@ public class ViewerUser extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         processRequest(request, response);
-            throws ServletException, IOException {
-        UserDAO userDao = new UserDAO();
-        String newPassword = request.getParameter("newPassword");
-        String hashPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(12));
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        User newUser = new User(
-                user.getUserID(),
-                user.getFullName(),
-                user.getEmail(),
-                user.getPhoneNumber(),
-                hashPassword,
-                user.getRegistrationDate(),
-                user.getRoleID(),
-                user.getStatusID()
-        );
-        int check = userDao.updateUser(newUser);
-        if (check > 0) {
-            response.sendRedirect("home");
-        }
     }
 
     /** 
