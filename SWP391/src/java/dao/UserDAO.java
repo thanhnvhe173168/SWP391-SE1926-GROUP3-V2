@@ -5,6 +5,7 @@
 package dao;
 
 import config.ConnectDB;
+import jakarta.servlet.http.HttpServletRequest;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,26 +43,8 @@ public class UserDAO extends ConnectDB {
         }
         return null;
     }
-
-    public int createUser(User u) {
-        int n = 0;
-        String sql = "Insert into Users(FullName, Email, PhoneNumber, Password, RoleID, StatusID) values (?, ?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement pre = connect.prepareStatement(sql);
-            pre.setString(1, u.getFullName());
-            pre.setString(2, u.getEmail());
-            pre.setString(3, u.getPhoneNumber());
-            pre.setString(4, u.getPassword());
-            pre.setInt(5, u.getRoleID());
-            pre.setInt(6, u.getStatusID());
-            n = pre.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return n;
-    }
-
     // Lấy danh sách User( chỉ những cột hiển thị trong danh sách) 
+
     public List<User> getListUser() {
         List<User> list = new ArrayList<>();
         String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users";
@@ -86,6 +69,58 @@ public class UserDAO extends ConnectDB {
         }
 
         return list;
+    }
+
+    //Hàm hiển thị ở nút View 
+    public User getUserByID(int id, HttpServletRequest request) {
+        User user = null;
+        String sql = "SELECT * from Users u\n"
+                + "join Roles r on u.RoleID = r.RoleID\n"
+                + "join Statuses s on s.StatusID = u.StatusID\n"
+                + "where u.UserID=?";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            ps.setInt(1, id);
+            if (rs.next()) {
+                user = new User();
+                user.setUserID(rs.getInt("UserID"));
+                user.setFullName(rs.getString("FullName"));
+                user.setEmail(rs.getString("Email"));
+                user.setPhoneNumber(rs.getString("PhoneNumber"));
+                user.setPassword(rs.getString("Password"));
+                user.setRegistrationDate(rs.getDate("Date"));
+                user.setRoleID(rs.getInt("RoleID"));
+                user.setStatusID(rs.getInt("StatusID"));
+
+                // Đặt RoleName và StatusName để hiện lên JSP
+                request.setAttribute("roleName", rs.getString("RoleName"));
+                request.setAttribute("statusName", rs.getString("StatusName"));
+            }
+        } catch (Exception e) {
+            System.out.println("getUserByID" + e.getMessage());
+        }
+        return user;
+    }
+
+    public int createUser(User u) {
+
+        String sql = "Insert into Users(FullName, Email, PhoneNumber, Password, RoleID, StatusID) values (?, ?, ?, ?, ?, ?)";
+        int n = 0;
+        try {
+
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setString(1, u.getFullName());
+            ps.setString(2, u.getEmail());
+            ps.setString(3, u.getPhoneNumber());
+            ps.setString(4, u.getPassword());
+            ps.setInt(5, u.getRoleID());
+            ps.setInt(6, u.getStatusID());
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return n;
     }
 
     public int updateUser(User u) {

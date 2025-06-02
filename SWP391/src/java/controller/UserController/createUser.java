@@ -8,6 +8,7 @@ import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,6 +21,7 @@ import org.mindrot.jbcrypt.BCrypt;
  *
  * @author linhd
  */
+
 public class createUser extends HttpServlet {
 
     /**
@@ -34,114 +36,8 @@ public class createUser extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String fullName = request.getParameter("fullName");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String phoneNumber = request.getParameter("phoneNumber");
-        String roleID = request.getParameter("roleID");
-        String statusID = request.getParameter("statusID");
-
-        StringBuilder errors = new StringBuilder();//thu thap va kiem tra các lỗi đầu vào
-        UserDAO u = new UserDAO();
-
-        int roleIDInt = 0;
-        int statusIDInt = 0;
-
-        // Validate Full Name
-        if (fullName == null || fullName.trim().isEmpty()) {
-            errors.append("Please enter the name<br>");
-            System.out.println("Please enter the name");
-        }
-
-        // Validate Email
-        if (email == null || email.trim().isEmpty()) {
-            errors.append("Please enter the email<br>");
-            System.out.println("Please enter the email");
-        } else if (!Pattern.matches("^[A-Za-z0-9+_.-]+@(.+)$", email)) {
-            errors.append("Email not valid<br>");
-            System.out.println("Email not valid");
-        } else if (u.checkExistUser(email) != null) {
-            errors.append("Email already exists<br>");
-            System.out.println("Email already exists");
-        }
-
-        // Validate Password
-        if (password == null || password.trim().isEmpty()) {
-            errors.append("Please enter the password<br>");
-            System.out.println("Please enter the password");
-        } else if (password.length() < 6) {
-            errors.append("Password must be at least 6 characters<br>");
-            System.out.println("Password must be at least 6 characters");
-        }
-
-        // Validate Phone Number
-        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
-            errors.append("Please enter the phone number<br>");
-            System.out.println("Please enter the phone number");
-        } else if (!Pattern.matches("^[0-9]{10,11}$", phoneNumber)) {
-            errors.append("Phone number must be 10 or 11 digits<br>");
-            System.out.println("Phone number must be 10 or 11 digits");
-        }
-
-        // Validate Role
-        if (roleID == null || roleID.trim().isEmpty()) {
-            errors.append("Please choose the role<br>");
-            System.out.println("Please choose the role");
-        } else {
-            try {
-                roleIDInt = Integer.parseInt(roleID);
-                if (roleIDInt < 1 || roleIDInt > 3) {
-                    errors.append("Role not valid<br>");
-                    System.out.println("Role not valid");
-                }
-            } catch (Exception e) {
-                errors.append("Role not valid<br>");
-                System.out.println("Role not valid");
-            }
-        }
-
-        // Validate Status
-        if (statusID == null || statusID.trim().isEmpty()) {
-            errors.append("Please choose the status<br>");
-            System.out.println("Please choose the status");
-        } else {
-            try {
-                statusIDInt = Integer.parseInt(statusID);
-                if (statusIDInt < 1 || statusIDInt > 2) {
-                    errors.append("Status not valid<br>");
-                    System.out.println("Status not valid");
-                }
-            } catch (Exception e) {
-                errors.append("Status not valid<br>");
-                System.out.println("Status not valid");
-            }
-        }
-
-        // Nếu có lỗi thì gửi lại form
-        if (errors.length() > 0) {
-            request.setAttribute("error", errors.toString());
-            request.setAttribute("fullName", fullName);
-            request.setAttribute("email", email);
-            request.setAttribute("password", password);
-            request.setAttribute("phoneNumber", phoneNumber);
-            request.setAttribute("roleID", roleID);
-            request.setAttribute("statusID", statusID);
-            request.getRequestDispatcher("admin/CreateUser.jsp").forward(request, response);
-            return;
-        }
-
-        // Nếu không có lỗi thì thêm người dùng
-        try {
-            String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
-            User newUser = new User(fullName, email, phoneNumber, hashPassword, roleIDInt, statusIDInt);
-            u.createUser(newUser);
-            response.sendRedirect("UserList?success=User added successfully.");
-        } catch (Exception e) {
-            request.setAttribute("error", "Error when adding user: " + e.getMessage());
-            request.getRequestDispatcher("admin/CreateUser.jsp").forward(request, response);
-        }
+        
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -168,7 +64,34 @@ public class createUser extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+       String fullName = request.getParameter("fullName");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String phoneNumber = request.getParameter("phoneNumber");
+        String roleID = request.getParameter("roleID");
+        String statusID = request.getParameter("statusID");
+
+        // Convert roleID và statusID sang int
+        int roleIDStr = Integer.parseInt(roleID);
+        int statusStr = Integer.parseInt(statusID);
+        UserDAO dao = new UserDAO();
+        if (dao.checkExistUser(email) != null) {
+            request.setAttribute("error", "Email exited");
+            request.getRequestDispatcher("admin/CreateUser.jsp").forward(request, response);
+            return;
+        }
+
+        User addU = new User(fullName, email, phoneNumber, password, roleIDStr, statusStr);
+        int result = dao.createUser(addU);
+
+        if (result > 0) {
+            response.sendRedirect("getListUser");
+        } else {
+            request.setAttribute("error", "Thêm người dùng thất bại.");
+            request.getRequestDispatcher("admin/CreateUser.jsp").forward(request, response);
+        }
+
+    }
     }
 
     /**
@@ -176,9 +99,4 @@ public class createUser extends HttpServlet {
      *
      * @return a String containing servlet description
      */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
-}
+    
