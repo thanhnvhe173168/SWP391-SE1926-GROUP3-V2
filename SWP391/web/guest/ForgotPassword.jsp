@@ -1,26 +1,31 @@
+<%-- 
+    Document   : Login
+    Created on : May 28, 2025, 8:42:01 PM
+    Author     : Admin
+--%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.User"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Register</title>
+        <title>Quên mật khẩu</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <style>
             body {
                 background-color: #f8f9fa;
             }
-            .register-container {
-                max-width: 500px;
+            .login-container {
+                max-width: 400px;
                 margin: 50px auto;
                 background: white;
                 padding: 30px;
                 border-radius: 10px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
-            .register-title {
+            .login-title {
                 text-align: center;
                 margin-bottom: 20px;
                 color: #333;
@@ -29,35 +34,27 @@
     </head>
     <body>
         <%
-           User user = (User) session.getAttribute("user");
            String message = (String) request.getAttribute("message");
+           String error = (String) request.getAttribute("error");
         %>
         <jsp:include page="/components/Header.jsp"></jsp:include>
-            <div class="register-container">
-                <h2 class="register-title">Thông tin tài khoản</h2>
-                <form action="updateProfile" method="POST">
-                    <!-- Full Name -->
+            <div class="login-container">
+                <h2 class="login-title">Quên mật khầu</h2>
+                <form action="forgotPassword" method="POST">
+                    <!-- Email -->
                     <div class="mb-3">
-                        <label for="fullName" class="form-label">Họ và tên</label>
-                        <input type="text" class="form-control" id="fullName" name="fullName" value="<%=user.getFullName()%>" required>
-                </div>
-                <!-- Email -->
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" value="<%=user.getEmail()%>" readonly required>
-                </div>
-                <!-- Phone Number -->
-                <div class="mb-3">
-                    <label for="phoneNumber" class="form-label">Số điện thoại</label>
-                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" value="<%=user.getPhoneNumber()%>" required>
-                </div>
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                <%if(error != null) {%>
+                <p class="text-danger"><%=error%></p>
+                <%}%>
                 <%if(message != null) {%>
                 <p class="text-success"><%=message%></p>
                 <%}%>
-
                 <!-- Submit Button -->
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    <button type="submit" class="btn btn-primary">Gửi</button>
                 </div>
             </form>
         </div>

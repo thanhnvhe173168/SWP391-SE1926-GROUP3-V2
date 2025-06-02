@@ -12,13 +12,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Brand;
+
 /**
  *
  * @author Window 11
  */
-public class StatusDAO extends ConnectDB{
-    
-    public Status GetStatus(int statusid){
+public class StatusDAO extends ConnectDB {
+
+    public Status GetStatus(int statusid) {
         Status status = new Status();
         String sql = "select * from Status where StatusID=?";
         try {
@@ -26,15 +27,14 @@ public class StatusDAO extends ConnectDB{
             st.setInt(1, statusid);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                
+
                 status.setStatusID(statusid);
                 status.setStatusName(rs.getString("StatusName"));
                 status.setStatusType(rs.getString("StatusType"));
-                }
             }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return status;
-}
+    }
 }

@@ -2,24 +2,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-<<<<<<<< HEAD:SWP391/src/java/controller/OrderController/OrderSuccess.java
-package controller.OrderController;
-========
-package controller.CartController;
->>>>>>>> main:SWP391/src/java/controller/CartController/ShowProdcut.java
+package controller.Guest;
 
+import dao.UserDAO;
+import enums.AccountStatusEnum;
+import enums.RoleEnum;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
- * @author Window 11
+ * @author Admin
  */
-public class OrderSuccess extends HttpServlet {
+@WebServlet(name = "Register", urlPatterns = {"/register"})
+public class Register extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,19 +35,6 @@ public class OrderSuccess extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet OrderSuccess</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet OrderSuccess at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -59,7 +49,7 @@ public class OrderSuccess extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.getRequestDispatcher("/guest/Register.jsp").forward(request, response);
     }
 
     /**
@@ -73,7 +63,31 @@ public class OrderSuccess extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        UserDAO userDao = new UserDAO();
+        String fullName = request.getParameter("fullName");
+        String email = request.getParameter("email");
+        String phoneNumber = request.getParameter("phoneNumber");
+        String password = request.getParameter("password");
+        User checkExist = userDao.checkExistUser(email);
+        System.out.print(checkExist);
+        if (checkExist != null) {
+            request.setAttribute("message", "Email đã tồn tại");
+            request.getRequestDispatcher("/guest/Register.jsp").forward(request, response);
+            return;
+        }
+        String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
+        User newUser = new User(
+                fullName, 
+                email, 
+                phoneNumber, 
+                hashPassword, 
+                RoleEnum.CUSTOMER.getRole(), 
+                AccountStatusEnum.ACTIVE.getAccountStatus()
+        );
+        int check = userDao.createUser(newUser);
+        if (check > 0) {
+            response.sendRedirect("login");
+        }
     }
 
     /**

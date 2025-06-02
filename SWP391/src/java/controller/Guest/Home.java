@@ -2,24 +2,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-<<<<<<<< HEAD:SWP391/src/java/controller/OrderController/OrderSuccess.java
-package controller.OrderController;
-========
-package controller.CartController;
->>>>>>>> main:SWP391/src/java/controller/CartController/ShowProdcut.java
+package controller.Guest;
 
+import dao.LaptopDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.ResultSet;
 
 /**
  *
- * @author Window 11
+ * @author Admin
  */
-public class OrderSuccess extends HttpServlet {
+@WebServlet(name = "Home", urlPatterns = {"/home"})
+public class Home extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,19 +32,6 @@ public class OrderSuccess extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet OrderSuccess</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet OrderSuccess at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -59,7 +46,21 @@ public class OrderSuccess extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        LaptopDAO laptopDao = new LaptopDAO();
+        
+        ResultSet rsBrand = laptopDao.getData("Select * from Brand");
+        ResultSet rsCategory = laptopDao.getData("Select * from Category");
+        ResultSet rsCPU = laptopDao.getData("Select * from CPU");
+        ResultSet rsScreen = laptopDao.getData("Select * from ScreenSize");
+        ResultSet rsLaptop = laptopDao.getListLaptop();
+        
+        request.setAttribute("rsBrand", rsBrand);
+        request.setAttribute("rsCategory", rsCategory);
+        request.setAttribute("rsCPU", rsCPU);
+        request.setAttribute("rsScreen", rsScreen);
+        request.setAttribute("rsLaptop", rsLaptop);
+       
+        request.getRequestDispatcher("/guest/HomePage.jsp").forward(request, response);
     }
 
     /**
@@ -73,7 +74,7 @@ public class OrderSuccess extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        processRequest(request, response);
     }
 
     /**

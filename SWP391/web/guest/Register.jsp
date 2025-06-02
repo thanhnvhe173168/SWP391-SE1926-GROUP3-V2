@@ -1,5 +1,10 @@
+<%-- 
+    Document   : Register
+    Created on : May 28, 2025, 7:54:49 PM
+    Author     : Admin
+--%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.User"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -29,37 +34,41 @@
     </head>
     <body>
         <%
-           User user = (User) session.getAttribute("user");
            String message = (String) request.getAttribute("message");
         %>
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <div class="register-container">
-                <h2 class="register-title">Thông tin tài khoản</h2>
-                <form action="updateProfile" method="POST">
+                <h2 class="register-title">Tạo tài khoản</h2>
+                <form action="register" method="POST">
                     <!-- Full Name -->
                     <div class="mb-3">
                         <label for="fullName" class="form-label">Họ và tên</label>
-                        <input type="text" class="form-control" id="fullName" name="fullName" value="<%=user.getFullName()%>" required>
-                </div>
-                <!-- Email -->
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" value="<%=user.getEmail()%>" readonly required>
-                </div>
-                <!-- Phone Number -->
-                <div class="mb-3">
-                    <label for="phoneNumber" class="form-label">Số điện thoại</label>
-                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" value="<%=user.getPhoneNumber()%>" required>
-                </div>
+                        <input type="text" class="form-control" id="fullName" name="fullName" required>
+                    </div>
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <!-- Phone Number -->
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Số điện thoại</label>
+                        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required>
+                    </div>
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
                 <%if(message != null) {%>
-                <p class="text-success"><%=message%></p>
+                <p class="text-danger"><%=message%></p>
                 <%}%>
-
                 <!-- Submit Button -->
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    <button type="submit" class="btn btn-primary">Đăng ký</button>
                 </div>
             </form>
+            <p class="text-center mt-3">Bạn đã có tải khoản? <a href="login">Đăng nhập</a></p>
         </div>
         <jsp:include page="/components/Footer.jsp"></jsp:include>
     </body>
