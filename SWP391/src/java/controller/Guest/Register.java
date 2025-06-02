@@ -69,6 +69,7 @@ public class Register extends HttpServlet {
         String phoneNumber = request.getParameter("phoneNumber");
         String password = request.getParameter("password");
         User checkExist = userDao.checkExistUser(email);
+        System.out.print(checkExist);
         if (checkExist != null) {
             request.setAttribute("message", "Email đã tồn tại");
             request.getRequestDispatcher("/guest/Register.jsp").forward(request, response);
