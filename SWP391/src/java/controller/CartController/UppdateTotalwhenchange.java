@@ -2,11 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-<<<<<<<< HEAD:SWP391/src/java/controller/OrderController/OrderSuccess.java
-package controller.OrderController;
-========
 package controller.CartController;
->>>>>>>> main:SWP391/src/java/controller/CartController/ShowProdcut.java
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,12 +10,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import model.*;
+import dao.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @author Window 11
  */
-public class OrderSuccess extends HttpServlet {
+public class UppdateTotalwhenchange extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +38,10 @@ public class OrderSuccess extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OrderSuccess</title>");            
+            out.println("<title>Servlet UppdateTotalwhenchange</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet OrderSuccess at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UppdateTotalwhenchange at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,7 +59,20 @@ public class OrderSuccess extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        CartDetailDAO cdDAO =new CartDetailDAO();
+        CartDAO cDAO = new CartDAO();
+        BigDecimal total =new BigDecimal("0");
+        Cart cart =new Cart();
+        cart = cDAO.GetCart(1);
+        List<CartDetail> listCart=cdDAO.ListCart(1);
+        for(CartDetail cd : listCart){
+            if(cd.isIsSelect()==true){
+                total=total.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
+            }
+        }
+        cart.setTotal(total);
+        cDAO.uppdateTotal(1, total);
+        request.getRequestDispatcher("CartSeverlet").forward(request, response);
     }
 
     /**
@@ -73,7 +86,7 @@ public class OrderSuccess extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        processRequest(request, response);
     }
 
     /**

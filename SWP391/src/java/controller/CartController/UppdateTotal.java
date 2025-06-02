@@ -2,24 +2,28 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-<<<<<<<< HEAD:SWP391/src/java/controller/OrderController/OrderSuccess.java
-package controller.OrderController;
-========
 package controller.CartController;
->>>>>>>> main:SWP391/src/java/controller/CartController/ShowProdcut.java
 
+import dao.CartDAO;
+import dao.CartDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import model.CartDetail;
+import model.Cart;
 
 /**
  *
  * @author Window 11
  */
-public class OrderSuccess extends HttpServlet {
+public class UppdateTotal extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +42,10 @@ public class OrderSuccess extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OrderSuccess</title>");            
+            out.println("<title>Servlet UppdateTotal</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet OrderSuccess at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UppdateTotal at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -73,8 +77,46 @@ public class OrderSuccess extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        CartDetailDAO cartdetaildao = new CartDetailDAO();
+        CartDAO cartdao=new CartDAO();
+        String[] selectedIds = request.getParameterValues("selectedItem"); // các laptop được tick
+        HttpSession session = request.getSession();
+        Cart cart = cartdao.GetCart(1);
+
+        List<CartDetail> items = cartdetaildao.ListCart(1);
+        BigDecimal total = new BigDecimal("0");
         
+
+        for (CartDetail item : items) {
+            boolean selected = false;
+
+            if (selectedIds != null) {
+                for (String id : selectedIds) {
+                    int ids = Integer.parseInt(id);
+                    if (item.getLaptop().getLaptopID()==ids) {
+                        selected = true;
+                        break;
+                    }
+                }
+            }
+
+            item.setIsSelect(selected); // lưu trạng thái tick
+            if (selected) {
+                total = total.add(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+
+            }
+
+           cartdetaildao.updateBoolean(item.getCart().getCartID(), item.getLaptop().getLaptopID(), selected);
+        }
+
+        cart.setTotal(total);
+        cartdao.uppdateTotal(1, total);
+        
+
+        request.getRequestDispatcher("CartSeverlet").forward(request, response);
     }
+    
 
     /**
      * Returns a short description of the servlet.

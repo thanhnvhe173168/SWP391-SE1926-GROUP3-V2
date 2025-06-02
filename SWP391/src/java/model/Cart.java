@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author Window 11
@@ -11,13 +13,15 @@ package model;
 public class Cart {
     private int cartID;
     private int userID;
+    private BigDecimal total;
 
     // Constructors
     public Cart() {}
 
-    public Cart(int cartID, int userID) {
+    public Cart(int cartID, int userID, BigDecimal total) {
         this.cartID = cartID;
         this.userID = userID;
+        this.total = total;
     }
 
     // Getters and Setters
@@ -35,6 +39,14 @@ public class Cart {
 
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
 }

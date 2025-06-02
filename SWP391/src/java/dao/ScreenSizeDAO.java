@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao;
-
 import config.ConnectDB;
 import model.ScreenSize;
 import java.sql.PreparedStatement;

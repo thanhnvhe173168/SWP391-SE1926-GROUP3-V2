@@ -5,14 +5,15 @@
 package dao;
 
 import config.ConnectDB;
+import model.Brand;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import model.Brand;
-
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
- * @author Admin
+ * @author Window 11
  */
 public class BrandDAO extends ConnectDB {
 
@@ -105,6 +106,5 @@ public class BrandDAO extends ConnectDB {
         }
         return n;
     }
-    
-    
 }
+
