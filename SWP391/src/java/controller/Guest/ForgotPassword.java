@@ -68,7 +68,6 @@ public class ForgotPassword extends HttpServlet {
         UserDAO userDao = new UserDAO();
         String email = request.getParameter("email");
         User user = userDao.checkExistUser(email);
-        System.out.print(user);
         if (user == null) {
             request.setAttribute("error", "Email không tồn tại");
             request.getRequestDispatcher("/guest/ForgotPassword.jsp").forward(request, response);
