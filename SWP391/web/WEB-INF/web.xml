@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <servlet>
-        <servlet-name>CartSeverlet</servlet-name>
-        <servlet-class>controller.CartController.CartSeverlet</servlet-class>
+        <servlet-name>Cart</servlet-name>
+        <servlet-class>controller.CartController.Cart</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>OrderSuccess</servlet-name>
-        <servlet-class>controller.OrderController.OrderSuccess</servlet-class>
+        <servlet-name>AddtoCart</servlet-name>
+        <servlet-class>Laptop.AddtoCart</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>CartSeverlet</servlet-name>
-        <url-pattern>/CartSeverlet</url-pattern>
-    </servlet-mapping>
-    <!-- AddToCart -->
     <servlet>
         <servlet-name>AddToCart</servlet-name>
         <servlet-class>controller.CartController.AddToCart</servlet-class>
@@ -34,69 +29,27 @@
         <servlet-class>controller.UserController.ViewerUser</servlet-class>
     </servlet>
     <servlet-mapping>
+        <servlet-name>Cart</servlet-name>
+        <url-pattern>/cart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>AddToCart</servlet-name>
-        <url-pattern>/AddToCart</url-pattern>
-    </servlet-mapping>
-    <!-- QuantityChange -->
-    <servlet>
-        <servlet-name>QuantityChange</servlet-name>
-        <servlet-class>controller.CartController.QuantityChange</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>QuantityChange</servlet-name>
-        <url-pattern>/QuantityChange</url-pattern>
-    </servlet-mapping>
-    <!-- RemoveFromCart -->
-    <servlet>
-        <servlet-name>RemoveFromCart</servlet-name>
-        <servlet-class>controller.CartController.RemoveFromCart</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>RemoveFromCart</servlet-name>
-        <url-pattern>/RemoveFromCart</url-pattern>
-    </servlet-mapping>
-    <!-- UppdateTotal -->
-    <servlet>
-        <servlet-name>UppdateTotal</servlet-name>
-        <servlet-class>controller.CartController.UppdateTotal</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>UppdateTotal</servlet-name>
-        <url-pattern>/UppdateTotal</url-pattern>
-    </servlet-mapping>
-    <!-- UppdateTotalwhenchange -->
-    <servlet>
-        <servlet-name>UppdateTotalwhenchange</servlet-name>
-        <servlet-class>controller.CartController.UppdateTotalwhenchange</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>UppdateTotalwhenchange</servlet-name>
-        <url-pattern>/UppdateTotalwhenchange</url-pattern>
-    </servlet-mapping>
-    <!-- Order -->
-    <servlet>
-        <servlet-name>Order</servlet-name>
-        <servlet-class>controller.OrderController.Order</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Order</servlet-name>
-        <url-pattern>/Order</url-pattern>
-    </servlet-mapping>
-    <!-- OrderItemSelect -->
-    <servlet>
-        <servlet-name>OrderItemSelect</servlet-name>
-        <servlet-class>controller.OrderController.OrderItemSelect</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>OrderItemSelect</servlet-name>
-        <url-pattern>/OrderItemSelect</url-pattern>
+        <url-pattern>/addtocart</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>OrderSuccess</servlet-name>
-        <url-pattern>/OrderSuccess</url-pattern>
+        <servlet-name>UserList</servlet-name>
+        <url-pattern>/userlist</url-pattern>
     </servlet-mapping>
-    <error-page>
-        <error-code>404</error-code>
-        <location>/error/404err.jsp</location>
-    </error-page>
+    <servlet-mapping>
+        <servlet-name>createUser</servlet-name>
+        <url-pattern>/createUser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getListUser</servlet-name>
+        <url-pattern>/getListUser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewerUser</servlet-name>
+        <url-pattern>/viewerUser</url-pattern>
+    </servlet-mapping>
 </web-app>
