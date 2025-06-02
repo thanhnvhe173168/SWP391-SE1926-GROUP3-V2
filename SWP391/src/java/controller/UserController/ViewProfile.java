@@ -8,15 +8,17 @@ package controller.UserController;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author linhd
+ * @author Admin
  */
-public class UserList extends HttpServlet {
+@WebServlet(name="ViewProfile", urlPatterns={"/viewProfile"})
+public class ViewProfile extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -27,19 +29,7 @@ public class UserList extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet UserList</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet UserList at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        request.getRequestDispatcher("/user/UserProfile.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -67,26 +57,6 @@ public class UserList extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         processRequest(request, response);
-            throws ServletException, IOException {
-        UserDAO userDao = new UserDAO();
-        String newPassword = request.getParameter("newPassword");
-        String hashPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(12));
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        User newUser = new User(
-                user.getUserID(),
-                user.getFullName(),
-                user.getEmail(),
-                user.getPhoneNumber(),
-                hashPassword,
-                user.getRegistrationDate(),
-                user.getRoleID(),
-                user.getStatusID()
-        );
-        int check = userDao.updateUser(newUser);
-        if (check > 0) {
-            response.sendRedirect("home");
-        }
     }
 
     /** 
