@@ -15,15 +15,17 @@ public class CartDetail {
     private Laptop laptop;
     private int quantity;
     private BigDecimal unitPrice;
+    private boolean IsSelect;
 
     public CartDetail() {
     }
 
-    public CartDetail(Cart cart, Laptop laptop, int quantity, BigDecimal unitPrice) {
+    public CartDetail(Cart cart, Laptop laptop, int quantity, BigDecimal unitPrice, boolean IsSelect) {
         this.cart = cart;
         this.laptop = laptop;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
+        this.IsSelect = IsSelect;
     }
 
     public Cart getCart() {
@@ -57,6 +59,16 @@ public class CartDetail {
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
+
+    public boolean isIsSelect() {
+        return IsSelect;
+    }
+
+    public void setIsSelect(boolean IsSelect) {
+        this.IsSelect = IsSelect;
+    }
+    
+    
 } 
 
 

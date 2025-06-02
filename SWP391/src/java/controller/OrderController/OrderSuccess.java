@@ -2,23 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.UserController;
+package controller.OrderController;
 
-import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import model.User;
 
 /**
  *
- * @author linhd
+ * @author Window 11
  */
-public class ViewerUser extends HttpServlet {
+public class OrderSuccess extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,26 +29,17 @@ public class ViewerUser extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String idParam = request.getParameter("id");
-        if (idParam == null || idParam.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Thiếu tham số id");
-            return;
-        }
-
-        try {
-            int userId = Integer.parseInt(idParam);
-            UserDAO dao = new UserDAO();
-            User user = dao.getUserByID(userId, request);
-
-            if (user == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy người dùng");
-                return;
-            }
-
-            request.setAttribute("user", user);
-            request.getRequestDispatcher("/admin/ViewUserDetail.jsp").forward(request, response);
-        } catch (NumberFormatException e) {
-            System.out.println("Number exception");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet OrderSuccess</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet OrderSuccess at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
     }
 
@@ -81,7 +69,7 @@ public class ViewerUser extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
     }
 
     /**
@@ -92,5 +80,6 @@ public class ViewerUser extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }
+    }// </editor-fold>
+
 }

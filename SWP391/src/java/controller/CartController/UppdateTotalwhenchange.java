@@ -1,29 +1,26 @@
-/*
+                                                                                                                            /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.Guest;
+package controller.CartController;
 
-import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
-import model.User;
-import org.mindrot.jbcrypt.BCrypt;
-import utils.EmailUtils;
-import utils.PasswordUtils;
-
+import dao.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import model.Cart;
+import model.CartDetail;
 /**
  *
- * @author Admin
+ * @author Window 11
  */
-@WebServlet(name = "ForgotPassword", urlPatterns = {"/forgotPassword"})
-public class ForgotPassword extends HttpServlet {
+public class UppdateTotalwhenchange extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,7 +33,19 @@ public class ForgotPassword extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet UppdateTotalwhenchange</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet UppdateTotalwhenchange at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -51,7 +60,20 @@ public class ForgotPassword extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/guest/ForgotPassword.jsp").forward(request, response);
+        CartDetailDAO cdDAO =new CartDetailDAO();
+        CartDAO cDAO = new CartDAO();
+        BigDecimal total =new BigDecimal("0");
+        Cart cart =new Cart();
+        cart = cDAO.GetCart(1);
+        List<CartDetail> listCart=cdDAO.ListCart(1);
+        for(CartDetail cd : listCart){
+            if(cd.isIsSelect()==true){
+                total=total.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
+            }
+        }
+        cart.setTotal(total);
+        cDAO.uppdateTotal(1, total);
+        request.getRequestDispatcher("CartSeverlet").forward(request, response);
     }
 
     /**
@@ -65,38 +87,7 @@ public class ForgotPassword extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UserDAO userDao = new UserDAO();
-        String email = request.getParameter("email");
-        User user = userDao.checkExistUser(email);
-        if (user == null) {
-            request.setAttribute("error", "Email không tồn tại");
-            request.getRequestDispatcher("/guest/ForgotPassword.jsp").forward(request, response);
-            return;
-        }
-        String newPassword = PasswordUtils.generateRandomPassword();
-        String content = "<h3>Xin chào " + user.getFullName() + ",</h3>"
-                + "<p>Mật khẩu mới của bạn: " + newPassword + "</p>";
-        boolean checkSendMail = EmailUtils.sendEmail(user.getEmail(), "Reset mật khẩu", content);
-        if (!checkSendMail) {
-            request.setAttribute("error", "Gửi email thất bại. Vui lòng thử lại sau.");
-            request.getRequestDispatcher("/guest/ForgotPassword.jsp").forward(request, response);
-            return;
-        }
-        String hashPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(12));
-        User newUser = new User(
-                user.getUserID(),
-                user.getFullName(),
-                user.getEmail(),
-                user.getPhoneNumber(),
-                hashPassword,
-                user.getRegistrationDate(),
-                user.getRoleID(),
-                user.getStatusID()
-        );
-        int check = userDao.updateUser(newUser);
-        if (check > 0) {
-            response.sendRedirect("login");
-        }
+        processRequest(request, response);
     }
 
     /**
