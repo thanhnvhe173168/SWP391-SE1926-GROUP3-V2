@@ -2,11 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-<<<<<<<< HEAD:SWP391/src/java/controller/OrderController/OrderSuccess.java
 package controller.OrderController;
-========
-package controller.CartController;
->>>>>>>> main:SWP391/src/java/controller/CartController/ShowProdcut.java
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -38,7 +34,7 @@ public class OrderSuccess extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OrderSuccess</title>");            
+            out.println("<title>Servlet OrderSuccess</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet OrderSuccess at " + request.getContextPath() + "</h1>");
@@ -73,7 +69,7 @@ public class OrderSuccess extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
     /**

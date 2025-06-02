@@ -1,4 +1,4 @@
-/*
+                                                                                                                            /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
@@ -10,11 +10,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.*;
 import dao.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import model.Cart;
+import model.CartDetail;
 /**
  *
  * @author Window 11
