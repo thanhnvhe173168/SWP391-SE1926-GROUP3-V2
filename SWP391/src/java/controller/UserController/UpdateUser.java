@@ -18,8 +18,8 @@ import model.User;
  *
  * @author linhd
  */
-@WebServlet(name = "createUser", urlPatterns = {"/admin/createUser"})
-public class createUser extends HttpServlet {
+@WebServlet(name = "UpdateUser", urlPatterns = {"/updateUser"})
+public class UpdateUser extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +38,10 @@ public class createUser extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet createUser</title>");
+            out.println("<title>Servlet UpdateUser</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet createUser at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateUser at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,9 +57,30 @@ public class createUser extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        String userID_raw = request.getParameter("userID");
+
+        try {
+            int userID = Integer.parseInt(userID_raw);
+            UserDAO userDAO = new UserDAO();
+            User user = userDAO.getUserByID(userID);
+
+            if (user != null) {
+                request.setAttribute("user", user);
+                request.getRequestDispatcher("/admin/UpdateUser.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("getListUser"); // không tìm thấy → quay lại danh sách
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Lỗi chuyển đổi userID: " + e.getMessage());
+            response.sendRedirect("getListUser");
+        }
     }
 
     /**
@@ -73,35 +94,30 @@ public class createUser extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String fullName = request.getParameter("fullName");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String phoneNumber = request.getParameter("phoneNumber");
-        int roleID = Integer.parseInt(request.getParameter("roleID"));
-        int statusID = Integer.parseInt(request.getParameter("statusID"));
 
-        UserDAO dao = new UserDAO();
-        if (dao.checkExistUser(email) != null) {
-            request.setAttribute("error", "Email already exists");
-            request.getRequestDispatcher("/admin/CreateUser.jsp").forward(request, response);
-            return;
-        }
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
-        User newUser = new User();
-        newUser.setFullName(fullName);
-        newUser.setEmail(email);
-        newUser.setPassword(password);
-        newUser.setPhoneNumber(phoneNumber);
-        newUser.setRoleID(roleID);
-        newUser.setStatusID(statusID);
+        UserDAO userDAO = new UserDAO();
 
-        int result = dao.createUser(newUser);
-        if (result > 0) {
-            response.sendRedirect("getListUser");
-        } else {
-            request.setAttribute("error", "Lỗi khi thêm người dùng mới");
-            request.getRequestDispatcher("/admin/CreateUser.jsp").forward(request, response);
+        try {
+            int userId = Integer.parseInt(request.getParameter("userID"));
+            int roleId = Integer.parseInt(request.getParameter("roleID"));
+            int statusId = Integer.parseInt(request.getParameter("statusID"));
 
+            int result = userDAO.updateUserAd(userId, roleId, statusId);
+
+            if (result > 0) {
+                response.sendRedirect("getListUser"); // Thành công → quay lại danh sách
+            } else {
+                request.setAttribute("message", "Cập nhật thất bại.");
+                User user = userDAO.getUserByID(userId);
+                request.setAttribute("user", user);
+                request.getRequestDispatcher("/admin/UpdateUser.jsp").forward(request, response);
+            }
+        } catch (NumberFormatException e) {
+            request.setAttribute("message", "Dữ liệu không hợp lệ.");
+            request.getRequestDispatcher("/admin/UpdateUser.jsp").forward(request, response);
         }
     }
 

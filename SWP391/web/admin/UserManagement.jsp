@@ -149,17 +149,17 @@
                 <option value="2" ${param.status == '2' ? 'selected' : ''}>Đã khóa</option>
             </select>
             <button type="submit">Tìm kiếm</button>
-            <button type="button" onclick="location.href = 'addUser.jsp'">+ Thêm Người dùng Mới</button>
+            <button type="button" onclick="location.href = 'admin/CreateUser.jsp'">+ Thêm Người dùng Mới</button>
         </form>
 
         <table>
             <thead>
                 <tr>
                     <th>User ID</th>
-                    <th>Họ và tên</th>
-                    <th>Vai trò</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
+                    <th>Full name</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -188,9 +188,10 @@
                             </span>
                         </td>
                         <td class="actions">
-                            <a href="viewerUser?userID=${o.userID}">Xem</a>
-                            <a href="EditUserServlet?userID=${o.userID}">Chỉnh sửa</a>
-                            <a href="javascript:void(0);" onclick="confirmDelete(${o.userID})">Xóa</a>
+                            <a href="viewerUser?id=${o.userID}">View</a>
+                            <a href="updateUser?userID=${o.userID}">Edit</a>
+                            <a href="deleteUser?uid=${o.userID}">Delete</a>
+
                         </td>
                     </tr>
                 </c:forEach>
