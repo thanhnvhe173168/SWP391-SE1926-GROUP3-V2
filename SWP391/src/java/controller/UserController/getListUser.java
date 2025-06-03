@@ -10,7 +10,7 @@ import model.User;
 import java.io.IOException;
 import java.util.List;
 
-
+@WebServlet(name = "getListUser", urlPatterns = {"/admin/getListUser"})
 public class getListUser extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
