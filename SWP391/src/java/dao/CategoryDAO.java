@@ -8,6 +8,8 @@ import config.ConnectDB;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import model.Category;
 
 /**
@@ -104,5 +106,40 @@ public class CategoryDAO extends ConnectDB {
             e.printStackTrace();
         }
         return n;
+    }
+    
+    public List<Category> AllCategory(){
+        List<Category> list=new ArrayList();
+        String sql= "select * from category";
+        try{
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs=st.executeQuery();
+            while(rs.next()){
+                Category ca=new Category();
+                ca.setCategoryID(rs.getInt("CategoryID"));
+                ca.setCategoryName(rs.getString("CategoryName"));
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+    
+     public Category GetCategory(int cid){
+        Category ca=new Category();
+        String sql= "select * from category where categoryid=?";
+        try{
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, cid);
+            ResultSet rs=st.executeQuery();
+            while(rs.next()){
+                
+                ca.setCategoryID(rs.getInt("CategoryID"));
+                ca.setCategoryName(rs.getString("CategoryName"));
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return ca;
     }
 }

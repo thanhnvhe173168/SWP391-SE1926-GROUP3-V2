@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao;
-
 import config.ConnectDB;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Laptop;
-
 /**
  *
  * @author Window 11
@@ -47,7 +45,7 @@ public class LaptopDAO extends ConnectDB {
                 laptop.setStock(rs.getInt("Stock"));
                 laptop.setWarrantyPeriod(rs.getString("WarrantyPeriod"));
             }
-        } catch (SQLException e) {
+        }catch(SQLException e){
             System.out.println(e.getMessage());
         }
         return laptop;
