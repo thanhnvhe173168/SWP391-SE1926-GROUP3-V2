@@ -60,7 +60,7 @@
                             <a class="nav-link" href="viewProfile"><%=user.getFullName()%></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">Đăng xuất</a>
+                            <a class="nav-link" href="logout">Đăng xuất</a>
                         </li>
                         <%} else {%>      
                         <li class="nav-item">

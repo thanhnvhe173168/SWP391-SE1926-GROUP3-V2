@@ -2,11 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.Guest;
+package controller.UserController;
 
-import dao.UserDAO;
-import enums.AccountStatusEnum;
-import enums.RoleEnum;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,15 +11,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.User;
-import org.mindrot.jbcrypt.BCrypt;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "Register", urlPatterns = {"/register"})
-public class Register extends HttpServlet {
+@WebServlet(name = "Logout", urlPatterns = {"/logout"})
+public class Logout extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,6 +31,9 @@ public class Register extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        session.removeAttribute("user");
+        response.sendRedirect("home");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -49,7 +48,7 @@ public class Register extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/guest/Register.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -63,30 +62,7 @@ public class Register extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UserDAO userDao = new UserDAO();
-        String fullName = request.getParameter("fullName");
-        String email = request.getParameter("email");
-        String phoneNumber = request.getParameter("phoneNumber");
-        String password = request.getParameter("password");
-        User checkExist = userDao.checkExistUser(email);
-        if (checkExist != null) {
-            request.setAttribute("message", "Email đã tồn tại");
-            request.getRequestDispatcher("/guest/Register.jsp").forward(request, response);
-            return;
-        }
-        String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
-        User newUser = new User(
-                fullName, 
-                email, 
-                phoneNumber, 
-                hashPassword, 
-                RoleEnum.CUSTOMER.getRole(), 
-                AccountStatusEnum.ACTIVE.getAccountStatus()
-        );
-        int check = userDao.createUser(newUser);
-        if (check > 0) {
-            response.sendRedirect("login");
-        }
+        processRequest(request, response);
     }
 
     /**
