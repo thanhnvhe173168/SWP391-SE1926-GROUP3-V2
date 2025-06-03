@@ -7,14 +7,20 @@ package controller.OrderController;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import dao.*;
+import model.*;
 
 /**
  *
  * @author Window 11
  */
+@WebServlet(name = "OrderSuccess", urlPatterns = {"/OrderSuccess"})
 public class OrderSuccess extends HttpServlet {
 
     /**
@@ -69,6 +75,31 @@ public class OrderSuccess extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        VoucherDAO voudao = new VoucherDAO();
+        PaymentMethodDAO paydao = new PaymentMethodDAO();
+        OrderDAO oddao = new OrderDAO();
+        String voucher = request.getParameter("voucher");
+        String shipid_raw = request.getParameter("chooseway");
+        String address = request.getParameter("address");
+        String note = request.getParameter("note");
+        String phoneNumber = request.getParameter("PhoneNumber");
+        String paymentmethod = request.getParameter("payment");
+        String total_raw = request.getParameter("totalprice");
+        String[] list_id=request.getParameterValues("id");
+        try {
+            int shipid = Integer.parseInt(shipid_raw);
+            int voucherid = voudao.GetIDbyCode(voucher);
+            int payid = paydao.GetPaymentIDbyMethod(paymentmethod);
+            float total = Float.parseFloat(total_raw);
+            Order od = new Order(1, LocalDate.now(), shipid, voucherid, payid, phoneNumber, BigDecimal.valueOf(total), address, note, 5);
+            oddao.uppdateorder(od);
+            
+            request.setAttribute("list_id", list_id);
+            request.getRequestDispatcher("OrderDetailServlet").forward(request, response);
+            
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
 
     }
 

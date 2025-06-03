@@ -34,7 +34,7 @@ public class FeeShipDAO extends ConnectDB {
 
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return listfeeship;
     }
@@ -49,8 +49,24 @@ public class FeeShipDAO extends ConnectDB {
             fee = rs.getBigDecimal("fee");
         }
         catch(SQLException e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return fee;
+    }
+    public int GetIDbyWay(String way){
+        String sql="select * from ShipFee where Descriptions=?";
+        int ID=0;
+        try{
+        PreparedStatement st=connect.prepareStatement(sql);
+        st.setNString(1, way);
+        ResultSet rs=st.executeQuery();
+        while(rs.next()){
+            ID=rs.getInt("ShipFeeID");
+        }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return ID;
     }
 }

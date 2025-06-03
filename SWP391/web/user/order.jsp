@@ -144,6 +144,7 @@
                 List<Voucher> listvoucher = vdao.GetListVoucher();
                 request.setAttribute("listfs", listfs);
                 request.setAttribute("listvoucher", listvoucher);
+                
         %>
     </head>
     <body>
@@ -162,14 +163,15 @@
 
                 <c:forEach var="item" items="${listorderings}">
                     <tr>
+                        <input type="hidden" name="id" value="${item.getLaptop().getLaptopID()}" />
                         <td><button type="button" onclick="window.location.href = 'LaptopInfo?id=${item.getLaptop().getLaptopID()}'"><img src="images/${item.laptop.imageURL}" width="100" alt="${item.laptop.laptopName}" /></button></td>
                         <td>${item.laptop.laptopName}</td>
                         <td><fmt:formatNumber value="${item.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
                         <td>
-                            <button type="button" onclick="window.location.href = 'QuantityChange?action=dec&id=${item.getLaptop().getLaptopID()}'">-</button>
+
 
                             ${item.quantity}
-                            <button type="button" onclick="window.location.href = 'QuantityChange?action=inc&id=${item.getLaptop().getLaptopID()}'">+</button>
+
 
                         </td>
                         <td><fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ</td>
@@ -239,6 +241,7 @@
                 <tr class="total-row">
                     <td colspan="1"><strong>Tổng tiền:</strong></td>
                     <td colspan="2" id="totalDisplay"><strong></strong></td>
+                <input type="hidden" name="totalprice" value="${finalTotal}" />
                 </tr>
                 <tr>
                     <td colspan="3"><button type="submit"><strong>Đặt hàng</strong></button></td>
@@ -257,45 +260,48 @@
             }
         %>
         <script>
-    function updateTotal() {
-        const totalProduct = parseFloat(document.getElementById("totalProductPrice").value) || 0;
+            function updateTotal() {
+                const totalProduct = parseFloat(document.getElementById("totalProductPrice").value) || 0;
 
-        // Lấy phí ship
-        const selectShip = document.getElementById("choosewaySelect");
-        const selectedShipOption = selectShip.options[selectShip.selectedIndex];
-        const fee = parseFloat(selectedShipOption?.getAttribute("data-fee")) || 0;
-        document.getElementById("shipFeeDisplay").innerText = fee.toLocaleString() + " VNĐ";
+                // Lấy phí ship
+                const selectShip = document.getElementById("choosewaySelect");
+                const selectedShipOption = selectShip.options[selectShip.selectedIndex];
+                const fee = parseFloat(selectedShipOption?.getAttribute("data-fee")) || 0;
+                document.getElementById("shipFeeDisplay").innerText = fee.toLocaleString() + " VNĐ";
 
-        // Lấy discount từ voucher
-        const voucherSelect = document.getElementById("voucherSelect");
-        const selectedVoucherIndex = voucherSelect.selectedIndex;
-        let discount = 0;
+                // Lấy discount từ voucher
+                const voucherSelect = document.getElementById("voucherSelect");
+                const selectedVoucherIndex = voucherSelect.selectedIndex;
+                let discount = 0;
 
-        if (selectedVoucherIndex > 0) {
-            const selectedVoucherOption = voucherSelect.options[selectedVoucherIndex];
-            discount = parseFloat(selectedVoucherOption.getAttribute("data-discount")) || 0;
+                if (selectedVoucherIndex > 0) {
+                    const selectedVoucherOption = voucherSelect.options[selectedVoucherIndex];
+                    discount = parseFloat(selectedVoucherOption.getAttribute("data-discount")) || 0;
 
-            if (discount === 0) {
-                discount = fee; // nếu là freeship
+                    if (discount === 0) {
+                        discount = fee; // nếu là freeship
+                    }
+                    document.getElementById("discountDisplay").innerText = discount.toLocaleString() + " VNĐ";
+                } else {
+                    document.getElementById("discountDisplay").innerText = "";
+                }
+
+                // Tính tổng tiền cuối cùng
+                const finalTotal = totalProduct + fee - discount;
+                document.getElementById("totalDisplay").innerHTML = "<strong>" + finalTotal.toLocaleString() + " VNĐ</strong>";
+
+                document.querySelector('input[name="totalprice"]').value = finalTotal;
+
             }
-            document.getElementById("discountDisplay").innerText = discount.toLocaleString() + " VNĐ";
-        } else {
-            document.getElementById("discountDisplay").innerText = "";
-        }
 
-        // Tính tổng tiền cuối cùng
-        const finalTotal = totalProduct + fee - discount;
-        document.getElementById("totalDisplay").innerHTML = "<strong>" + finalTotal.toLocaleString() + " VNĐ</strong>";
-    }
+            function showShipFee() {
+                updateTotal();
+            }
 
-    function showShipFee() {
-        updateTotal();
-    }
-
-    function showdiscount() {
-        updateTotal();
-    }
-</script>
+            function showdiscount() {
+                updateTotal();
+            }
+        </script>
 
 
     </body>

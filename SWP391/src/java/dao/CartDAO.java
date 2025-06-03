@@ -41,4 +41,22 @@ public class CartDAO extends ConnectDB{
         System.out.println(e.getMessage());
     }
     }
+    
+    public Cart GetCartByUserID(int UserID){
+        Cart cart=new Cart();
+        String sql="select * from Cart where UserID=?";
+        try{
+            PreparedStatement st=connect.prepareStatement(sql);
+            st.setInt(1, UserID);
+            ResultSet rs=st.executeQuery();
+            while(rs.next()){
+                cart.setCartID(rs.getInt("CartID"));
+                cart.setUserID(UserID);
+                cart.setTotal(rs.getBigDecimal("total"));
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return cart;
+    }
 }
