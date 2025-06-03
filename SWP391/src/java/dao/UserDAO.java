@@ -99,7 +99,6 @@ public class UserDAO extends ConnectDB {
         String sql = "Insert into Users(FullName, Email, PhoneNumber, Password, RoleID, StatusID) values (?, ?, ?, ?, ?, ?)";
         int n = 0;
         try {
-
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setString(1, u.getFullName());
             ps.setString(2, u.getEmail());
