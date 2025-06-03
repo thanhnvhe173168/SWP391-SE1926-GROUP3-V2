@@ -15,28 +15,47 @@ public class Order {
     private int orderID;
     private int userID;
     private LocalDate orderDate;
-    private BigDecimal shippingFee;
+    private int shipfeeID;
+    private int voucherID;
+    private int paymentmethodID;
+    private String phoneNumber;
     private BigDecimal totalAmount;
     private String address;
     private String note;
     private int statusID;
 
-    // Constructors
-    public Order() {}
+    public Order() {
+    }
 
-    public Order(int orderID, int userID, LocalDate orderDate, BigDecimal shippingFee,
-                 BigDecimal totalAmount, String address, String note, int statusID) {
+    public Order(int orderID, int userID, LocalDate orderDate, int shipfeeID, int voucherID, int paymentmethodID, String phoneNumber, BigDecimal totalAmount, String address, String note, int statusID) {
         this.orderID = orderID;
         this.userID = userID;
         this.orderDate = orderDate;
-        this.shippingFee = shippingFee;
+        this.shipfeeID = shipfeeID;
+        this.voucherID = voucherID;
+        this.paymentmethodID = paymentmethodID;
+        this.phoneNumber = phoneNumber;
         this.totalAmount = totalAmount;
         this.address = address;
         this.note = note;
         this.statusID = statusID;
     }
 
-    // Getters and Setters
+    public Order(int userID, LocalDate orderDate, int shipfeeID, int voucherID, int paymentmethodID, String phoneNumber, BigDecimal totalAmount, String address, String note, int statusID) {
+        this.userID = userID;
+        this.orderDate = orderDate;
+        this.shipfeeID = shipfeeID;
+        this.voucherID = voucherID;
+        this.paymentmethodID = paymentmethodID;
+        this.phoneNumber = phoneNumber;
+        this.totalAmount = totalAmount;
+        this.address = address;
+        this.note = note;
+        this.statusID = statusID;
+    }
+    
+    
+
     public int getOrderID() {
         return orderID;
     }
@@ -61,12 +80,36 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public BigDecimal getShippingFee() {
-        return shippingFee;
+    public int getShipfeeID() {
+        return shipfeeID;
     }
 
-    public void setShippingFee(BigDecimal shippingFee) {
-        this.shippingFee = shippingFee;
+    public void setShipfeeID(int shipfeeID) {
+        this.shipfeeID = shipfeeID;
+    }
+
+    public int getVoucherID() {
+        return voucherID;
+    }
+
+    public void setVoucherID(int voucherID) {
+        this.voucherID = voucherID;
+    }
+
+    public int getPaymentmethodID() {
+        return paymentmethodID;
+    }
+
+    public void setPaymentmethodID(int paymentmethodID) {
+        this.paymentmethodID = paymentmethodID;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public BigDecimal getTotalAmount() {
@@ -74,9 +117,7 @@ public class Order {
     }
 
     public void setTotalAmount(BigDecimal totalAmount) {
-        if (totalAmount != null && totalAmount.compareTo(BigDecimal.ZERO) >= 0) {
-            this.totalAmount = totalAmount;
-        }
+        this.totalAmount = totalAmount;
     }
 
     public String getAddress() {
@@ -103,5 +144,10 @@ public class Order {
         this.statusID = statusID;
     }
 
-}
+   
+    
+    
+    
 
+    
+}

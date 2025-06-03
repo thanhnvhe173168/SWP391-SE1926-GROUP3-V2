@@ -1,26 +1,26 @@
-    /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package controller.OrderController;
 
-import dao.*;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import model.*;
+import dao.*;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  *
  * @author Window 11
  */
-public class Order extends HttpServlet {
+@WebServlet(name = "OrderDetailServlet", urlPatterns = {"/OrderDetailServlet"})
+public class OrderDetailServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,18 +34,32 @@ public class Order extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Order</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet Order at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        String[] list_id = (String[]) request.getAttribute("list_id");
+        OrderDetail ord = new OrderDetail();
+        CartDetailDAO cddao = new CartDetailDAO();
+        OrderDAO odao = new OrderDAO();
+        OrderDetailDAO orddao = new OrderDetailDAO();
+        CartDAO cdao=new CartDAO();
+        for (String id : list_id) {
+            CartDetail cd = cddao.GetCartDetail(Integer.parseInt(id));
+
+            ord.setOrderID(odao.GetLastOrderID());
+            ord.setLaptopID(Integer.parseInt(id));
+            ord.setUnitPrice(cd.getUnitPrice());
+            ord.setQuantity(cd.getQuantity());
+            orddao.addorderdetail(ord);
+            cddao.Remove(cd);
         }
+        Cart cart = cdao.GetCartByUserID(1);
+        List<CartDetail> listcard = cddao.ListCart(cart.getCartID());
+        BigDecimal totalcart = new BigDecimal(0);
+        for (CartDetail cd : listcard) {
+            if (cd.isIsSelect() == true) {
+                totalcart = totalcart.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
+            }
+        }
+        cdao.uppdateTotal(cart.getCartID(), totalcart);
+        response.sendRedirect("user/Orderdetail.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -60,25 +74,7 @@ public class Order extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        String id_raw=request.getParameter("id");
-        CartDetailDAO cartdetaildao = new CartDetailDAO();
-        UserDAO userdao = new UserDAO();
-        List<CartDetail> listordering =new ArrayList<>();
-        CartDetail cd =new CartDetail();
-        try{
-           int id=Integer.parseInt(id_raw);
-           cd=cartdetaildao.GetCartDetail(id);
-           listordering.add(cd);
-        }
-        catch(NumberFormatException e){
-            System.out.println(e.getMessage());
-        }
-        BigDecimal total =new BigDecimal("0");
-        total=cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity()));
-        request.setAttribute("total", total);
-        request.setAttribute("listordering", listordering);
-        request.getRequestDispatcher("user/order.jsp").forward(request, response);
+        
     }
 
     /**
@@ -93,7 +89,6 @@ public class Order extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-       
     }
 
     /**

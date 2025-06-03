@@ -28,8 +28,26 @@ public class PaymentMethodDAO extends ConnectDB{
                 list.add(pm);
             }
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return list;
     }
+    
+    public int GetPaymentIDbyMethod(String meth){
+        int id=1;
+        String sql="select * from paymentmethod where methodname=?";
+                try{
+                    PreparedStatement st=connect.prepareStatement(sql);
+                    st.setNString(1, meth);
+                    ResultSet rs=st.executeQuery();
+                    while(rs.next()){
+                    id=rs.getInt("Paymentmethodid");
+                    }
+                }
+                catch(SQLException e){
+                    e.printStackTrace();
+                }
+                return id;
+    }
 }
+

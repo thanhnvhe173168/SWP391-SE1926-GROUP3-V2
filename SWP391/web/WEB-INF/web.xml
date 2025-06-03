@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <servlet>
-        <servlet-name>Cart</servlet-name>
-        <servlet-class>controller.CartController.Cart</servlet-class>
+        <servlet-name>CartSeverlet</servlet-name>
+        <servlet-class>controller.CartController.CartSeverlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AddtoCart</servlet-name>
@@ -29,8 +29,8 @@
         <servlet-class>controller.UserController.ViewerUser</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Cart</servlet-name>
-        <url-pattern>/cart</url-pattern>
+        <servlet-name>CartSeverlet</servlet-name>
+        <url-pattern>/CartSeverlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AddToCart</servlet-name>

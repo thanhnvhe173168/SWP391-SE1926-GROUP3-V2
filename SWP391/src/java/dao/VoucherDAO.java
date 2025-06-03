@@ -16,42 +16,57 @@ import model.*;
  * @author Window 11
  */
 public class VoucherDAO extends ConnectDB{
-    public List<Voucher> GetListVoucher(){
-        List<Voucher> listvoucher =new ArrayList<>();
-        String sql="select * from Voucher";
-        try{
-            PreparedStatement st=connect.prepareStatement(sql);
-            ResultSet rs=st.executeQuery();
-            while(rs.next()){
-                Voucher v=new Voucher();
+    public List<Voucher> GetListVoucher() {
+        List<Voucher> listvoucher = new ArrayList<>();
+        String sql = "select * from Voucher";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Voucher v = new Voucher();
                 v.setVoucherID(rs.getInt("voucherID"));
                 v.setVouchercode(rs.getString("vouchercode"));
                 v.setDiscount(rs.getBigDecimal("discount"));
                 v.setQuantity(rs.getInt("quantity"));
                 listvoucher.add(v);
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return listvoucher;
     }
-    
-    public BigDecimal GetdisountbyID(int id){
-        BigDecimal discount =new BigDecimal(0);
-        String sql="select discount from voucher where voucherid=?";
-        try{
-            PreparedStatement st=connect.prepareStatement(sql);
+
+    public BigDecimal GetdisountbyID(int id) {
+        BigDecimal discount = new BigDecimal(0);
+        String sql = "select discount from voucher where voucherid=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
             st.setInt(1, id);
-            ResultSet rs=st.executeQuery();
-            discount=rs.getBigDecimal("discount");
-                
-            
-        }
-        catch(SQLException e){
+            ResultSet rs = st.executeQuery();
+            discount = rs.getBigDecimal("discount");
+
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return discount;
-                
+
+    }
+
+    public int GetIDbyCode(String code) {
+        int id = 0;
+        String sql = "select * from voucher where vouchercode=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setString(1, code);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                id = rs.getInt("voucherID");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
+
     }
     
 }

@@ -162,7 +162,7 @@
                         </c:forEach>
 
                         <tr class="total-row">
-                            <td colspan="1"><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'OrderItemSelect?'">Mua</button></td>
+                            <td colspan="1"><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'OrderItemSelect?'">Mua nhiều</button></td>
                             <td colspan="4"><strong>Tổng cộng:</strong></td>
                             <td colspan="1"><strong><fmt:formatNumber value="<%= cart.getTotal()%>" type="number" groupingUsed="true"/> VNĐ</strong></td>
 

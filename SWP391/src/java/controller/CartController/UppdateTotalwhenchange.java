@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dao.*;
+import jakarta.servlet.annotation.WebServlet;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import model.CartDetail;
  *
  * @author Window 11
  */
+@WebServlet(name = "UppdateTotalwhenchange", urlPatterns = {"/UppdateTotalwhenchange"})
 public class UppdateTotalwhenchange extends HttpServlet {
 
     /**
