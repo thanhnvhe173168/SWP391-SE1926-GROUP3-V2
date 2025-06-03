@@ -71,37 +71,28 @@ public class UserDAO extends ConnectDB {
         return list;
     }
 
-    //Hàm hiển thị ở nút View 
-    public User getUserByID(int id, HttpServletRequest request) {
-        User user = null;
-        String sql = "SELECT * from Users u\n"
-                + "join Roles r on u.RoleID = r.RoleID\n"
-                + "join Statuses s on s.StatusID = u.StatusID\n"
-                + "where u.UserID=?";
-        try {
-            PreparedStatement ps = connect.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            ps.setInt(1, id);
-            if (rs.next()) {
-                user = new User();
-                user.setUserID(rs.getInt("UserID"));
-                user.setFullName(rs.getString("FullName"));
-                user.setEmail(rs.getString("Email"));
-                user.setPhoneNumber(rs.getString("PhoneNumber"));
-                user.setPassword(rs.getString("Password"));
-                user.setRegistrationDate(rs.getDate("Date"));
-                user.setRoleID(rs.getInt("RoleID"));
-                user.setStatusID(rs.getInt("StatusID"));
-
-                // Đặt RoleName và StatusName để hiện lên JSP
-                request.setAttribute("roleName", rs.getString("RoleName"));
-                request.setAttribute("statusName", rs.getString("StatusName"));
-            }
-        } catch (Exception e) {
-            System.out.println("getUserByID" + e.getMessage());
+    public User getUserByID(int userID) {
+    User user = null;
+    String sql = "SELECT * FROM Users WHERE UserID = ?";
+    try {
+        PreparedStatement ps = connect.prepareStatement(sql);
+        ps.setInt(1, userID);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            user = new User();
+            user.setUserID(rs.getInt("UserID"));
+            user.setFullName(rs.getString("FullName"));
+            user.setEmail(rs.getString("Email"));
+            user.setRoleID(rs.getInt("RoleID"));
+            user.setStatusID(rs.getInt("StatusID"));
+            // add more fields if needed
         }
-        return user;
+    } catch (SQLException e) {
+        System.out.println("getUserByID: " + e.getMessage());
     }
+    return user;
+}
+    
 
     public int createUser(User u) {
 
@@ -123,6 +114,19 @@ public class UserDAO extends ConnectDB {
         return n;
     }
 
+    public int deleteUser(int uid) {
+        int n = 0;
+        String sql = "Delete from Users where UserID = ?";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, uid);
+            n = ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("deleteUser" + e.getMessage());
+        }
+        return n;
+    }
+
     public int updateUser(User u) {
         int n = 0;
         String sql = "update Users set FullName = ?, PhoneNumber = ?, Password = ?, StatusID = ? where UserID = ?";
@@ -138,6 +142,46 @@ public class UserDAO extends ConnectDB {
             e.printStackTrace();
         }
         return n;
+
     }
+
+    public int updateUserAd(int userID, int roleID, int statusID) {
+        int n = 0;
+        String sql = "UPDATE Users SET RoleID = ?, StatusID = ? WHERE UserID = ?";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, roleID);
+            ps.setInt(2, statusID);
+            ps.setInt(3, userID);
+            n = ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("updateUserAd: " + e.getMessage());
+        }
+        return n;
+    }
+
+    public User getUserByIDForView(int userID) {
+    User user = null;
+    String sql = "SELECT * FROM Users WHERE UserID = ?";
+    try {
+        PreparedStatement ps = connect.prepareStatement(sql);
+        ps.setInt(1, userID);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            user = new User();
+            user.setUserID(rs.getInt("UserID"));
+            user.setFullName(rs.getString("FullName"));
+            user.setEmail(rs.getString("Email"));
+            user.setPhoneNumber(rs.getString("PhoneNumber")); 
+            user.setPassword(rs.getString("Password"));      
+            user.setRegistrationDate(rs.getDate("RegistrationDate")); 
+            user.setRoleID(rs.getInt("RoleID"));
+            user.setStatusID(rs.getInt("StatusID"));
+        }
+    } catch (SQLException e) {
+        System.out.println("getUserByID: " + e.getMessage());
+    }
+    return user;
+}
 
 }

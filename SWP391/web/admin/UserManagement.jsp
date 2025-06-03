@@ -188,9 +188,10 @@
                             </span>
                         </td>
                         <td class="actions">
-                           <a href="viewerUser?id=${o.userID}">View</a>
-                            <a href="EditUserServlet?userID=${o.userID}">Edit</a>
-                            <a href="javascript:void(0);" onclick="confirmDelete(${o.userID})">Delete</a>
+                            <a href="viewerUser?id=${o.userID}">View</a>
+                            <a href="updateUser?userID=${o.userID}">Edit</a>
+                            <a href="deleteUser?uid=${o.userID}">Delete</a>
+
                         </td>
                     </tr>
                 </c:forEach>
