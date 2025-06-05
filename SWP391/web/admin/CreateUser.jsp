@@ -1,11 +1,8 @@
-<%-- 
-    Document   : CreateUser
-    Created on : May 31, 2025, 11:20:08 AM
-    Author     : linhd
---%>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%
+    String path = request.getContextPath();
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -65,7 +62,7 @@
     <h2>Thêm Người Dùng Mới</h2>
     
         <div class="form-container">
-        <form action="adduser" method="post">
+        <form action="<%=path%>/createUser" method="post">
             <div class="form-group">
                 <label for="fullName">Họ tên:</label>
                 <input type="text" id="fullName" name="fullName" value="${addU.fullName}" required>

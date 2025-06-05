@@ -12,14 +12,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.User;
 
 /**
  *
  * @author linhd
  */
-@WebServlet(name = "createUser", urlPatterns = {"/admin/createUser"})
-public class createUser extends HttpServlet {
+@WebServlet(name = "ViewerUser", urlPatterns = {"/viewerUser"})
+public class ViewerUser extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,18 +34,36 @@ public class createUser extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet createUser</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet createUser at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        // Kiểm tra quyền Admin
+        HttpSession session = request.getSession();
+        User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null || currentUser.getRoleID() != 1) {
+            request.setAttribute("error", "Bạn không có quyền truy cập, vui lòng đăng nhập bằng tài khoản admin");
+            request.getRequestDispatcher("/admin/ViewUserDetail.jsp").forward(request, response);
+            return;
         }
+        String idParam = request.getParameter("id");
+        if (idParam == null || idParam.isEmpty()) {
+            request.setAttribute("error", "Thiếu tham số ID người dùng");
+            request.getRequestDispatcher("/admin/ViewUserDetail.jsp").forward(request, response);
+            return;
+        }
+        try {
+            int userId = Integer.parseInt(idParam);
+            UserDAO dao = new UserDAO();
+            User user = dao.getUserByIDForView(userId);
+
+            if (user == null) {
+                request.setAttribute("error", "khong tim thay nguoi dung");
+            }else{
+                request.setAttribute("user", user);
+            }
+            request.getRequestDispatcher("/admin/ViewUserDetail.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.setAttribute("error", "ID nguoi dung khong hop le");
+            request.getRequestDispatcher("/admin/ViewUserDetail.jsp").forward(request, response);
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -73,36 +92,7 @@ public class createUser extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String fullName = request.getParameter("fullName");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String phoneNumber = request.getParameter("phoneNumber");
-        int roleID = Integer.parseInt(request.getParameter("roleID"));
-        int statusID = Integer.parseInt(request.getParameter("statusID"));
-
-        UserDAO dao = new UserDAO();
-        if (dao.checkExistUser(email) != null) {
-            request.setAttribute("error", "Email already exists");
-            request.getRequestDispatcher("/admin/CreateUser.jsp").forward(request, response);
-            return;
-        }
-
-        User newUser = new User();
-        newUser.setFullName(fullName);
-        newUser.setEmail(email);
-        newUser.setPassword(password);
-        newUser.setPhoneNumber(phoneNumber);
-        newUser.setRoleID(roleID);
-        newUser.setStatusID(statusID);
-
-        int result = dao.createUser(newUser);
-        if (result > 0) {
-            response.sendRedirect("getListUser");
-        } else {
-            request.setAttribute("error", "Lỗi khi thêm người dùng mới");
-            request.getRequestDispatcher("/admin/CreateUser.jsp").forward(request, response);
-
-        }
+        processRequest(request, response);
     }
 
     /**
