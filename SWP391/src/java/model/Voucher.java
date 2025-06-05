@@ -15,15 +15,17 @@ public class Voucher {
     private String vouchercode;
     private BigDecimal discount;
     private int quantity;
+    private String vouchertype;
     
     public Voucher() {
     }
 
-    public Voucher(int voucherID, String vouchercode, BigDecimal discount, int quantity) {
+    public Voucher(int voucherID, String vouchercode, BigDecimal discount, int quantity, String vouchertype) {
         this.voucherID = voucherID;
         this.vouchercode = vouchercode;
         this.discount = discount;
         this.quantity = quantity;
+        this.vouchertype = vouchertype;
     }
 
     public int getVoucherID() {
@@ -58,6 +60,15 @@ public class Voucher {
         this.quantity = quantity;
     }
 
+    public String getVouchertype() {
+        return vouchertype;
+    }
+
+    public void setVouchertype(String vouchertype) {
+        this.vouchertype = vouchertype;
+    }
+
     
+
     
 }

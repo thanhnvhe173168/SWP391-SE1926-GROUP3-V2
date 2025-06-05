@@ -198,7 +198,7 @@
                         <select name="voucher" id="voucherSelect" onchange="showdiscount()">
                             <option></option>
                             <c:forEach var="code" items="${listvoucher}">
-                                <option value="${code.vouchercode}" data-discount="${code.discount}">
+                                <option value="${code.vouchercode}" data-discount="${code.discount}" data-voutype="${code.vouchertype}">
                                     ${code.vouchercode}
                                 </option>
                             </c:forEach>
@@ -260,48 +260,52 @@
             }
         %>
         <script>
-            function updateTotal() {
-                const totalProduct = parseFloat(document.getElementById("totalProductPrice").value) || 0;
+    function updateTotal() {
+        const totalProduct = parseFloat(document.getElementById("totalProductPrice").value) || 0;
 
-                // Lấy phí ship
-                const selectShip = document.getElementById("choosewaySelect");
-                const selectedShipOption = selectShip.options[selectShip.selectedIndex];
-                const fee = parseFloat(selectedShipOption?.getAttribute("data-fee")) || 0;
-                document.getElementById("shipFeeDisplay").innerText = fee.toLocaleString() + " VNĐ";
+        // Lấy phí ship
+        const selectShip = document.getElementById("choosewaySelect");
+        const selectedShipOption = selectShip.options[selectShip.selectedIndex];
+        const fee = parseFloat(selectedShipOption?.getAttribute("data-fee")) || 0;
+        document.getElementById("shipFeeDisplay").innerText = fee.toLocaleString() + " VNĐ";
 
-                // Lấy discount từ voucher
-                const voucherSelect = document.getElementById("voucherSelect");
-                const selectedVoucherIndex = voucherSelect.selectedIndex;
-                let discount = 0;
+        // Lấy thông tin voucher
+        const voucherSelect = document.getElementById("voucherSelect");
+        const selectedVoucherOption = voucherSelect.options[voucherSelect.selectedIndex];
+        let discount = 0;
 
-                if (selectedVoucherIndex > 0) {
-                    const selectedVoucherOption = voucherSelect.options[selectedVoucherIndex];
-                    discount = parseFloat(selectedVoucherOption.getAttribute("data-discount")) || 0;
+        if (voucherSelect.selectedIndex > 0) {
+            const discountValue = parseFloat(selectedVoucherOption.getAttribute("data-discount")) || 0;
+            const voucherType = selectedVoucherOption.getAttribute("data-voutype");
 
-                    if (discount === 0) {
-                        discount = fee; // nếu là freeship
-                    }
-                    document.getElementById("discountDisplay").innerText = discount.toLocaleString() + " VNĐ";
-                } else {
-                    document.getElementById("discountDisplay").innerText = "";
-                }
-
-                // Tính tổng tiền cuối cùng
-                const finalTotal = totalProduct + fee - discount;
-                document.getElementById("totalDisplay").innerHTML = "<strong>" + finalTotal.toLocaleString() + " VNĐ</strong>";
-
-                document.querySelector('input[name="totalprice"]').value = finalTotal;
-
+            if (voucherType === "Giảm số tiền cố định") {
+                discount = discountValue;
+            } else if (voucherType === "Miễn phí ship") {
+                discount = fee;
+            } else if (voucherType === "Giảm %") {
+                discount = totalProduct * discountValue / 100;
             }
 
-            function showShipFee() {
-                updateTotal();
-            }
+            document.getElementById("discountDisplay").innerText = discount.toLocaleString() + " VNĐ";
+        } else {
+            document.getElementById("discountDisplay").innerText = "";
+        }
 
-            function showdiscount() {
-                updateTotal();
-            }
-        </script>
+        // Tính tổng tiền cuối cùng
+        const finalTotal = totalProduct + fee - discount;
+        document.getElementById("totalDisplay").innerHTML = "<strong>" + finalTotal.toLocaleString() + " VNĐ</strong>";
+        document.querySelector('input[name="totalprice"]').value = finalTotal;
+    }
+
+    function showShipFee() {
+        updateTotal();
+    }
+
+    function showdiscount() {
+        updateTotal();
+    }
+</script>
+
 
 
     </body>

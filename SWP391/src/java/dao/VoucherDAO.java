@@ -26,6 +26,7 @@ public class VoucherDAO extends ConnectDB{
                 Voucher v = new Voucher();
                 v.setVoucherID(rs.getInt("voucherID"));
                 v.setVouchercode(rs.getString("vouchercode"));
+                v.setVouchertype(rs.getString("VoucherType"));
                 v.setDiscount(rs.getBigDecimal("discount"));
                 v.setQuantity(rs.getInt("quantity"));
                 listvoucher.add(v);
