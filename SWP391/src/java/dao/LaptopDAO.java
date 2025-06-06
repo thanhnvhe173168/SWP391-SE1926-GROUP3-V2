@@ -3,13 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao;
+
 import config.ConnectDB;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Laptop;
+
 /**
  *
  * @author Window 11
@@ -45,7 +48,7 @@ public class LaptopDAO extends ConnectDB {
                 laptop.setStock(rs.getInt("Stock"));
                 laptop.setWarrantyPeriod(rs.getString("WarrantyPeriod"));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return laptop;
@@ -113,5 +116,17 @@ public class LaptopDAO extends ConnectDB {
             e.printStackTrace();
         }
         return n;
+    }
+
+    public void updateLaptopStock(int id, int quantity) {
+        String sql = "UPDATE Laptop SET stock = ? WHERE LaptopID = ?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, quantity);
+            st.setInt(2, id);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

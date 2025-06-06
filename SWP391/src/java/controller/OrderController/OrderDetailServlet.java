@@ -40,6 +40,7 @@ public class OrderDetailServlet extends HttpServlet {
         OrderDAO odao = new OrderDAO();
         OrderDetailDAO orddao = new OrderDetailDAO();
         CartDAO cdao=new CartDAO();
+        LaptopDAO ldao =new LaptopDAO();
         for (String id : list_id) {
             CartDetail cd = cddao.GetCartDetail(Integer.parseInt(id));
 
@@ -49,6 +50,7 @@ public class OrderDetailServlet extends HttpServlet {
             ord.setQuantity(cd.getQuantity());
             orddao.addorderdetail(ord);
             cddao.Remove(cd);
+            ldao.updateLaptopStock(Integer.parseInt(id), cd.getLaptop().getStock()-cd.getQuantity());
         }
         Cart cart = cdao.GetCartByUserID(1);
         List<CartDetail> listcard = cddao.ListCart(cart.getCartID());
@@ -59,7 +61,7 @@ public class OrderDetailServlet extends HttpServlet {
             }
         }
         cdao.uppdateTotal(cart.getCartID(), totalcart);
-        response.sendRedirect("user/Orderdetail.jsp");
+        response.sendRedirect("home");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

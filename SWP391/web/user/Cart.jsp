@@ -99,7 +99,7 @@
                 margin-top: 40px;
             }
 
-            button[onclick*='home.jsp'] {
+            button[onclick*='home'] {
                 background-color: #3498db;
                 color: white;
                 margin-bottom: 20px;
@@ -112,7 +112,7 @@
     </head>
     <body>
         <h2>Giỏ hàng</h2>
-        <button onclick="window.location.href = 'home.jsp'">Tiếp tục mua hàng</button>
+        <button onclick="window.location.href = 'home'">Tiếp tục mua hàng</button>
 
         <c:set var="listcartdetails" value="${sessionScope.listcartdetail}" />
 

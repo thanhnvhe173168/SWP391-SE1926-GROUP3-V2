@@ -12,6 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Đặt hàng thành công !!!!</h1>
+        <h1>Order Detail</h1>
+        
     </body>
 </html>
