@@ -70,4 +70,25 @@ public class VoucherDAO extends ConnectDB{
 
     }
     
+    public Voucher GetVoucherByID(int id) {
+        Voucher vou =new Voucher();
+        String sql = "select * from voucher where voucherid=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            while(rs.next()){
+                vou.setVoucherID(id);
+                vou.setVouchercode(rs.getNString("vouchercode"));
+                vou.setVouchertype(rs.getNString("VoucherType"));
+                vou.setDiscount(rs.getBigDecimal("discount"));
+                vou.setQuantity(rs.getInt("quantity"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vou;
+
+    }
 }

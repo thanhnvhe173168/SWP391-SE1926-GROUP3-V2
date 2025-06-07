@@ -25,14 +25,14 @@ public class OrderDetailDAO extends ConnectDB {
         try{
             PreparedStatement st=connect.prepareStatement(sql);
             st.setInt(1, ord.getOrderID());
-            st.setInt(2, ord.getLaptopID());
+            st.setInt(2, ord.getLaptop().getLaptopID());
             st.setInt(3, ord.getQuantity());
             st.setBigDecimal(4, ord.getUnitPrice());
             st.executeUpdate();
         }
         catch(SQLException e){
             e.printStackTrace();
-            System.out.println("SQL error: " + e.getMessage());
+         
         }
     }
 }

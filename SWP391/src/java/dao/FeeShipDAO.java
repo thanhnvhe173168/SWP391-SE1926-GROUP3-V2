@@ -69,4 +69,24 @@ public class FeeShipDAO extends ConnectDB {
         }
         return ID;
     }
+    
+    public FeeShip getFeeShipByID(int id){
+        String sql="select * from ShipFee where ShipFeeID=?";
+        FeeShip fs =new FeeShip();
+        try{
+            PreparedStatement st=connect.prepareStatement(sql);
+            st.setInt(1, id);
+            ResultSet rs=st.executeQuery();
+            while(rs.next()){
+                fs.setFeeShipID(id);
+                fs.setFee(rs.getBigDecimal("Fee"));
+                fs.setDes(rs.getNString("Descriptions"));
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return fs;
+    }
+   
 }

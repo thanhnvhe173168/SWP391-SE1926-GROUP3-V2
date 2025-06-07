@@ -78,6 +78,8 @@ public class OrderSuccess extends HttpServlet {
         VoucherDAO voudao = new VoucherDAO();
         PaymentMethodDAO paydao = new PaymentMethodDAO();
         OrderDAO oddao = new OrderDAO();
+        FeeShipDAO fsdao=new FeeShipDAO();
+        StatusDAO sdao=new StatusDAO();
         String voucher = request.getParameter("voucher");
         String shipid_raw = request.getParameter("chooseway");
         String address = request.getParameter("address");
@@ -91,7 +93,7 @@ public class OrderSuccess extends HttpServlet {
             int voucherid = voudao.GetIDbyCode(voucher);
             int payid = paydao.GetPaymentIDbyMethod(paymentmethod);
             float total = Float.parseFloat(total_raw);
-            Order od = new Order(1, LocalDate.now(), shipid, voucherid, payid, phoneNumber, BigDecimal.valueOf(total), address, note, 5);
+            Order od = new Order(1, LocalDate.now(), fsdao.getFeeShipByID(shipid), voudao.GetVoucherByID(voucherid), paydao.GetPaymentMethodByID(payid), phoneNumber, BigDecimal.valueOf(total), address, note, sdao.GetStatus(5),sdao.GetStatus(9),null);
             oddao.uppdateorder(od);
             
             request.setAttribute("list_id", list_id);

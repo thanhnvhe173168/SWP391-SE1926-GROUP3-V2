@@ -12,16 +12,16 @@ import java.math.BigDecimal;
 
 public class OrderDetail {
     private int orderID;
-    private int laptopID;
+    private Laptop laptop;
     private int quantity;
     private BigDecimal unitPrice;
 
     public OrderDetail() {
     }
 
-    public OrderDetail(int orderID, int laptopID, int quantity, BigDecimal unitPrice) {
+    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice) {
         this.orderID = orderID;
-        this.laptopID = laptopID;
+        this.laptop = laptop;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
     }
@@ -34,12 +34,12 @@ public class OrderDetail {
         this.orderID = orderID;
     }
 
-    public int getLaptopID() {
-        return laptopID;
+    public Laptop getLaptop() {
+        return laptop;
     }
 
-    public void setLaptopID(int laptopID) {
-        this.laptopID = laptopID;
+    public void setLaptop(Laptop laptop) {
+        this.laptop = laptop;
     }
 
     public int getQuantity() {
@@ -57,6 +57,8 @@ public class OrderDetail {
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
+
+    
 
 }
 

@@ -15,46 +15,52 @@ public class Order {
     private int orderID;
     private int userID;
     private LocalDate orderDate;
-    private int shipfeeID;
-    private int voucherID;
-    private int paymentmethodID;
+    private FeeShip shipfee;
+    private Voucher voucher;
+    private PaymentMethod paymentmethod;
     private String phoneNumber;
     private BigDecimal totalAmount;
     private String address;
     private String note;
-    private int statusID;
+    private Status orderstatus;
+    private Status paymentstatus;
+    private LocalDate paymentdate;
 
     public Order() {
     }
 
-    public Order(int orderID, int userID, LocalDate orderDate, int shipfeeID, int voucherID, int paymentmethodID, String phoneNumber, BigDecimal totalAmount, String address, String note, int statusID) {
+    public Order(int orderID, int userID, LocalDate orderDate, FeeShip shipfee, Voucher voucher, PaymentMethod paymentmethod, String phoneNumber, BigDecimal totalAmount, String address, String note, Status orderstatus, Status paymentstatus, LocalDate paymentdate) {
         this.orderID = orderID;
         this.userID = userID;
         this.orderDate = orderDate;
-        this.shipfeeID = shipfeeID;
-        this.voucherID = voucherID;
-        this.paymentmethodID = paymentmethodID;
+        this.shipfee = shipfee;
+        this.voucher = voucher;
+        this.paymentmethod = paymentmethod;
         this.phoneNumber = phoneNumber;
         this.totalAmount = totalAmount;
         this.address = address;
         this.note = note;
-        this.statusID = statusID;
+        this.orderstatus = orderstatus;
+        this.paymentstatus = paymentstatus;
+        this.paymentdate = paymentdate;
     }
 
-    public Order(int userID, LocalDate orderDate, int shipfeeID, int voucherID, int paymentmethodID, String phoneNumber, BigDecimal totalAmount, String address, String note, int statusID) {
+    public Order(int userID, LocalDate orderDate, FeeShip shipfee, Voucher voucher, PaymentMethod paymentmethod, String phoneNumber, BigDecimal totalAmount, String address, String note, Status orderstatus, Status paymentstatus, LocalDate paymentdate) {
         this.userID = userID;
         this.orderDate = orderDate;
-        this.shipfeeID = shipfeeID;
-        this.voucherID = voucherID;
-        this.paymentmethodID = paymentmethodID;
+        this.shipfee = shipfee;
+        this.voucher = voucher;
+        this.paymentmethod = paymentmethod;
         this.phoneNumber = phoneNumber;
         this.totalAmount = totalAmount;
         this.address = address;
         this.note = note;
-        this.statusID = statusID;
+        this.orderstatus = orderstatus;
+        this.paymentstatus = paymentstatus;
+        this.paymentdate = paymentdate;
     }
-    
-    
+
+   
 
     public int getOrderID() {
         return orderID;
@@ -80,28 +86,28 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public int getShipfeeID() {
-        return shipfeeID;
+    public FeeShip getShipfee() {
+        return shipfee;
     }
 
-    public void setShipfeeID(int shipfeeID) {
-        this.shipfeeID = shipfeeID;
+    public void setShipfee(FeeShip shipfee) {
+        this.shipfee = shipfee;
     }
 
-    public int getVoucherID() {
-        return voucherID;
+    public Voucher getVoucher() {
+        return voucher;
     }
 
-    public void setVoucherID(int voucherID) {
-        this.voucherID = voucherID;
+    public void setVoucher(Voucher voucher) {
+        this.voucher = voucher;
     }
 
-    public int getPaymentmethodID() {
-        return paymentmethodID;
+    public PaymentMethod getPaymentmethod() {
+        return paymentmethod;
     }
 
-    public void setPaymentmethodID(int paymentmethodID) {
-        this.paymentmethodID = paymentmethodID;
+    public void setPaymentmethod(PaymentMethod paymentmethod) {
+        this.paymentmethod = paymentmethod;
     }
 
     public String getPhoneNumber() {
@@ -136,13 +142,34 @@ public class Order {
         this.note = note;
     }
 
-    public int getStatusID() {
-        return statusID;
+    public Status getOrderstatus() {
+        return orderstatus;
     }
 
-    public void setStatusID(int statusID) {
-        this.statusID = statusID;
+    public void setOrderstatus(Status orderstatus) {
+        this.orderstatus = orderstatus;
     }
+
+    public Status getPaymentstatus() {
+        return paymentstatus;
+    }
+
+    public void setPaymentstatus(Status paymentstatus) {
+        this.paymentstatus = paymentstatus;
+    }
+
+    public LocalDate getPaymentdate() {
+        return paymentdate;
+    }
+
+    public void setPaymentdate(LocalDate paymentdate) {
+        this.paymentdate = paymentdate;
+    }
+
+    
+    }
+
+    
 
    
     
@@ -150,4 +177,4 @@ public class Order {
     
 
     
-}
+

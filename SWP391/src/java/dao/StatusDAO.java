@@ -21,7 +21,7 @@ public class StatusDAO extends ConnectDB {
 
     public Status GetStatus(int statusid) {
         Status status = new Status();
-        String sql = "select * from Status where StatusID=?";
+        String sql = "select * from Statuses where StatusID=?";
         try {
             PreparedStatement st = connect.prepareStatement(sql);
             st.setInt(1, statusid);
@@ -29,8 +29,8 @@ public class StatusDAO extends ConnectDB {
             while (rs.next()) {
 
                 status.setStatusID(statusid);
-                status.setStatusName(rs.getString("StatusName"));
-                status.setStatusType(rs.getString("StatusType"));
+                status.setStatusName(rs.getNString("StatusName"));
+                status.setStatusType(rs.getNString("StatusType"));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

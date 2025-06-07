@@ -49,5 +49,23 @@ public class PaymentMethodDAO extends ConnectDB{
                 }
                 return id;
     }
+    
+    public PaymentMethod GetPaymentMethodByID(int id){
+        PaymentMethod pm =new PaymentMethod();
+        String sql="select * from paymentmethod where PaymentMethodID=?";
+                try{
+                    PreparedStatement st=connect.prepareStatement(sql);
+                    st.setInt(1, id);
+                    ResultSet rs=st.executeQuery();
+                    while(rs.next()){
+                    pm.setMethodName(rs.getNString("methodname"));
+                    pm.setPaymentMethodID(id);
+                    }
+                }
+                catch(SQLException e){
+                    e.printStackTrace();
+                }
+                return pm;
+    }
 }
 
