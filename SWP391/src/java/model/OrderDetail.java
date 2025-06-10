@@ -15,15 +15,17 @@ public class OrderDetail {
     private Laptop laptop;
     private int quantity;
     private BigDecimal unitPrice;
+    private Review review;
 
     public OrderDetail() {
     }
 
-    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice) {
+    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Review review) {
         this.orderID = orderID;
         this.laptop = laptop;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
+        this.review = review;
     }
 
     public int getOrderID() {
@@ -58,6 +60,15 @@ public class OrderDetail {
         this.unitPrice = unitPrice;
     }
 
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
+    }
+
+    
     
 
 }

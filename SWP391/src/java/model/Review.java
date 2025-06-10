@@ -13,8 +13,6 @@ import java.time.LocalDate;
 
 public class Review {
     private int reviewID;
-    private int userID;
-    private int laptopID;
     private BigDecimal rating;
     private String comment;
     private LocalDate reviewDate;
@@ -22,10 +20,8 @@ public class Review {
     public Review() {
     }
 
-    public Review(int reviewID, int userID, int laptopID, BigDecimal rating, String comment, LocalDate reviewDate) {
+    public Review(int reviewID, BigDecimal rating, String comment, LocalDate reviewDate) {
         this.reviewID = reviewID;
-        this.userID = userID;
-        this.laptopID = laptopID;
         this.rating = rating;
         this.comment = comment;
         this.reviewDate = reviewDate;
@@ -37,22 +33,6 @@ public class Review {
 
     public void setReviewID(int reviewID) {
         this.reviewID = reviewID;
-    }
-
-    public int getUserID() {
-        return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public int getLaptopID() {
-        return laptopID;
-    }
-
-    public void setLaptopID(int laptopID) {
-        this.laptopID = laptopID;
     }
 
     public BigDecimal getRating() {
@@ -79,5 +59,6 @@ public class Review {
         this.reviewDate = reviewDate;
     }
 
+    
 }
 

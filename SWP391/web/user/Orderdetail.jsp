@@ -13,6 +13,21 @@
     </head>
     <body>
         <h1>Order Detail</h1>
-        
+        <table>
+            <th>STT</th>
+            <th>Hình ảnh</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+            <th>Đơn giá</th>
+            <th>Hủy đơn</th>
+            <th>Mua lại</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </table>
     </body>
 </html>

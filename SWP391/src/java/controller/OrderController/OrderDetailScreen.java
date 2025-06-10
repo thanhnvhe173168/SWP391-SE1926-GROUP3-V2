@@ -12,6 +12,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import model.OrderDetail;
 
 /**
  *
@@ -32,8 +34,17 @@ public class OrderDetailScreen extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        OrderDAO odao=new OrderDAO();
+        String id_raw=request.getParameter("id");    
         OrderDetailDAO oddao =new OrderDetailDAO();
+        try{
+            int id=Integer.parseInt(id_raw);
+            List<OrderDetail> list = oddao.GetListOrderDetailByID(id);
+            request.setAttribute("list", list);
+            request.getRequestDispatcher("Orderdetail.jsp").forward(request, response);
+        }
+        catch(NumberFormatException e){
+            e.printStackTrace();
+        }
         
     }
 
