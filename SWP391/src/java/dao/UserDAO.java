@@ -72,27 +72,26 @@ public class UserDAO extends ConnectDB {
     }
 
     public User getUserByID(int userID) {
-    User user = null;
-    String sql = "SELECT * FROM Users WHERE UserID = ?";
-    try {
-        PreparedStatement ps = connect.prepareStatement(sql);
-        ps.setInt(1, userID);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            user = new User();
-            user.setUserID(rs.getInt("UserID"));
-            user.setFullName(rs.getString("FullName"));
-            user.setEmail(rs.getString("Email"));
-            user.setRoleID(rs.getInt("RoleID"));
-            user.setStatusID(rs.getInt("StatusID"));
-            // add more fields if needed
+        User user = null;
+        String sql = "SELECT * FROM Users WHERE UserID = ?";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = new User();
+                user.setUserID(rs.getInt("UserID"));
+                user.setFullName(rs.getString("FullName"));
+                user.setEmail(rs.getString("Email"));
+                user.setRoleID(rs.getInt("RoleID"));
+                user.setStatusID(rs.getInt("StatusID"));
+                // add more fields if needed
+            }
+        } catch (SQLException e) {
+            System.out.println("getUserByID: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        System.out.println("getUserByID: " + e.getMessage());
+        return user;
     }
-    return user;
-}
-    
 
     public int createUser(User u) {
 
@@ -160,27 +159,78 @@ public class UserDAO extends ConnectDB {
     }
 
     public User getUserByIDForView(int userID) {
-    User user = null;
-    String sql = "SELECT * FROM Users WHERE UserID = ?";
-    try {
-        PreparedStatement ps = connect.prepareStatement(sql);
-        ps.setInt(1, userID);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            user = new User();
-            user.setUserID(rs.getInt("UserID"));
-            user.setFullName(rs.getString("FullName"));
-            user.setEmail(rs.getString("Email"));
-            user.setPhoneNumber(rs.getString("PhoneNumber")); 
-            user.setPassword(rs.getString("Password"));      
-            user.setRegistrationDate(rs.getDate("RegistrationDate")); 
-            user.setRoleID(rs.getInt("RoleID"));
-            user.setStatusID(rs.getInt("StatusID"));
+        User user = null;
+        String sql = "SELECT * FROM Users WHERE UserID = ?";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = new User();
+                user.setUserID(rs.getInt("UserID"));
+                user.setFullName(rs.getString("FullName"));
+                user.setEmail(rs.getString("Email"));
+                user.setPhoneNumber(rs.getString("PhoneNumber"));
+                user.setPassword(rs.getString("Password"));
+                user.setRegistrationDate(rs.getDate("RegistrationDate"));
+                user.setRoleID(rs.getInt("RoleID"));
+                user.setStatusID(rs.getInt("StatusID"));
+            }
+        } catch (SQLException e) {
+            System.out.println("getUserByID: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        System.out.println("getUserByID: " + e.getMessage());
+        return user;
     }
-    return user;
-}
+
+    // Tìm kiếm User theo FullName + lọc RoleID + StatusID
+    public List<User> searchUsers(String search, Integer roleID, Integer statusID) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users WHERE 1=1";
+
+        // Bổ sung điều kiện nếu có input tìm kiếm hoặc lọc
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND FullName LIKE ?";
+        }
+        if (roleID != null) {
+            sql += " AND RoleID = ?";
+        }
+        if (statusID != null) {
+            sql += " AND StatusID = ?";
+        }
+
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+
+            // Gán giá trị cho các ? trong câu SQL
+            int index = 1;
+            if (search != null && !search.trim().isEmpty()) {
+                ps.setString(index++, "%" + search.trim() + "%");
+            }
+            if (roleID != null) {
+                ps.setInt(index++, roleID);
+            }
+            if (statusID != null) {
+                ps.setInt(index++, statusID);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User u = new User(
+                        rs.getInt("UserID"),
+                        rs.getString("FullName"),
+                        rs.getString("Email"),
+                        rs.getString("PhoneNumber"),
+                        rs.getDate("RegistrationDate"),
+                        rs.getInt("RoleID"),
+                        rs.getInt("StatusID")
+                );
+                list.add(u);
+            }
+        } catch (SQLException e) {
+            System.out.println("searchUsers: " + e.getMessage());
+        }
+
+        return list;
+    }
 
 }

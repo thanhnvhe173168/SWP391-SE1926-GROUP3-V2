@@ -135,22 +135,33 @@
 
         <h2>Danh sách Người dùng</h2>
 
-        <form class="toolbar" action="UserListServlet" method="get">
-            <input type="text" name="search" placeholder="Tìm theo tên người dùng hoặc họ tên" value="${param.search}">
+        <form action="getListUser" method="get" class="toolbar">
+            <input type="text" name="search" value="${param.search}" placeholder="Nhập tên người dùng">
+
             <select name="role">
-                <option value="">Tất cả Vai trò</option>
+                <option value="">Tất cả vai trò</option>
                 <option value="1" ${param.role == '1' ? 'selected' : ''}>Admin</option>
                 <option value="2" ${param.role == '2' ? 'selected' : ''}>Staff</option>
                 <option value="3" ${param.role == '3' ? 'selected' : ''}>Customer</option>
             </select>
+
             <select name="status">
-                <option value="">Tất cả Trạng thái</option>
+                <option value="">Tất cả trạng thái</option>
                 <option value="1" ${param.status == '1' ? 'selected' : ''}>Đang hoạt động</option>
                 <option value="2" ${param.status == '2' ? 'selected' : ''}>Đã khóa</option>
             </select>
+
             <button type="submit">Tìm kiếm</button>
-            <button type="button" onclick="location.href = 'admin/CreateUser.jsp'">+ Thêm Người dùng Mới</button>
+
+            <button type="button" onclick="location.href = 'admin/CreateUser.jsp'" style="background-color: #28a745; margin-left: auto;">
+                + Thêm Người dùng Mới
+            </button>
         </form>
+
+        
+
+
+
 
         <table>
             <thead>
@@ -213,3 +224,5 @@
 
     </body>
 </html>
+
+
