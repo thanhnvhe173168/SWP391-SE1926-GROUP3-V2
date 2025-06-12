@@ -33,11 +33,25 @@ public class waitconfirmed extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        OrderDAO odao =new OrderDAO();
-        List<Order> list = odao.getListUserOrderByStatusName("Chờ xác nhận",1);
-        request.setAttribute("OrderStatus","waitconfirmed" );
-        request.setAttribute("list", list);
-        request.getRequestDispatcher("user/waitconfirmed.jsp").forward(request, response);
+        String id_raw = request.getParameter("id");
+        OrderDAO odao = new OrderDAO();
+        try {
+            int id = Integer.parseInt(id_raw);
+            if (id == 1) {
+                List<Order> list = odao.getListUserOrderByStatusName("Chờ xác nhận", 1);
+                request.setAttribute("OrderStatus", "waitconfirmed");
+                request.setAttribute("list", list);
+                request.getRequestDispatcher("user/waitconfirmed.jsp").forward(request, response);
+            } else if (id == 2) {
+                List<Order> listorder = odao.getListOrderByPaymentStatusName("Chờ xác nhận");
+                request.setAttribute("OrderStatus", "waitconfirmed");
+                request.setAttribute("listorder", listorder);
+                request.getRequestDispatcher("admin/managewaitconfirmed.jsp").forward(request, response);
+            }
+        }
+        catch(NumberFormatException e){
+            e.printStackTrace();
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

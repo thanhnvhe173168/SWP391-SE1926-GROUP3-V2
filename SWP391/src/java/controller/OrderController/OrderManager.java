@@ -38,7 +38,7 @@ public class OrderManager extends HttpServlet {
         List<Order> list =new ArrayList<>();
         list = odao.getListOrder();
         request.setAttribute("list", list);
-        request.setAttribute("orderstatus", "OrderList");
+        request.setAttribute("OrderStatus","OrderList" );
         request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
     }
 

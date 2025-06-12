@@ -110,13 +110,13 @@
         <table>
             <tr>
                 <td class="${currentStatus == 'OrderList' ? 'active' : ''}" onclick="window.location.href = 'OrderList'" style="cursor: pointer;">Tất cả đơn</td>
-                <td class="${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed'" style="cursor: pointer;">Chờ xác nhận</td>
-                <td class="${currentStatus == 'delivering' ? 'active' : ''}" onclick="window.location.href = 'delivering'" style="cursor: pointer;">Đang giao</td>
-                <td class="${currentStatus == 'delivered' ? 'active' : ''}" onclick="window.location.href = 'delivered'" style="cursor: pointer;">Đã giao</td>
-                <td class="${currentStatus == 'canceled' ? 'active' : ''}" onclick="window.location.href = 'canceled'" style="cursor: pointer;">Đã hủy</td>
-                <td class="${currentStatus == 'returned' ? 'active' : ''}" onclick="window.location.href = 'returned'" style="cursor: pointer;">Đã trả hàng</td>
-                <td class="${currentStatus == 'unpaid' ? 'active' : ''}" onclick="window.location.href = 'unpaid'" style="cursor: pointer;">Chưa thanh toán</td>
-                <td class="${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate'" style="cursor: pointer;">Cần đánh giá</td>
+                <td class="${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed?id=1'" style="cursor: pointer;">Chờ xác nhận</td>
+                <td class="${currentStatus == 'delivering' ? 'active' : ''}" onclick="window.location.href = 'delivering?id=1'" style="cursor: pointer;">Đang giao</td>
+                <td class="${currentStatus == 'delivered' ? 'active' : ''}" onclick="window.location.href = 'delivered?id=1'" style="cursor: pointer;">Đã giao</td>
+                <td class="${currentStatus == 'canceled' ? 'active' : ''}" onclick="window.location.href = 'canceled?id=1'" style="cursor: pointer;">Đã hủy</td>
+                <td class="${currentStatus == 'returned' ? 'active' : ''}" onclick="window.location.href = 'returned?id=1'" style="cursor: pointer;">Đã trả hàng</td>
+                <td class="${currentStatus == 'unpaid' ? 'active' : ''}" onclick="window.location.href = 'unpaid?id=1'" style="cursor: pointer;">Chưa thanh toán</td>
+                <td class="${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate?id=1'" style="cursor: pointer;">Cần đánh giá</td>
             </tr>
         </table>
         <c:set var="lists" value="${list}"/> 
