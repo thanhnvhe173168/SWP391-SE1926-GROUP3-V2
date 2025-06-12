@@ -6,7 +6,6 @@ package controller.OrderController;
 
 import dao.OrderDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -36,7 +35,8 @@ public class returned extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         response.setContentType("text/html;charset=UTF-8");
         OrderDAO odao =new OrderDAO();
-        List<Order> list = odao.getListOrderByStatusName("Trả hàng");
+        List<Order> list = odao.getListUserOrderByStatusName("Trả hàng",1);
+        request.setAttribute("OrderStatus","returned" );
         request.setAttribute("list", list);
         request.getRequestDispatcher("user/returned.jsp").forward(request, response);
     }

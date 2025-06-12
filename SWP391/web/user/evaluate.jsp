@@ -18,142 +18,105 @@
         <style>
             body {
                 font-family: 'Segoe UI', sans-serif;
-                background-color: #f0f2f5;
+                background-color: #f7f9fc;
+                margin: 0;
                 padding: 20px;
-                color: #2c3e50;
             }
 
             h1 {
                 text-align: center;
-                color: #1e272e;
+                color: #333;
                 margin-bottom: 30px;
             }
 
             table {
                 width: 100%;
                 border-collapse: collapse;
-                background: #ffffff;
-                margin-bottom: 25px;
-                border-radius: 10px;
-                overflow: hidden;
-                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 30px;
             }
 
-            table:first-of-type th, table:first-of-type td {
-                padding: 14px;
-                border-bottom: 1px solid #ddd;
+            /* Thanh menu trạng thái */
+            table:first-of-type td {
                 text-align: center;
-            }
-
-            table:first-of-type th {
-                background-color: #dfe6e9;
-                color: #2c3e50;
-                font-weight: bold;
-            }
-
-            /* Table chi tiết đơn hàng */
-            .order-details {
-                width: 65%;
-                margin: auto;
-                background: #ffffff;
-                border: 1px solid #b2bec3;
-                font-size: 15px;
-            }
-
-            .order-details td {
-                padding: 12px;
-                border-bottom: 1px solid #dcdde1;
-                vertical-align: top;
+                padding: 12px 20px;
+                background-color: #ffffff;
+                border: 1px solid #ddd;
+                transition: background-color 0.3s, color 0.3s;
                 font-weight: 500;
             }
 
-            .order-details input,
-            .order-details select,
-            .order-details textarea {
-                width: 100%;
-                padding: 8px;
-                font-size: 14px;
-                border: 1px solid #636e72;
-                border-radius: 5px;
-                box-sizing: border-box;
-            }
-
-            .order-details input[type="radio"] {
-                margin-right: 8px;
-                transform: scale(1.1);
+            table:first-of-type td:hover {
+                background-color: #e3f2fd;
                 cursor: pointer;
             }
 
-            .order-details label {
-                display: block;
-                margin-bottom: 6px;
-                cursor: pointer;
-                color: #2c3e50;
+            table:first-of-type td.active {
+                background-color: #1976d2;
+                color: white;
+                font-weight: bold;
+                border-bottom: 3px solid #0d47a1;
+            }
+
+            /* Bảng danh sách đơn hàng */
+            table:last-of-type {
+                background-color: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+                overflow: hidden;
+            }
+
+            table:last-of-type th,
+            table:last-of-type td {
+                padding: 12px 16px;
+                border: 1px solid #e0e0e0;
+                text-align: center;
+            }
+
+            table:last-of-type th {
+                background-color: #f1f1f1;
+                font-weight: 600;
+                color: #333;
+            }
+
+            table:last-of-type tr:hover {
+                background-color: #fafafa;
             }
 
             button {
-                background-color: #0984e3;
+                padding: 8px 14px;
+                background-color: #1976d2;
                 color: white;
                 border: none;
-                padding: 9px 16px;
                 border-radius: 5px;
+                transition: background-color 0.3s;
                 cursor: pointer;
-                transition: background-color 0.3s ease;
-                font-weight: 600;
             }
 
             button:hover {
-                background-color: #0652dd;
+                background-color: #0d47a1;
             }
 
-            #shipFeeDisplay {
-                font-weight: bold;
-                color: #e17055;
-            }
-
-            .total-row td {
-                font-weight: bold;
+            p {
+                text-align: center;
+                color: #888;
                 font-size: 16px;
-                background-color: #dff9fb;
-                color: #130f40;
             }
-
-            input:focus, select:focus, textarea:focus {
-                border-color: #00a8ff;
-                outline: none;
-                box-shadow: 0 0 6px rgba(0, 168, 255, 0.5);
-            }
-            input[type="radio"]:focus {
-                outline: none;
-                box-shadow: none;
-            }
-            td {
-                cursor: pointer;
-                transition: background-color 0.2s, transform 0.1s;
-            }
-
-            td:active {
-                background-color: #e0e0e0;
-                transform: scale(0.97);
-            }
-
-            td:hover {
-                background-color: #f5f5f5;
-            }
-
         </style>
     </head>
     <body>
         <h1>Đơn hàng cần đánh giá</h1>
+        <c:set var="currentStatus" value="${OrderStatus}" />
+
         <table>
             <tr>
-                <td onclick="window.location.href = 'waitconfirmed'" style="cursor: pointer;">Chờ xác nhận</td>
-                <td onclick="window.location.href = 'delivering'" style="cursor: pointer;">Đang giao</td>
-                <td onclick="window.location.href = 'delivered'" style="cursor: pointer;">Đã giao</td>
-                <td onclick="window.location.href = 'canceled'" style="cursor: pointer;">Đã hủy</td>
-                <td onclick="window.location.href = 'returned'" style="cursor: pointer;">Đã trả hàng</td>
-                <td onclick="window.location.href = 'unpaid'" style="cursor: pointer;">Chưa thanh toán</td>
-                <td onclick="window.location.href = 'evaluate'" style="cursor: pointer;">Cần đánh giá</td>
+                <td class="${currentStatus == 'OrderList' ? 'active' : ''}" onclick="window.location.href = 'OrderList'" style="cursor: pointer;">Tất cả đơn</td>
+                <td class="${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed'" style="cursor: pointer;">Chờ xác nhận</td>
+                <td class="${currentStatus == 'delivering' ? 'active' : ''}" onclick="window.location.href = 'delivering'" style="cursor: pointer;">Đang giao</td>
+                <td class="${currentStatus == 'delivered' ? 'active' : ''}" onclick="window.location.href = 'delivered'" style="cursor: pointer;">Đã giao</td>
+                <td class="${currentStatus == 'canceled' ? 'active' : ''}" onclick="window.location.href = 'canceled'" style="cursor: pointer;">Đã hủy</td>
+                <td class="${currentStatus == 'returned' ? 'active' : ''}" onclick="window.location.href = 'returned'" style="cursor: pointer;">Đã trả hàng</td>
+                <td class="${currentStatus == 'unpaid' ? 'active' : ''}" onclick="window.location.href = 'unpaid'" style="cursor: pointer;">Chưa thanh toán</td>
+                <td class="${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate'" style="cursor: pointer;">Cần đánh giá</td>
             </tr>
         </table>
         <c:set var="lists" value="${list}"/> 

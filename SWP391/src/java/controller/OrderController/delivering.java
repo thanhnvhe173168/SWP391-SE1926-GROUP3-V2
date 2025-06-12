@@ -34,7 +34,8 @@ public class delivering extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         OrderDAO odao =new OrderDAO();
-        List<Order> list = odao.getListOrderByStatusName("Đang giao");
+        List<Order> list = odao.getListUserOrderByStatusName("Đang giao",1);
+        request.setAttribute("OrderStatus","delivering" );
         request.setAttribute("list", list);
         request.getRequestDispatcher("user/delivering.jsp").forward(request, response);
     }

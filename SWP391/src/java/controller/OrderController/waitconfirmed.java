@@ -34,7 +34,8 @@ public class waitconfirmed extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         OrderDAO odao =new OrderDAO();
-        List<Order> list = odao.getListOrderByStatusName("Chờ xác nhận");
+        List<Order> list = odao.getListUserOrderByStatusName("Chờ xác nhận",1);
+        request.setAttribute("OrderStatus","waitconfirmed" );
         request.setAttribute("list", list);
         request.getRequestDispatcher("user/waitconfirmed.jsp").forward(request, response);
     }

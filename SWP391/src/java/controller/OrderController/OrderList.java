@@ -62,8 +62,11 @@ public class OrderList extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         OrderDAO odao=new OrderDAO();
-        List<Order> orderlist =odao.getListOrder();
+        List<Order> orderlist =odao.getListUserOrder(1);
+        List<Order> orderneedreview = odao.getListUserOrderNeedEvaluate(1);
         request.setAttribute("orderlist", orderlist);
+        request.setAttribute("OrderStatus","OrderList" );
+        request.setAttribute("orderneedreview", orderneedreview);
         request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
     }
 

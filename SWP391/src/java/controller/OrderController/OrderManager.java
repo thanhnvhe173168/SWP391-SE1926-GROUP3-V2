@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import model.Order;
 
@@ -18,8 +19,8 @@ import model.Order;
  *
  * @author Window 11
  */
-@WebServlet(name = "canceled", urlPatterns = {"/canceled"})
-public class canceled extends HttpServlet {
+@WebServlet(name = "OrderManager", urlPatterns = {"/OrderManager"})
+public class OrderManager extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,12 +34,12 @@ public class canceled extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
         OrderDAO odao =new OrderDAO();
-        List<Order> list = odao.getListUserOrderByStatusName("Đã hủy",1);
-        request.setAttribute("OrderStatus","canceled" );
+        List<Order> list =new ArrayList<>();
+        list = odao.getListOrder();
         request.setAttribute("list", list);
-        request.getRequestDispatcher("user/canceled.jsp").forward(request, response);
+        request.setAttribute("orderstatus", "OrderList");
+        request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -19,7 +19,7 @@ import model.OrderDetail;
  *
  * @author Window 11
  */
-@WebServlet(name = "OrderDetail", urlPatterns = {"/OrderDetail"})
+@WebServlet(name = "OrderDetailScreen", urlPatterns = {"/OrderDetailScreen"})
 public class OrderDetailScreen extends HttpServlet {
 
     /**
@@ -40,7 +40,7 @@ public class OrderDetailScreen extends HttpServlet {
             int id=Integer.parseInt(id_raw);
             List<OrderDetail> list = oddao.GetListOrderDetailByID(id);
             request.setAttribute("list", list);
-            request.getRequestDispatcher("Orderdetail.jsp").forward(request, response);
+            request.getRequestDispatcher("user/Orderdetail.jsp").forward(request, response);
         }
         catch(NumberFormatException e){
             e.printStackTrace();

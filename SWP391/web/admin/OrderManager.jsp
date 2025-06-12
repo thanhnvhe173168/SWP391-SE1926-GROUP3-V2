@@ -1,20 +1,20 @@
 <%-- 
-    Document   : unpaid
-    Created on : Jun 11, 2025, 1:43:10 AM
+    Document   : OrderManager
+    Created on : Jun 12, 2025, 9:17:58 PM
     Author     : Window 11
 --%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.*" %>
 <%@page import="dao.*" %>
 <%@page import="java.util.List" %>
 <%@page import="java.util.ArrayList" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>unpaid Page</title>
+        <title>Order Manager Page</title>
         <style>
             body {
                 font-family: 'Segoe UI', sans-serif;
@@ -104,9 +104,9 @@
         </style>
     </head>
     <body>
-        <h1>Đơn hàng chưa thanh toán</h1>
+        <h1>Quản lý đơn hàng</h1>
+        <c:set var="lists" value="${list}"/>
         <c:set var="currentStatus" value="${OrderStatus}" />
-
         <table>
             <tr>
                 <td class="${currentStatus == 'OrderList' ? 'active' : ''}" onclick="window.location.href = 'OrderList'" style="cursor: pointer;">Tất cả đơn</td>
@@ -119,7 +119,6 @@
                 <td class="${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate'" style="cursor: pointer;">Cần đánh giá</td>
             </tr>
         </table>
-        <c:set var="lists" value="${list}"/> 
         <c:set var="stt" value="0"/>
         <c:choose>
             <c:when test="${empty lists}">
@@ -134,7 +133,6 @@
                         <th>Trạng thái đơn hàng</th>
                         <th>Trạng thái thanh toán</th>
                         <th>Xem đơn</th>
-                        <th>Thanh toán</th>
                     </tr>
                     <c:forEach items="${lists}" var="order">
                         <tr>
@@ -144,22 +142,10 @@
                             <td>${order.orderstatus.statusName}</td>
                             <td>${order.paymentstatus.statusName}</td>
                             <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">Xem đơn</button></td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${order.orderstatus.statusName=='Đã giao'}">
-                                        <button onclick="window.location.href = 'PaidOrder?id=${order.orderID}'">Thanh toán</button>
-                                    </c:when>      
-                                    <c:otherwise>
-                                        
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
                         </tr>
                     </c:forEach>
                 </table>
-
             </c:otherwise>
         </c:choose>
     </body>
-</body>
 </html>
