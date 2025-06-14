@@ -5,12 +5,14 @@
 package model;
 
 import java.math.BigDecimal;
+
 /**
  *
  * @author Window 11
  */
 
 public class Laptop {
+
     private int laptopID;
     private String laptopName;
     private BigDecimal price;
@@ -20,18 +22,19 @@ public class Laptop {
     private String hardDrive;
     private Status status;
     private String warrantyPeriod;
-    private CPU cpu;         
+    private CPU cpu;
     private ScreenSize screen;
     private String ram;
     private Brand brand;
     private Category category;
 
     // Constructors
-    public Laptop() {}
+    public Laptop() {
+    }
 
     public Laptop(int laptopID, String laptopName, BigDecimal price, int stock, String description,
-                  String imageURL, String hardDrive, Status status, String warrantyPeriod,
-                  CPU cpu, ScreenSize screen, String ram, Brand brand, Category category) {
+            String imageURL, String hardDrive, Status status, String warrantyPeriod,
+            CPU cpu, ScreenSize screen, String ram, Brand brand, Category category) {
         this.laptopID = laptopID;
         this.laptopName = laptopName;
         this.price = price;
@@ -46,6 +49,16 @@ public class Laptop {
         this.ram = ram;
         this.brand = brand;
         this.category = category;
+    }
+
+    public Laptop(int laptopID, String laptopName, BigDecimal price, int stock, String description, String hardDrive, String warrantyPeriod) {
+        this.laptopID = laptopID;
+        this.laptopName = laptopName;
+        this.price = price;
+        this.stock = stock;
+        this.description = description;
+        this.hardDrive = hardDrive;
+        this.warrantyPeriod = warrantyPeriod;
     }
 
     // Getters and Setters
@@ -162,4 +175,3 @@ public class Laptop {
     }
 
 }
-

@@ -232,5 +232,29 @@ public class UserDAO extends ConnectDB {
 
         return list;
     }
+    //Hien thi staff
 
+    public List<User> getAllCustomer() {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT UserID, FullName, Email, PhoneNumber FROM Users WHERE RoleID = 3";
+
+        try (PreparedStatement ps = connect.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                User customer = new User(
+                        rs.getInt("UserID"),
+                        rs.getString("FullName"),
+                        rs.getString("Email"),
+                        rs.getString("PhoneNumber")
+                );
+                list.add(customer);
+            }
+
+        } catch (Exception e) {
+            System.out.println("getAllCustomer: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 }

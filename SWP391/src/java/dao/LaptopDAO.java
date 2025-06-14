@@ -114,4 +114,31 @@ public class LaptopDAO extends ConnectDB {
         }
         return n;
     }
+    
+    public List<Laptop> getListLapinStaff(){
+        List<Laptop> list = new ArrayList<>();
+        String sql = "select laptopID, laptopName, Price, Stock,Description, HardDrive, WarrantyPeriod from Laptop";
+        
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+            Laptop l = new Laptop(
+                   rs.getInt("laptopID"),
+                    rs.getString("laptopName"),
+                    rs.getBigDecimal("price"),
+                    rs.getInt("stock"),
+                    rs.getString("description"),
+                    rs.getString("hardDrive"),
+                    rs.getString("warrantyPeriod")
+            );
+                list.add(l);
+            }
+            
+        } catch (Exception e) {
+            System.out.println("getListLapinStaff" + e.getMessage());
+        }
+        return list;
+        }
+        
 }
