@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Category;
+import org.json.JSONObject;
 
 /**
  *
@@ -69,18 +70,14 @@ public class UpdateCategory extends HttpServlet {
         String categoryName = request.getParameter("categoryName");
         boolean checkExist = categoryDao.checkExistCategoryName(categoryName, categoryId);
         if (checkExist) {
-            Category category = categoryDao.getCategoryById(categoryId);
-            String message = "Tên danh mục sản phẩm đã tồn tại";
-            request.setAttribute("message", message);
-            request.setAttribute("categoryName", categoryName);
-            request.setAttribute("category", category);
-            request.getRequestDispatcher("/admin/UpdateCategory.jsp").forward(request, response);
+            JSONObject json = new JSONObject();
+            json.put("message", "Tên danh mục sản phẩm tồn tại");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(json.toString());
             return;
         }
         int check = categoryDao.updateCategory(categoryId, categoryName);
-        if (check > 0) {
-            response.sendRedirect("getListCategory");
-        }
     }
 
     /**
