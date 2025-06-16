@@ -20,7 +20,7 @@
         %>
         <div class="d-flex">
             <jsp:include page="/components/AdminSidebar.jsp"></jsp:include>
-                <div style="width: 100%; height: calc(100vh - 118px); overflow-y: auto" class="container">
+                <div style="width: 100%; height: calc(100dvh - 100px); overflow-y: auto" class="container">
                     <div class="d-flex justify-content-between align-items-center">
                         <p style="color: #dd3726; font-size: 40px; font-weight: 700">Quản lý thương hiệu</p>
                         <button type="button" class="btn btn-outline-primary" onclick="handleRedirect()">

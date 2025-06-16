@@ -31,7 +31,7 @@ public class CartDetailDAO extends ConnectDB {
             while (rs.next()) {
                 CartDetail cd = new CartDetail();
                 cd.setCart(cartdao.GetCart(CartID));
-                cd.setLaptop(laptopdao.GetLaptop(rs.getInt("LaptopID")));
+                cd.setLaptop(laptopdao.getLaptopById(rs.getInt("LaptopID")));
                 cd.setQuantity(rs.getInt("Quantity"));
                 cd.setUnitPrice(rs.getBigDecimal("UnitPrice"));
                 cd.setIsSelect(rs.getBoolean("is_selected"));
@@ -53,7 +53,7 @@ public class CartDetailDAO extends ConnectDB {
             while(rs.next()){
                 cd.setCart(cartdao.GetCart(rs.getInt("cartID")));
                 cd.setIsSelect(rs.getBoolean("is_selected"));
-                cd.setLaptop(laptopdao.GetLaptop(id));
+                cd.setLaptop(laptopdao.getLaptopById(id));
                 cd.setQuantity(rs.getInt("quantity"));
                 cd.setUnitPrice(rs.getBigDecimal("unitprice"));
             }
