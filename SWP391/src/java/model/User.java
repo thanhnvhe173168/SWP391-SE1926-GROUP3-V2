@@ -45,7 +45,13 @@ public class User {
         this.roleID = roleID;
         this.statusID = statusID;
     }
-
+//in staff
+     public User(int userID, String fullName, String email, String phoneNumber) {
+        this.userID = userID;
+        this.fullName = fullName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
     // Getters & Setters
     public int getUserID() {
         return userID;

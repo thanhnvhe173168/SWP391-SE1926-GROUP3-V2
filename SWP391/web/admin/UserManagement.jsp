@@ -2,214 +2,266 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Danh sách người dùng</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f9f9f9;
-                padding: 20px;
-            }
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách người dùng</title>
+    
+    <!-- Bootstrap & Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-            h2 {
-                margin-bottom: 20px;
-            }
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+        }
 
-            form.toolbar {
-                margin-bottom: 20px;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 10px;
-                align-items: center;
-            }
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background-color: #f9f9f9;
+        }
 
-            .toolbar input[type="text"],
-            .toolbar select {
-                padding: 8px;
-                border-radius: 4px;
-                border: 1px solid #ccc;
-            }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
 
-            .toolbar button {
-                padding: 8px 16px;
-                border: none;
-                border-radius: 4px;
-                background-color: #6c63ff;
-                color: white;
-                cursor: pointer;
-            }
+        form.toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
 
-            .toolbar button:hover {
-                background-color: #5848e5;
-            }
+        .left-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                background-color: white;
-                border-radius: 10px;
-                overflow: hidden;
-                box-shadow: 0 0 10px rgba(0,0,0,0.05);
-            }
+        .left-controls input,
+        .left-controls select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            min-width: 160px;
+        }
 
-            th, td {
-                padding: 12px;
-                text-align: left;
-            }
+        .right-controls button {
+            padding: 10px 18px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
 
-            thead {
-                background-color: #007bff;
-                color: white;
-            }
+        .right-controls button:hover {
+            background-color: #218838;
+        }
 
-            tbody tr:nth-child(even) {
-                background-color: #f2f2f2;
-            }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
 
-            .status {
-                padding: 5px 10px;
-                border-radius: 5px;
-                font-size: 12px;
-                color: white;
-            }
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+        }
 
-            .status-active {
-                background-color: #28a745;
-            }
+        thead {
+            background-color: #007bff;
+            color: white;
+        }
 
-            .status-locked {
-                background-color: #dc3545;
-            }
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
 
-            .actions a {
-                margin-right: 8px;
-                color: #007bff;
-                text-decoration: none;
-            }
+        tbody tr:hover {
+            background-color: #e9ecef;
+        }
 
-            .actions a:hover {
-                text-decoration: underline;
-            }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+        }
 
-            .pagination {
-                margin-top: 20px;
-                text-align: center;
-            }
+        .status-active {
+            background-color: #28a745;
+        }
 
-            .pagination a {
-                padding: 6px 12px;
-                margin: 0 5px;
-                border: none;
-                background-color: #007bff;
-                color: white;
-                border-radius: 4px;
-                text-decoration: none;
-            }
+        .status-locked {
+            background-color: #dc3545;
+        }
 
-            .pagination a.active {
-                background-color: #0056b3;
-                font-weight: bold;
-            }
+        .actions a {
+            margin-right: 10px;
+            color: #007bff;
+            text-decoration: none;
+        }
 
-            .back-home {
-                margin-top: 30px;
-                text-align: center;
-            }
+        .actions a:hover {
+            text-decoration: underline;
+        }
 
-            .back-home button {
-                padding: 10px 20px;
-                background-color: #6c757d;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
+        .pagination {
+            margin-top: 25px;
+            text-align: center;
+        }
 
-            .back-home button:hover {
-                background-color: #5a6268;
-            }
-        </style>
-    </head>
-    <body>
+        .pagination a {
+            padding: 8px 14px;
+            margin: 0 4px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+        }
 
-        <h2>Danh sách Người dùng</h2>
+        .pagination a.active {
+            background-color: #0056b3;
+            font-weight: bold;
+        }
 
-        <form class="toolbar" action="UserListServlet" method="get">
-            <input type="text" name="search" placeholder="Tìm theo tên người dùng hoặc họ tên" value="${param.search}">
-            <select name="role">
-                <option value="">Tất cả Vai trò</option>
-                <option value="1" ${param.role == '1' ? 'selected' : ''}>Admin</option>
-                <option value="2" ${param.role == '2' ? 'selected' : ''}>Staff</option>
-                <option value="3" ${param.role == '3' ? 'selected' : ''}>Customer</option>
-            </select>
-            <select name="status">
-                <option value="">Tất cả Trạng thái</option>
-                <option value="1" ${param.status == '1' ? 'selected' : ''}>Đang hoạt động</option>
-                <option value="2" ${param.status == '2' ? 'selected' : ''}>Đã khóa</option>
-            </select>
-            <button type="submit">Tìm kiếm</button>
-            <button type="button" onclick="location.href = 'admin/CreateUser.jsp'">+ Thêm Người dùng Mới</button>
-        </form>
+        .back-home {
+            margin-top: 30px;
+            text-align: center;
+        }
 
-        <table>
-            <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>Full name</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach items="${listU}" var="o">
+        .back-home button {
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .back-home button:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Layout container -->
+    <div class="d-flex">
+
+        <!-- Sidebar -->
+        <jsp:include page="/components/AdminSidebar.jsp" />
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h2>Danh sách Người dùng</h2>
+
+            <!-- Toolbar -->
+            <form action="getListUser" method="get" class="toolbar">
+                <div class="left-controls">
+                    <input type="text" name="search" value="${param.search}" placeholder="Nhập tên người dùng">
+
+                    <select name="role">
+                        <option value="">Tất cả vai trò</option>
+                        <option value="1" ${param.role == '1' ? 'selected' : ''}>Admin</option>
+                        <option value="2" ${param.role == '2' ? 'selected' : ''}>Staff</option>
+                        <option value="3" ${param.role == '3' ? 'selected' : ''}>Customer</option>
+                    </select>
+
+                    <select name="status">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="1" ${param.status == '1' ? 'selected' : ''}>Đang hoạt động</option>
+                        <option value="2" ${param.status == '2' ? 'selected' : ''}>Đã khóa</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i> Tìm kiếm
+                    </button>
+                </div>
+
+                <div class="right-controls">
+                    <button type="button" onclick="location.href = 'admin/CreateUser.jsp'">
+                        <i class="fas fa-user-plus me-1"></i> Thêm Người dùng Mới
+                    </button>
+                </div>
+            </form>
+
+            <!-- Table -->
+            <table>
+                <thead>
                     <tr>
-                        <td>${o.userID}</td>
-                        <td>${o.fullName}</td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${o.roleID == 1}">Admin</c:when>
-                                <c:when test="${o.roleID == 2}">Staff</c:when>
-                                <c:when test="${o.roleID == 3}">Customer</c:when>
-                                <c:otherwise>Unknown</c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td>
-                            <span class="status
-                                  <c:choose>
-                                      <c:when test="${o.statusID == 1}">status-active</c:when>
-                                      <c:otherwise>status-locked</c:otherwise>
-                                  </c:choose>">
-                                <c:choose>
-                                    <c:when test="${o.statusID == 1}">Đang hoạt động</c:when>
-                                    <c:otherwise>Đã khóa</c:otherwise>
-                                </c:choose>
-                            </span>
-                        </td>
-                        <td class="actions">
-                            <a href="viewerUser?id=${o.userID}">View</a>
-                            <a href="updateUser?userID=${o.userID}">Edit</a>
-                            <a href="deleteUser?uid=${o.userID}">Delete</a>
-
-                        </td>
+                        <th>User ID</th>
+                        <th>Full name</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
+                </thead>
+                <tbody>
+                    <c:forEach items="${listU}" var="o">
+                        <tr>
+                            <td>${o.userID}</td>
+                            <td>${o.fullName}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${o.roleID == 1}">Admin</c:when>
+                                    <c:when test="${o.roleID == 2}">Staff</c:when>
+                                    <c:when test="${o.roleID == 3}">Customer</c:when>
+                                    <c:otherwise>Unknown</c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>
+                                <span class="status
+                                      <c:choose>
+                                          <c:when test="${o.statusID == 1}">status-active</c:when>
+                                          <c:otherwise>status-locked</c:otherwise>
+                                      </c:choose>">
+                                    <c:choose>
+                                        <c:when test="${o.statusID == 1}">Đang hoạt động</c:when>
+                                        <c:otherwise>Đã khóa</c:otherwise>
+                                    </c:choose>
+                                </span>
+                            </td>
+                            <td class="actions">
+                                <a href="viewerUser?id=${o.userID}"><i class="fas fa-eye"></i> View</a>
+                                <a href="updateUser?userID=${o.userID}"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="deleteUser?uid=${o.userID}" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <c:forEach var="i" begin="1" end="${totalPages}">
+                    <a href="UserListServlet?page=${i}&search=${param.search}&role=${param.role}&status=${param.status}"
+                       class="${currentPage == i ? 'active' : ''}">${i}</a>
                 </c:forEach>
-            </tbody>
-        </table>
+            </div>
 
-        <!-- Phân trang -->
-        <div class="pagination">
-            <c:forEach var="i" begin="1" end="${totalPages}">
-                <a href="UserListServlet?page=${i}&search=${param.search}&role=${param.role}&status=${param.status}"
-                   class="${currentPage == i ? 'active' : ''}">${i}</a>
-            </c:forEach>
+<!--             Back to Home 
+            <div class="back-home">
+                <button onclick="location.href = 'home'">
+                    <i class="fas fa-home me-1"></i> Quay lại Trang chủ
+                </button>
+            </div>-->
         </div>
+    </div>
 
-        <!-- Nút quay lại -->
-        <div class="back-home">
-            <button onclick="location.href = 'home.jsp'">Quay lại Trang chủ</button>
-        </div>
-
-    </body>
+</body>
 </html>
