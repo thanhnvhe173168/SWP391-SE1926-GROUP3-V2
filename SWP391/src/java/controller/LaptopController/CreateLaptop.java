@@ -77,7 +77,7 @@ public class CreateLaptop extends HttpServlet {
         LaptopDAO laptopDao = new LaptopDAO();
         String laptopName = request.getParameter("laptopName");
         int stock = Integer.parseInt(request.getParameter("stock"));
-        int price = Integer.parseInt(request.getParameter("price"));
+        BigDecimal price = BigDecimal.valueOf(Double.parseDouble(request.getParameter("price")));
         String imageUrl = request.getParameter("imageUrl");
         String description = request.getParameter("description");
         String hardDrive = request.getParameter("hardDrive");
