@@ -62,8 +62,9 @@ public class productManagement extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         LaptopDAO dao = new LaptopDAO();
-
-        List<Laptop> list = dao.getListLapinStaff();
+        
+        //List<Laptop> list = dao.get
+        ResultSet list = dao.getListLaptop();
 
         request.setAttribute("rslaptop", list);
         request.getRequestDispatcher("staff/productManagement.jsp").forward(request, response);

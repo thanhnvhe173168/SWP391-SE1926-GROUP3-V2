@@ -53,7 +53,7 @@ public class OrderDetailDAO extends ConnectDB {
             while (rs.next()) {
                 OrderDetail od = new OrderDetail();
                 od.setOrderID(id);
-                od.setLaptop(ldao.GetLaptop(rs.getInt("laptopid")));
+                od.setLaptop(ldao.getLaptopById(rs.getInt("laptopid")));
                 od.setQuantity(rs.getInt("quantity"));
                 od.setUnitPrice(rs.getBigDecimal("unitprice"));
                 od.setReview(rdao.getReviewByID(rs.getInt("ReviewID")));

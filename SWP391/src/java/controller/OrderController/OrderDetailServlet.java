@@ -45,7 +45,7 @@ public class OrderDetailServlet extends HttpServlet {
             CartDetail cd = cddao.GetCartDetail(Integer.parseInt(id));
 
             ord.setOrderID(odao.GetLastOrderID(1));
-            ord.setLaptop(ldao.GetLaptop(Integer.parseInt(id)));
+            ord.setLaptop(ldao.getLaptopById(Integer.parseInt(id)));
             ord.setUnitPrice(cd.getUnitPrice());
             ord.setQuantity(cd.getQuantity());
             orddao.addorderdetail(ord);
