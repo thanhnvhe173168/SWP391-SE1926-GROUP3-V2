@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import model.Laptop;
 import org.json.JSONObject;
@@ -80,7 +81,7 @@ public class UpdateLaptop extends HttpServlet {
         int laptopId = Integer.parseInt(request.getParameter("laptopId"));
         String laptopName = request.getParameter("laptopName");
         int stock = Integer.parseInt(request.getParameter("stock"));
-        int price = Integer.parseInt(request.getParameter("price"));
+        BigDecimal price = BigDecimal.valueOf(Double.parseDouble(request.getParameter("price")));
         String imageUrl = request.getParameter("imageUrl");
         String description = request.getParameter("description");
         String hardDrive = request.getParameter("hardDrive");

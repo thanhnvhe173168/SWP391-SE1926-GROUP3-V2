@@ -14,7 +14,7 @@ public class Laptop {
 
     private int laptopID;
     private String laptopName;
-    private int price;
+    private BigDecimal price;
     private int stock;
     private String description;
     private String imageURL;
@@ -31,7 +31,7 @@ public class Laptop {
     public Laptop() {
     }
 
-    public Laptop(String laptopName, int price, int stock, String description, String imageURL, String hardDrive, int status, String warrantyPeriod, int cpu, int screen, String ram, int brand, int category) {
+    public Laptop(String laptopName, BigDecimal price, int stock, String description, String imageURL, String hardDrive, int status, String warrantyPeriod, int cpu, int screen, String ram, int brand, int category) {
         this.laptopName = laptopName;
         this.price = price;
         this.stock = stock;
@@ -47,7 +47,7 @@ public class Laptop {
         this.category = category;
     }
 
-    public Laptop(int laptopID, String laptopName, int price, int stock, String description, String imageURL, String hardDrive, int status, String warrantyPeriod, int cpu, int screen, String ram, int brand, int category) {
+    public Laptop(int laptopID, String laptopName, BigDecimal price, int stock, String description, String imageURL, String hardDrive, int status, String warrantyPeriod, int cpu, int screen, String ram, int brand, int category) {
         this.laptopID = laptopID;
         this.laptopName = laptopName;
         this.price = price;
@@ -80,11 +80,11 @@ public class Laptop {
         this.laptopName = laptopName;
     }
 
-    public int getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import model.Laptop;
 
 /**
@@ -33,7 +34,7 @@ public class LaptopDAO extends ConnectDB {
                 laptop.setImageURL(rs.getString("ImageURL"));
                 laptop.setLaptopID(LaptopID);
                 laptop.setLaptopName(rs.getString("LaptopName"));
-                laptop.setPrice(rs.getInt("Price"));
+                laptop.setPrice(rs.getBigDecimal("Price"));
                 laptop.setRam(rs.getString("Ram"));
                 laptop.setScreen(rs.getInt("ScreenID"));
                 laptop.setStatus(rs.getInt("StatusID"));
@@ -46,20 +47,106 @@ public class LaptopDAO extends ConnectDB {
         return laptop;
     }
 
-    public ResultSet getListLaptop() {
+    public ResultSet getListLaptop(int currentPage, int pageSize, String laptopName, int brandId, int categoryId, int cpuId, int screenId, int statusId) {
         ResultSet rs = null;
-        String sql = "select l.LaptopID, l.LaptopName, l.Price, \n"
-                + "l.ImageURL, l.HardDrive, l.WarrantyPeriod, c.CPUInfo, \n"
-                + "s.Size, l.RAM, l.Stock from Laptop l \n"
-                + "inner join CPU c on l.CPUID = c.CPUID\n"
-                + "inner join ScreenSize s on s.ScreenID = l.ScreenID";
+        StringBuilder sql = new StringBuilder(
+                "select l.LaptopID, l.LaptopName, l.Price, l.ImageURL, l.HardDrive, l.WarrantyPeriod, c.CPUInfo, s.Size, l.RAM, l.Stock from Laptop l "
+                + "inner join CPU c on l.CPUID = c.CPUID "
+                + "inner join ScreenSize s on s.ScreenID = l.ScreenID "
+        );
+        ArrayList<Object> parameter = new ArrayList<>();
+        if (statusId != 0) {
+            sql.append(" where l.StatusID = ?");
+            parameter.add(statusId);
+        } else {
+            sql.append(" where l.StatusID != ?");
+            parameter.add(0);
+        }
+        if (laptopName != null && !laptopName.trim().isEmpty()) {
+            sql.append(" and l.LaptopName like ?");
+            parameter.add("%" + laptopName + "%");
+        }
+        if (brandId != 0) {
+            sql.append(" and l.BrandID = ?");
+            parameter.add(brandId);
+        }
+        if (categoryId != 0) {
+            sql.append(" and l.CategoryID = ?");
+            parameter.add(categoryId);
+        }
+        if (cpuId != 0) {
+            sql.append(" and l.CPUID = ?");
+            parameter.add(cpuId);
+        }
+        if (screenId != 0) {
+            sql.append(" and l.ScreenID = ?");
+            parameter.add(screenId);
+        }
+        sql.append(" order by l.LaptopID offset ? rows fetch next ? rows only");
+        parameter.add((currentPage - 1) * pageSize);
+        parameter.add(pageSize);
+        System.out.println(sql);
+        System.out.println(parameter);
         try {
-            PreparedStatement pre = connect.prepareStatement(sql);
+            PreparedStatement pre = connect.prepareStatement(sql.toString());
+            for (int i = 0; i < parameter.size(); i++) {
+                pre.setObject(i + 1, parameter.get(i));
+            }
             rs = pre.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return rs;
+    }
+
+    public int getTotalRecord(String laptopName, int brandId, int categoryId, int cpuId, int screenId, int statusId) {
+        int n = 0;
+        StringBuilder sql = new StringBuilder(
+                "select l.LaptopID, l.LaptopName, l.Price, l.ImageURL, l.HardDrive, l.WarrantyPeriod, c.CPUInfo, s.Size, l.RAM, l.Stock from Laptop l "
+                + "inner join CPU c on l.CPUID = c.CPUID "
+                + "inner join ScreenSize s on s.ScreenID = l.ScreenID"
+        );
+        ArrayList<Object> parameter = new ArrayList<>();
+        if (statusId != 0) {
+            sql.append(" where l.StatusID = ?");
+            parameter.add(statusId);
+        } else {
+            sql.append(" where l.StatusID != ?");
+            parameter.add(0);
+        }
+        if (laptopName != null && !laptopName.trim().isEmpty()) {
+            sql.append(" and l.LaptopName like ?");
+            parameter.add("%" + laptopName + "%");
+        }
+        if (brandId != 0) {
+            sql.append(" and l.BrandID = ?");
+            parameter.add(brandId);
+        }
+        if (categoryId != 0) {
+            sql.append(" and l.CategoryID = ?");
+            parameter.add(categoryId);
+        }
+        if (cpuId != 0) {
+            sql.append(" and l.CPUID = ?");
+            parameter.add(cpuId);
+        }
+        if (screenId != 0) {
+            sql.append(" and l.ScreenID = ?");
+            parameter.add(screenId);
+        }
+        try {
+            PreparedStatement pre = connect.prepareStatement(sql.toString());
+            for (int i = 0; i < parameter.size(); i++) {
+                pre.setObject(i + 1, parameter.get(i));
+            }
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                n++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return n;
     }
 
     public boolean checkExistLaptopName(String laptopName, int laptopId) {
@@ -91,7 +178,7 @@ public class LaptopDAO extends ConnectDB {
         try {
             PreparedStatement pre = connect.prepareStatement(sql);
             pre.setString(1, laptop.getLaptopName());
-            pre.setInt(2, laptop.getPrice());
+            pre.setBigDecimal(2, laptop.getPrice());
             pre.setInt(3, laptop.getStock());
             pre.setString(4, laptop.getDescription());
             pre.setString(5, laptop.getImageURL());
@@ -132,7 +219,7 @@ public class LaptopDAO extends ConnectDB {
         try {
             PreparedStatement pre = connect.prepareStatement(sql);
             pre.setString(1, laptop.getLaptopName());
-            pre.setInt(2, laptop.getPrice());
+            pre.setBigDecimal(2, laptop.getPrice());
             pre.setInt(3, laptop.getStock());
             pre.setString(4, laptop.getDescription());
             pre.setString(5, laptop.getImageURL());
