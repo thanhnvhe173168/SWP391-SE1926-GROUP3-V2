@@ -11,8 +11,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Order;
+import model.User;
 
 /**
  *
@@ -35,10 +37,12 @@ public class waitconfirmed extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String id_raw = request.getParameter("id");
         OrderDAO odao = new OrderDAO();
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
-                List<Order> list = odao.getListUserOrderByStatusName("Chờ xác nhận", 1);
+                List<Order> list = odao.getListUserOrderByStatusName("Chờ xác nhận", user.getUserID());
                 request.setAttribute("OrderStatus", "waitconfirmed");
                 request.setAttribute("list", list);
                 request.getRequestDispatcher("user/waitconfirmed.jsp").forward(request, response);

@@ -4,6 +4,7 @@
  */
 package controller.OrderController;
 
+import dao.CartDAO;
 import dao.OrderDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -11,8 +12,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.Cart;
 import model.Order;
+import model.User;
 
 /**
  *
@@ -34,11 +38,13 @@ public class canceled extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String id_raw = request.getParameter("id");
+        HttpSession session = request.getSession(); 
+        User user = (User)session.getAttribute("user");
         OrderDAO odao = new OrderDAO();
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
-                List<Order> list = odao.getListUserOrderByStatusName("Đã hủy", 1);
+                List<Order> list = odao.getListUserOrderByStatusName("Đã hủy", user.getUserID());
                 request.setAttribute("OrderStatus", "canceled");
                 request.setAttribute("list", list);
                 request.getRequestDispatcher("user/canceled.jsp").forward(request, response);

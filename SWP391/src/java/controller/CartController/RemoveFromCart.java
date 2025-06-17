@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package controller.CartController;
+import dao.CartDAO;
 import model.*;
 import dao.CartDetailDAO;
 import dao.LaptopDAO;
@@ -14,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,12 +64,14 @@ public class RemoveFromCart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LaptopDAO laptopdao = new LaptopDAO();
         CartDetailDAO cartdetaildao = new CartDetailDAO();
-        UserDAO userdao = new UserDAO();
         String id_raw = request.getParameter("id");
+        HttpSession session = request.getSession(); 
+        User user = (User)session.getAttribute("user");
+        CartDAO cdao = new CartDAO();
+        Cart cart = cdao.GetCartByUserID(user.getUserID());
         List<CartDetail> listcartdetail = new ArrayList<>();
-        listcartdetail = cartdetaildao.ListCart(1);
+        listcartdetail = cartdetaildao.ListCart(cart.getCartID());
         try {
             int id=Integer.parseInt(id_raw);
             for(CartDetail cd : listcartdetail){

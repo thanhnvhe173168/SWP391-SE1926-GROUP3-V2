@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.*;
 import dao.*;
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -39,12 +40,13 @@ public class OrderDetailServlet extends HttpServlet {
         CartDetailDAO cddao = new CartDetailDAO();
         OrderDAO odao = new OrderDAO();
         OrderDetailDAO orddao = new OrderDetailDAO();
-        CartDAO cdao=new CartDAO();
+        HttpSession session = request.getSession(); 
+        User user = (User)session.getAttribute("user");
+        CartDAO cdao = new CartDAO();
         LaptopDAO ldao =new LaptopDAO();
         for (String id : list_id) {
             CartDetail cd = cddao.GetCartDetail(Integer.parseInt(id));
-
-            ord.setOrderID(odao.GetLastOrderID(1));
+            ord.setOrderID(odao.GetLastOrderID(user.getUserID()));
             ord.setLaptop(ldao.getLaptopById(Integer.parseInt(id)));
             ord.setUnitPrice(cd.getUnitPrice());
             ord.setQuantity(cd.getQuantity());
@@ -52,7 +54,7 @@ public class OrderDetailServlet extends HttpServlet {
             cddao.Remove(cd);
             ldao.updateLaptopStock(Integer.parseInt(id), cd.getLaptop().getStock()-cd.getQuantity());
         }
-        Cart cart = cdao.GetCartByUserID(1);
+        Cart cart = cdao.GetCartByUserID(user.getUserID());
         List<CartDetail> listcard = cddao.ListCart(cart.getCartID());
         BigDecimal totalcart = new BigDecimal(0);
         for (CartDetail cd : listcard) {

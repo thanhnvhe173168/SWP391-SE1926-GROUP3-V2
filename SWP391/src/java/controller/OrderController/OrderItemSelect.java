@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,9 +66,12 @@ public class OrderItemSelect extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         CartDetailDAO cartdetaildao = new CartDetailDAO();
-        UserDAO userdao = new UserDAO();
+        HttpSession session = request.getSession(); 
+        User user = (User)session.getAttribute("user");
+        CartDAO cdao = new CartDAO();
+        Cart cart = cdao.GetCartByUserID(user.getUserID());
         List<CartDetail> listordering =new ArrayList<>();
-        List<CartDetail> listcart =cartdetaildao.ListCart(1);
+        List<CartDetail> listcart =cartdetaildao.ListCart(cart.getCartID());
         BigDecimal total=new BigDecimal(0);
         for(CartDetail cd : listcart){
             if(cd.isIsSelect()==true){

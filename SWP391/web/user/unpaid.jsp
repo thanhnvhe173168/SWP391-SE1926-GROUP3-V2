@@ -104,7 +104,8 @@
         </style>
     </head>
     <body>
-        <h1>Đơn hàng chưa thanh toán</h1>
+        <jsp:include page="/components/Header.jsp"></jsp:include>
+            <h1>Đơn hàng chưa thanh toán</h1>
         <c:set var="currentStatus" value="${OrderStatus}" />
 
         <table>
@@ -150,7 +151,7 @@
                                         <button onclick="window.location.href = 'PaidOrder?id=${order.orderID}'">Thanh toán</button>
                                     </c:when>      
                                     <c:otherwise>
-                                        
+
                                     </c:otherwise>
                                 </c:choose>
                             </td>
@@ -160,6 +161,7 @@
 
             </c:otherwise>
         </c:choose>
+        <jsp:include page="/components/Footer.jsp"></jsp:include>
     </body>
 </body>
 </html>

@@ -54,7 +54,10 @@
                             User user = (User) session.getAttribute("user");
                         %>
                          <li class="nav-item">
-                            <a class="nav-link" href="">Giỏ hàng</a>
+                            <a class="nav-link" href="CartSeverlet">Giỏ hàng</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="OrderList">Đơn hàng</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="viewProfile"><%=user.getFullName()%></a>

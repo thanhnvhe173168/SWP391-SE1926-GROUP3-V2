@@ -4,6 +4,7 @@
  */
 package controller.OrderController;
 
+import dao.CartDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
 import java.io.IOException;
@@ -13,8 +14,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.Cart;
 import model.Order;
+import model.User;
 
 /**
  *
@@ -62,8 +66,10 @@ public class OrderList extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         OrderDAO odao=new OrderDAO();
-        List<Order> orderlist =odao.getListUserOrder(1);
-        List<Order> orderneedreview = odao.getListUserOrderNeedEvaluate(1);
+        HttpSession session = request.getSession(); 
+        User user = (User)session.getAttribute("user");
+        List<Order> orderlist =odao.getListUserOrder(user.getUserID());
+        List<Order> orderneedreview = odao.getListUserOrderNeedEvaluate(user.getUserID());
         request.setAttribute("orderlist", orderlist);
         request.setAttribute("OrderStatus","OrderList" );
         request.setAttribute("orderneedreview", orderneedreview);

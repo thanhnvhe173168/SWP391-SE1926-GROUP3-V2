@@ -107,7 +107,8 @@
 
     </head>
     <body>
-        <h1>Đơn hàng</h1>
+        <jsp:include page="/components/Header.jsp"></jsp:include>
+            <h1>Đơn hàng</h1>
         <c:set var="currentStatus" value="${OrderStatus}" />
 
         <table>
@@ -213,5 +214,6 @@
 
             </c:otherwise>
         </c:choose>
+        <jsp:include page="/components/Footer.jsp"></jsp:include>
     </body>
 </html>

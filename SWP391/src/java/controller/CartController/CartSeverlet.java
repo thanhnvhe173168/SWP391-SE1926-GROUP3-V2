@@ -4,6 +4,7 @@
  */
 package controller.CartController;
 
+import dao.CartDAO;
 import dao.CartDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,7 +14,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.Cart;
 import model.CartDetail;
+import model.User;
 
 /**
  *
@@ -34,8 +37,11 @@ public class CartSeverlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession(); 
+        User user = (User)session.getAttribute("user");
+        CartDAO cdao = new CartDAO();
+        Cart cart = cdao.GetCartByUserID(user.getUserID());
         CartDetailDAO cartdetialdao=new CartDetailDAO();
-        List<CartDetail> listcartdetail=cartdetialdao.ListCart(1);
+        List<CartDetail> listcartdetail=cartdetialdao.ListCart(cart.getCartID());
         session.setAttribute("listcartdetail", listcartdetail);
         request.getRequestDispatcher("user/Cart.jsp").forward(request, response);
     }

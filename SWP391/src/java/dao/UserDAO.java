@@ -257,4 +257,21 @@ public class UserDAO extends ConnectDB {
 
         return list;
     }
+    
+    public int getUserIDByEmail(String email){
+        String sql="select userID from Users where Email=?";
+        int userID=0;
+        try{
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setString(1, email);
+            ResultSet rs = st.executeQuery();
+            while(rs.next()){
+                userID=rs.getInt("userID");
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return userID;
+}
 }

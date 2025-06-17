@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.CartDetail;
 import model.Cart;
+import model.User;
 
 /**
  *
@@ -81,12 +82,12 @@ public class UppdateTotal extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         CartDetailDAO cartdetaildao = new CartDetailDAO();
-        CartDAO cartdao=new CartDAO();
         String[] selectedIds = request.getParameterValues("selectedItem"); // các laptop được tick
-        HttpSession session = request.getSession();
-        Cart cart = cartdao.GetCart(1);
-
-        List<CartDetail> items = cartdetaildao.ListCart(1);
+        HttpSession session = request.getSession(); 
+        User user = (User)session.getAttribute("user");
+        CartDAO cdao = new CartDAO();
+        Cart cart = cdao.GetCartByUserID(user.getUserID());
+        List<CartDetail> items = cartdetaildao.ListCart(cart.getCartID());
         BigDecimal total = new BigDecimal("0");
         
 
@@ -113,7 +114,7 @@ public class UppdateTotal extends HttpServlet {
         }
 
         cart.setTotal(total);
-        cartdao.uppdateTotal(1, total);
+        cdao.uppdateTotal(cart.getCartID(), total);
         
 
         request.getRequestDispatcher("CartSeverlet").forward(request, response);

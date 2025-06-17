@@ -4,6 +4,7 @@
  */
 package controller.OrderController;
 
+import dao.CartDAO;
 import dao.OrderDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -11,8 +12,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.Cart;
 import model.Order;
+import model.User;
 
 /**
  *
@@ -35,10 +39,12 @@ public class delivered extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         OrderDAO odao = new OrderDAO();
         String id_raw = request.getParameter("id");
+        HttpSession session = request.getSession(); 
+        User user = (User)session.getAttribute("user");
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
-                List<Order> list = odao.getListUserOrderByStatusName("Đã giao", 1);
+                List<Order> list = odao.getListUserOrderByStatusName("Đã giao", user.getUserID());
                 request.setAttribute("OrderStatus", "delivered");
                 request.setAttribute("list", list);
                 request.getRequestDispatcher("user/delivered.jsp").forward(request, response);

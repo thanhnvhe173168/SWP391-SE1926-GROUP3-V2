@@ -65,7 +65,6 @@ public class Ordering extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String id_raw=request.getParameter("id");
         CartDetailDAO cartdetaildao = new CartDetailDAO();
-        UserDAO userdao = new UserDAO();
         List<CartDetail> listordering =new ArrayList<>();
         CartDetail cd =new CartDetail();
         try{

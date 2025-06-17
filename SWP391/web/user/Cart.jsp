@@ -105,14 +105,15 @@
                 margin-bottom: 20px;
             }
         </style>
-        <%
-            CartDAO cartdao=new CartDAO();
-            Cart cart = cartdao.GetCart(1);
-            %>
+        <%  
+            User user = (User)session.getAttribute("user");
+            CartDAO cdao = new CartDAO();
+            Cart cart = cdao.GetCartByUserID(user.getUserID());
+        %>
     </head>
     <body>
-        <h2>Giỏ hàng</h2>
-        <button onclick="window.location.href = 'home'">Tiếp tục mua hàng</button>
+        <jsp:include page="/components/Header.jsp"></jsp:include>
+            <h2>Giỏ hàng</h2>
 
         <c:set var="listcartdetails" value="${sessionScope.listcartdetail}" />
 
@@ -172,6 +173,7 @@
                 </form>
             </c:otherwise>
         </c:choose>
+        <jsp:include page="/components/Footer.jsp"></jsp:include>
         <%
                      String mess = (String) request.getAttribute("mess");
                     if (mess != null) {

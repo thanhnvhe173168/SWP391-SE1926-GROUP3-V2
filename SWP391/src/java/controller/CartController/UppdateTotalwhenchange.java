@@ -12,11 +12,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dao.*;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import model.Cart;
 import model.CartDetail;
+import model.User;
 /**
  *
  * @author Window 11
@@ -63,18 +65,19 @@ public class UppdateTotalwhenchange extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         CartDetailDAO cdDAO =new CartDetailDAO();
-        CartDAO cDAO = new CartDAO();
         BigDecimal total =new BigDecimal("0");
-        Cart cart =new Cart();
-        cart = cDAO.GetCart(1);
-        List<CartDetail> listCart=cdDAO.ListCart(1);
+        HttpSession session = request.getSession(); 
+        User user = (User)session.getAttribute("user");
+        CartDAO cdao = new CartDAO();
+        Cart cart = cdao.GetCartByUserID(user.getUserID());
+        List<CartDetail> listCart=cdDAO.ListCart(cart.getCartID());
         for(CartDetail cd : listCart){
             if(cd.isIsSelect()==true){
                 total=total.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
             }
         }
         cart.setTotal(total);
-        cDAO.uppdateTotal(1, total);
+        cdao.uppdateTotal(cart.getCartID(), total);
         request.getRequestDispatcher("CartSeverlet").forward(request, response);
     }
 

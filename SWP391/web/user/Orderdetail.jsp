@@ -98,8 +98,8 @@
 
     </head>
     <body>
-        <a href="OrderManager">Trở về</a>
-        <h1>Order Detail</h1>
+        <jsp:include page="/components/Header.jsp"></jsp:include>
+            <h1>Chi tiết đơn hàng</h1>
         <c:set var="stt" value="0"/>
         <c:set var="lists" value="${list}"/>
         <c:set var="order" value="${od}"/>
@@ -151,5 +151,6 @@
                 <td>${order.note}</td>
             </tr>
         </table>
+        <jsp:include page="/components/Footer.jsp"></jsp:include>
     </body>
 </html>

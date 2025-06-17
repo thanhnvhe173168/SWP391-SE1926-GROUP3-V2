@@ -4,6 +4,7 @@
  */
 package controller.Guest;
 
+import dao.CartDAO;
 import dao.UserDAO;
 import enums.AccountStatusEnum;
 import enums.RoleEnum;
@@ -64,6 +65,7 @@ public class Register extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         UserDAO userDao = new UserDAO();
+        CartDAO cartDao = new CartDAO();
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phoneNumber");
@@ -85,6 +87,8 @@ public class Register extends HttpServlet {
         );
         int check = userDao.createUser(newUser);
         if (check > 0) {
+            int userID = userDao.getUserIDByEmail(email);
+            cartDao.CreateCart(userID);
             response.sendRedirect("login");
         }
     }

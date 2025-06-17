@@ -104,7 +104,8 @@
         </style>
     </head>
     <body>
-        <h1>Đơn hàng chờ xác nhận</h1>
+        <jsp:include page="/components/Header.jsp"></jsp:include>
+            <h1>Đơn hàng chờ xác nhận</h1>
         <c:set var="currentStatus" value="${OrderStatus}" />
 
         <table>
@@ -119,37 +120,38 @@
                 <td class="${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate?id=1'" style="cursor: pointer;">Cần đánh giá</td>
             </tr>
         </table>
-    <c:set var="lists" value="${list}"/> 
-    <c:set var="stt" value="0"/>
-    <c:choose>
-        <c:when test="${empty lists}">
-            <P>Không có đơn hàng nào</P>
-        </c:when>
-        <c:otherwise>
-            <table border="1">
-                <tr>
-                    <th>STT</th>
-                    <th>Ngày đặt hàng</th>
-                    <th>Tổng tiền</th>
-                    <th>Trạng thái đơn hàng</th>
-                    <th>Trạng thái thanh toán</th>
-                    <th>Xem đơn</th>
-                    <th>Hủy đơn</th>
-                </tr>
-                <c:forEach items="${lists}" var="order">
+        <c:set var="lists" value="${list}"/> 
+        <c:set var="stt" value="0"/>
+        <c:choose>
+            <c:when test="${empty lists}">
+                <P>Không có đơn hàng nào</P>
+                </c:when>
+                <c:otherwise>
+                <table border="1">
                     <tr>
-                        <td>${stt+1}</td>
-                        <td>${order.orderDate}</td>
-                        <td>${order.totalAmount}</td>
-                        <td>${order.orderstatus.statusName}</td>
-                        <td>${order.paymentstatus.statusName}</td>
-                        <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">Xem đơn</button></td>
-                        <td><button onclick="window.location.href = 'CancelOrder?id=${order.orderID}'">Hủy đơn</button></td>
+                        <th>STT</th>
+                        <th>Ngày đặt hàng</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái đơn hàng</th>
+                        <th>Trạng thái thanh toán</th>
+                        <th>Xem đơn</th>
+                        <th>Hủy đơn</th>
                     </tr>
-                </c:forEach>
-            </table>
+                    <c:forEach items="${lists}" var="order">
+                        <tr>
+                            <td>${stt+1}</td>
+                            <td>${order.orderDate}</td>
+                            <td>${order.totalAmount}</td>
+                            <td>${order.orderstatus.statusName}</td>
+                            <td>${order.paymentstatus.statusName}</td>
+                            <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">Xem đơn</button></td>
+                            <td><button onclick="window.location.href = 'CancelOrder?id=${order.orderID}'">Hủy đơn</button></td>
+                        </tr>
+                    </c:forEach>
+                </table>
 
-        </c:otherwise>
-    </c:choose>
-</body>
+            </c:otherwise>
+        </c:choose>
+        <jsp:include page="/components/Footer.jsp"></jsp:include>
+    </body>
 </html>

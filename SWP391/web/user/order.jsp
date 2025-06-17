@@ -148,8 +148,9 @@
         %>
     </head>
     <body>
-        <h1>Đặt hàng</h1>
-        <form method="post" action="OrderSuccess">
+        <jsp:include page="/components/Header.jsp"></jsp:include>
+            <h1>Đặt hàng</h1>
+            <form method="post" action="OrderSuccess">
             <c:set var="listorderings" value="${listordering}" />
             <input type="hidden" id="totalProductPrice" value="${total}" />
             <table>
@@ -249,6 +250,7 @@
             </table>
 
         </form>
+        <jsp:include page="/components/Footer.jsp"></jsp:include>
         <%
                      String mess = (String) request.getAttribute("mess");
                     if (mess != null) {
