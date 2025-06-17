@@ -43,9 +43,9 @@ public class waitconfirmed extends HttpServlet {
                 request.setAttribute("list", list);
                 request.getRequestDispatcher("user/waitconfirmed.jsp").forward(request, response);
             } else if (id == 2) {
-                List<Order> listorder = odao.getListOrderByPaymentStatusName("Chờ xác nhận");
+                List<Order> orderlist = odao.getListOrderByStatusName("Chờ xác nhận");
                 request.setAttribute("OrderStatus", "waitconfirmed");
-                request.setAttribute("listorder", listorder);
+                request.setAttribute("orderlist", orderlist);
                 request.getRequestDispatcher("admin/managewaitconfirmed.jsp").forward(request, response);
             }
         }

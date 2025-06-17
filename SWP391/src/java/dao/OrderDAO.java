@@ -71,6 +71,54 @@ public class OrderDAO extends ConnectDB {
         return id;
     }
 
+    public Order GetOrderByID(int id){
+        String sql = "Select * from Orders where OrderID= ?";
+        Order od =new Order();
+        try{
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("shipfeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("totalAmount"));
+                od.setUserID(rs.getInt("userID"));
+
+                int voucherID = rs.getInt("voucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+
+                if (rs.getDate("paymentDate") != null) {
+                    od.setPaymentdate(rs.getDate("paymentDate").toLocalDate());
+                } else {
+                    od.setPaymentdate(null);
+                }
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return od;
+    }
+    
     public List<Order> getListOrder() {
         String sql = "select * from Orders";
         List<Order> orderlist = new ArrayList<>();

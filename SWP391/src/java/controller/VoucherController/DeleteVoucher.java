@@ -2,26 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.OrderController;
+package controller.VoucherController;
 
-import dao.OrderDAO;
-import dao.OrderDetailDAO;
+import dao.VoucherDAO;
 import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
-import model.Order;
-import model.OrderDetail;
+import model.Voucher;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "OrderDetailScreen", urlPatterns = {"/OrderDetailScreen"})
-public class OrderDetailScreen extends HttpServlet {
+@WebServlet(name = "DeleteVoucher", urlPatterns = {"/DeleteVoucher"})
+public class DeleteVoucher extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,21 +34,18 @@ public class OrderDetailScreen extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String id_raw=request.getParameter("id");    
-        OrderDetailDAO oddao =new OrderDetailDAO();
-        OrderDAO odao = new OrderDAO();
-        try{
-            int id=Integer.parseInt(id_raw);
-            List<OrderDetail> list = oddao.GetListOrderDetailByID(id);
-            Order od = odao.GetOrderByID(id);
-            request.setAttribute("od", od);
-            request.setAttribute("list", list);
-            request.getRequestDispatcher("user/Orderdetail.jsp").forward(request, response);
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet DeleteVoucher</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet DeleteVoucher at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
-        catch(NumberFormatException e){
-            e.printStackTrace();
-        }
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -64,7 +60,20 @@ public class OrderDetailScreen extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String id_raw = request.getParameter("id");
+        VoucherDAO vdao = new VoucherDAO();
+        try{
+            int id = Integer.parseInt(id_raw);
+            vdao.DeleteVoucherByID(id);
+            List<Voucher> voucherlist = vdao.GetListVoucher();
+            String mess="Xóa Voucher thành công :)";
+            request.setAttribute("mess", mess);
+            request.setAttribute("voucherlist", voucherlist);
+            request.getRequestDispatcher("admin/VoucherManagement.jsp").forward(request, response);
+        }
+        catch(NumberFormatException e){
+            e.printStackTrace();
+        }
     }
 
     /**

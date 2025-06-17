@@ -1,6 +1,6 @@
 <%-- 
-    Document   : canceled
-    Created on : Jun 11, 2025, 1:34:36 AM
+    Document   : managecanceled
+    Created on : Jun 13, 2025, 11:03:27 PM
     Author     : Window 11
 --%>
 <%@page import="model.*" %>
@@ -14,7 +14,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>canceled Page</title>
+        <title>Manage canceled order Page</title>
         <style>
             body {
                 font-family: 'Segoe UI', sans-serif;
@@ -109,17 +109,17 @@
 
         <table>
             <tr>
-                <td class="${currentStatus == 'OrderList' ? 'active' : ''}" onclick="window.location.href = 'OrderList'" style="cursor: pointer;">Tất cả đơn</td>
-                <td class="${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed?id=1'" style="cursor: pointer;">Chờ xác nhận</td>
-                <td class="${currentStatus == 'delivering' ? 'active' : ''}" onclick="window.location.href = 'delivering?id=1'" style="cursor: pointer;">Đang giao</td>
-                <td class="${currentStatus == 'delivered' ? 'active' : ''}" onclick="window.location.href = 'delivered?id=1'" style="cursor: pointer;">Đã giao</td>
-                <td class="${currentStatus == 'canceled' ? 'active' : ''}" onclick="window.location.href = 'canceled?id=1'" style="cursor: pointer;">Đã hủy</td>
-                <td class="${currentStatus == 'returned' ? 'active' : ''}" onclick="window.location.href = 'returned?id=1'" style="cursor: pointer;">Đã trả hàng</td>
-                <td class="${currentStatus == 'unpaid' ? 'active' : ''}" onclick="window.location.href = 'unpaid?id=1'" style="cursor: pointer;">Chưa thanh toán</td>
-                <td class="${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate?id=1'" style="cursor: pointer;">Cần đánh giá</td>
+                <td class="${currentStatus == 'OrderList' ? 'active' : ''}" onclick="window.location.href = 'OrderManager'" style="cursor: pointer;">Tất cả đơn</td>
+                <td class="${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed?id=2'" style="cursor: pointer;">Chờ xác nhận</td>
+                <td class="${currentStatus == 'delivering' ? 'active' : ''}" onclick="window.location.href = 'delivering?id=2'" style="cursor: pointer;">Đang giao</td>
+                <td class="${currentStatus == 'delivered' ? 'active' : ''}" onclick="window.location.href = 'delivered?id=2'" style="cursor: pointer;">Đã giao</td>
+                <td class="${currentStatus == 'canceled' ? 'active' : ''}" onclick="window.location.href = 'canceled?id=2'" style="cursor: pointer;">Đã hủy</td>
+                <td class="${currentStatus == 'returned' ? 'active' : ''}" onclick="window.location.href = 'returned?id=2'" style="cursor: pointer;">Đã trả hàng</td>
+                <td class="${currentStatus == 'unpaid' ? 'active' : ''}" onclick="window.location.href = 'unpaid?id=2'" style="cursor: pointer;">Chưa thanh toán</td>
+                <td class="${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate?id=2'" style="cursor: pointer;">Cần đánh giá</td>
             </tr>
         </table>
-    <c:set var="lists" value="${list}"/> 
+    <c:set var="lists" value="${orderlist}"/> 
     <c:set var="stt" value="0"/>
     <c:choose>
         <c:when test="${empty lists}">
@@ -134,7 +134,7 @@
                     <th>Trạng thái đơn hàng</th>
                     <th>Trạng thái thanh toán</th>
                     <th>Xem đơn</th>
-                    <th>Mua lại</th>
+                    <th>Xem lý do hủy</th>
                 </tr>
                 <c:forEach items="${lists}" var="order">
                     <tr>
@@ -144,7 +144,7 @@
                         <td>${order.orderstatus.statusName}</td>
                         <td>${order.paymentstatus.statusName}</td>
                         <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">Xem đơn</button></td>
-                        <td><button onclick="window.location.href = 'ReOrder?id=${order.orderID}'">Mua lại</button></td>
+                        <td><button onclick="window.location.href = 'ViewCancelReason?id=${order.orderID}'">Xem lý do hủy</button></td>
                     </tr>
                 </c:forEach>
             </table>

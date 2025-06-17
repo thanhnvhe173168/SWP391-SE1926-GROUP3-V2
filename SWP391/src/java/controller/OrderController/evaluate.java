@@ -33,13 +33,24 @@ public class evaluate extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-        OrderDAO odao =new OrderDAO();
-        List<Order> list = odao.getListUserOrderNeedEvaluate(1);
-        request.setAttribute("OrderStatus","evaluate" );
-        request.setAttribute("list", list);
-        request.getRequestDispatcher("user/evaluate.jsp").forward(request, response);
-        
+        OrderDAO odao = new OrderDAO();
+        String id_raw = request.getParameter("id");
+        try {
+            int id = Integer.parseInt(id_raw);
+            if (id == 1) {
+                List<Order> list = odao.getListUserOrderNeedEvaluate(1);
+                request.setAttribute("OrderStatus", "evaluate");
+                request.setAttribute("list", list);
+                request.getRequestDispatcher("user/evaluate.jsp").forward(request, response);
+            } else if (id == 2) {
+                List<Order> orderlist = odao.getListOrderNeedEvaluate();
+                request.setAttribute("OrderStatus", "evaluate");
+                request.setAttribute("oredrlist", orderlist);
+                request.getRequestDispatcher("admin/manageevaluate.jsp").forward(request, response);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

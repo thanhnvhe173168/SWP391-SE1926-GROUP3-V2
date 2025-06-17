@@ -113,7 +113,9 @@
                 <td class="${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed?id=2'" style="cursor: pointer;">Chờ xác nhận</td>
                 <td class="${currentStatus == 'delivering' ? 'active' : ''}" onclick="window.location.href = 'delivering?id=2'" style="cursor: pointer;">Đang giao</td>
                 <td class="${currentStatus == 'delivered' ? 'active' : ''}" onclick="window.location.href = 'delivered?id=2'" style="cursor: pointer;">Đã giao</td>
+                <td class="${currentStatus == 'canceling' ? 'active' : ''}" onclick="window.location.href = 'canceling?id=2'" style="cursor: pointer;">Yêu cầu hủy</td>
                 <td class="${currentStatus == 'canceled' ? 'active' : ''}" onclick="window.location.href = 'canceled?id=2'" style="cursor: pointer;">Đã hủy</td>
+                <td class="${currentStatus == 'returning' ? 'active' : ''}" onclick="window.location.href = 'returning?id=2'" style="cursor: pointer;">Yêu cầu trả hàng</td>
                 <td class="${currentStatus == 'returned' ? 'active' : ''}" onclick="window.location.href = 'returned?id=2'" style="cursor: pointer;">Đã trả hàng</td>
                 <td class="${currentStatus == 'unpaid' ? 'active' : ''}" onclick="window.location.href = 'unpaid?id=2'" style="cursor: pointer;">Chưa thanh toán</td>
                 <td class="${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate?id=2'" style="cursor: pointer;">Cần đánh giá</td>
@@ -136,18 +138,49 @@
                         <th>Xác nhận đơn hàng</th>
                         <th>Xem lý do hủy</th>
                         <th>Xem lý do hoàn</th>
+                        <th>Xem đánh giá</th>
                     </tr>
-                    <c:forEach items="${lists}" var="order">
+                    <c:forEach items="${lists}" var="order" varStatus="status">
                         <tr>
-                            <td>${stt+1}</td>
+                            <td>${status.index+1}</td>
                             <td>${order.orderDate}</td>
                             <td>${order.totalAmount}</td>
                             <td>${order.orderstatus.statusName}</td>
                             <td>${order.paymentstatus.statusName}</td>
                             <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">Xem đơn</button></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <c:set var="orderstatus" value="${order.orderstatus.statusName}"/>
+                            <c:set var="paymentstatus" value="${order.paymentstatus.statusName}"/>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${orderstatus=='Chờ xác nhận'}">
+                                        <button onclick="window.location.href = 'ConfirmlOrder?id=${order.orderID}'">Xác nhận đơn hàng</button>
+                                    </c:when>
+                                    <c:otherwise>
+
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>        
+                            <td>
+                                <c:choose>
+                                    <c:when test="${orderstatus=='Đã hủy'}">
+                                        <button onclick="window.location.href = 'ViewCancelReason?id=${order.orderID}'">Xem lý do hủy</button>
+                                    </c:when>
+                                    <c:otherwise>
+
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${orderstatus=='Trả hàng'}">
+                                        <button onclick="window.location.href = 'ViewReturnReason?id=${order.orderID}'">Xem lý do hoàn</button>
+                                    </c:when>
+                                    <c:otherwise>
+                            
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            
                         </tr>
                     </c:forEach>
                 </table>

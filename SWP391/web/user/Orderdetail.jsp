@@ -16,84 +16,93 @@
         <style>
             body {
                 font-family: 'Segoe UI', sans-serif;
-                background: linear-gradient(to right, #f0f4f8, #ffffff);
+                background-color: #f4f6f9;
                 margin: 0;
-                padding: 20px;
+                padding: 30px;
             }
 
             h1 {
                 text-align: center;
                 color: #333;
                 margin-bottom: 30px;
-                font-size: 2rem;
             }
 
             table {
                 width: 100%;
                 border-collapse: collapse;
                 background-color: #fff;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
                 border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
                 overflow: hidden;
-                animation: fadeIn 0.6s ease-in-out;
             }
 
             th, td {
-                padding: 16px 12px;
+                padding: 15px;
                 text-align: center;
-                font-size: 1rem;
+                border-bottom: 1px solid #eee;
             }
 
             th {
-                background-color: #1976d2;
-                color: #fff;
-                text-transform: uppercase;
-                letter-spacing: 1px;
+                background-color: #1e88e5;
+                color: white;
+                font-weight: 500;
             }
 
-            tr:nth-child(even) {
-                background-color: #f9f9f9;
+            tr:last-child td {
+                border-bottom: none;
             }
 
-            tr:hover {
-                background-color: #eef6ff;
-                transition: background-color 0.3s ease;
+            img {
+                border-radius: 8px;
+                transition: transform 0.3s;
+            }
+
+            img:hover {
+                transform: scale(1.05);
             }
 
             button {
                 background: none;
                 border: none;
                 cursor: pointer;
-                transition: transform 0.2s ease;
             }
 
-            button:hover img {
-                transform: scale(1.05);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            /* Dòng thông tin đơn hàng */
+            .order-info {
+                margin-top: 30px;
             }
 
-            img {
-                border-radius: 8px;
-                transition: all 0.3s ease;
+            .order-info tr td:first-child {
+                text-align: right;
+                font-weight: bold;
+                color: #555;
+                width: 30%;
             }
 
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(10px);
+            .order-info tr td:last-child {
+                text-align: left;
+                padding-left: 10px;
+                color: #333;
+            }
+
+            @media (max-width: 768px) {
+                table, th, td {
+                    font-size: 14px;
                 }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
+
+                img {
+                    width: 80px;
                 }
             }
         </style>
 
     </head>
     <body>
+        <a href="OrderManager">Trở về</a>
         <h1>Order Detail</h1>
         <c:set var="stt" value="0"/>
         <c:set var="lists" value="${list}"/>
+        <c:set var="order" value="${od}"/>
         <table>
             <tr>
                 <th>STT</th>
@@ -102,14 +111,44 @@
                 <th>Giá</th>
                 <th>Đơn giá</th>
             </tr>
-            <tr>
-                <c:forEach items="${lists}" var="orderdetail">
-                    <td>${stt+1}</td>
-                    <td><button type="button" onclick="window.location.href = 'LaptopInfo?id=${orderdetail.laptop.laptopID}'"><img src="images/${orderdetail.laptop.imageURL}" width="100" alt="${orderdetail.laptop.laptopName}" /></button></td>
+            <c:forEach items="${lists}" var="orderdetail" varStatus="status">
+                <tr>
+                    <td>${status.index + 1}</td>
+                    <td>
+                        <button type="button" onclick="window.location.href = 'LaptopInfo?id=${orderdetail.laptop.laptopID}'">
+                            <img src="images/${orderdetail.laptop.imageURL}" width="100" alt="${orderdetail.laptop.laptopName}" />
+                        </button>
+                    </td>
                     <td>${orderdetail.quantity}</td>
                     <td><fmt:formatNumber value="${orderdetail.laptop.price}" type="number" groupingUsed="true"/> VNĐ</td>
                     <td><fmt:formatNumber value="${orderdetail.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
-                </c:forEach>
+                </tr>
+            </c:forEach>
+        </table>
+        <table class="order-info">
+            <tr>
+                <td>Voucher:</td>
+                <td>${order.voucher.vouchercode}</td>
+            </tr>
+            <tr>
+                <td>Phí ship:</td>
+                <td><fmt:formatNumber value="${order.shipfee.fee}" type="number" groupingUsed="true"/> VNĐ</td>
+            </tr>
+            <tr>
+                <td>Địa chỉ nhận hàng:</td>
+                <td>${order.address}</td>
+            </tr>
+            <tr>
+                <td>Số điện thoại người nhận:</td>
+                <td>${order.phoneNumber}</td>
+            </tr>
+            <tr>
+                <td>Hình thức thanh toán:</td>
+                <td>${order.paymentmethod.methodName}</td>
+            </tr>
+            <tr>
+                <td>Lưu ý:</td>
+                <td>${order.note}</td>
             </tr>
         </table>
     </body>

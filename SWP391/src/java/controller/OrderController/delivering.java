@@ -33,11 +33,25 @@ public class delivering extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        OrderDAO odao =new OrderDAO();
-        List<Order> list = odao.getListUserOrderByStatusName("Đang giao",1);
-        request.setAttribute("OrderStatus","delivering" );
-        request.setAttribute("list", list);
-        request.getRequestDispatcher("user/delivering.jsp").forward(request, response);
+        OrderDAO odao = new OrderDAO();
+        String id_raw = request.getParameter("id");
+        try {
+            int id = Integer.parseInt(id_raw);
+            if (id == 1) {
+                List<Order> list = odao.getListUserOrderByStatusName("Đang giao", 1);
+                request.setAttribute("OrderStatus", "delivering");
+                request.setAttribute("list", list);
+                request.getRequestDispatcher("user/delivering.jsp").forward(request, response);
+            } else if (id == 2) {
+                List<Order> orderlist = odao.getListOrderByStatusName("Đang giao");
+                request.setAttribute("OrderStatus", "delivering");
+                request.setAttribute("orderlist", orderlist);
+                request.getRequestDispatcher("admin/managedelivering.jsp").forward(request, response);
+            }
+        }
+        catch(NumberFormatException e){
+            e.printStackTrace();
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
