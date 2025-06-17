@@ -5,33 +5,49 @@
 package model;
 
 import java.math.BigDecimal;
+
 /**
  *
  * @author Window 11
  */
-
 public class Laptop {
+
     private int laptopID;
     private String laptopName;
-    private BigDecimal price;
+    private int price;
     private int stock;
     private String description;
     private String imageURL;
     private String hardDrive;
-    private Status status;
+    private int status;
     private String warrantyPeriod;
-    private CPU cpu;         
-    private ScreenSize screen;
+    private int cpu;
+    private int screen;
     private String ram;
-    private Brand brand;
-    private Category category;
+    private int brand;
+    private int category;
 
     // Constructors
-    public Laptop() {}
+    public Laptop() {
+    }
 
-    public Laptop(int laptopID, String laptopName, BigDecimal price, int stock, String description,
-                  String imageURL, String hardDrive, Status status, String warrantyPeriod,
-                  CPU cpu, ScreenSize screen, String ram, Brand brand, Category category) {
+    public Laptop(String laptopName, int price, int stock, String description, String imageURL, String hardDrive, int status, String warrantyPeriod, int cpu, int screen, String ram, int brand, int category) {
+        this.laptopName = laptopName;
+        this.price = price;
+        this.stock = stock;
+        this.description = description;
+        this.imageURL = imageURL;
+        this.hardDrive = hardDrive;
+        this.status = status;
+        this.warrantyPeriod = warrantyPeriod;
+        this.cpu = cpu;
+        this.screen = screen;
+        this.ram = ram;
+        this.brand = brand;
+        this.category = category;
+    }
+
+    public Laptop(int laptopID, String laptopName, int price, int stock, String description, String imageURL, String hardDrive, int status, String warrantyPeriod, int cpu, int screen, String ram, int brand, int category) {
         this.laptopID = laptopID;
         this.laptopName = laptopName;
         this.price = price;
@@ -48,7 +64,6 @@ public class Laptop {
         this.category = category;
     }
 
-    // Getters and Setters
     public int getLaptopID() {
         return laptopID;
     }
@@ -65,11 +80,11 @@ public class Laptop {
         this.laptopName = laptopName;
     }
 
-    public BigDecimal getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -105,11 +120,11 @@ public class Laptop {
         this.hardDrive = hardDrive;
     }
 
-    public Status getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatusID(Status status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -121,19 +136,19 @@ public class Laptop {
         this.warrantyPeriod = warrantyPeriod;
     }
 
-    public CPU getCpu() {
+    public int getCpu() {
         return cpu;
     }
 
-    public void setCpu(CPU cpu) {
+    public void setCpu(int cpu) {
         this.cpu = cpu;
     }
 
-    public ScreenSize getScreen() {
+    public int getScreen() {
         return screen;
     }
 
-    public void setScreen(ScreenSize screen) {
+    public void setScreen(int screen) {
         this.screen = screen;
     }
 
@@ -145,21 +160,20 @@ public class Laptop {
         this.ram = ram;
     }
 
-    public Brand getBrand() {
+    public int getBrand() {
         return brand;
     }
 
-    public void setBrand(Brand brand) {
+    public void setBrand(int brand) {
         this.brand = brand;
     }
 
-    public Category getCategory() {
+    public int getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 
 }
-

@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 
 /**
  *
@@ -63,16 +64,14 @@ public class CreateCategory extends HttpServlet {
         String categoryName = request.getParameter("categoryName");
         boolean checkExist = categoryDao.checkExistCategoryName(categoryName, 0);
         if (checkExist) {
-            String message = "Tên danh mục sản phẩm đã tồn tại";
-            request.setAttribute("message", message);
-            request.setAttribute("categoryName", categoryName);
-            request.getRequestDispatcher("/admin/CreateCategory.jsp").forward(request, response);
+           JSONObject json = new JSONObject();
+            json.put("message", "Tên danh mục sản phẩm đã tồn tại");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(json.toString());
             return;
         }
         int check = categoryDao.createCategory(categoryName);
-        if (check > 0) {
-            response.sendRedirect("getListCategory");
-        }
     }
 
     /**
