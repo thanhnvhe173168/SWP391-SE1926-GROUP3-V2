@@ -99,7 +99,8 @@
     </head>
     <body>
         <jsp:include page="/components/Header.jsp"></jsp:include>
-            <h1>Chi tiết đơn hàng</h1>
+        <a href="OrderList">Trở về</a>
+        <h1>Chi tiết đơn hàng</h1>
         <c:set var="stt" value="0"/>
         <c:set var="lists" value="${list}"/>
         <c:set var="order" value="${od}"/>

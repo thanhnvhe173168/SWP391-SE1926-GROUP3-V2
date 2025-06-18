@@ -149,7 +149,7 @@
                         <tr>
                             <td>${stt+1}</td>
                             <td>${order.orderDate}</td>
-                            <td>${order.totalAmount}</td>
+                            <td><fmt:formatNumber value="${order.totalAmount}" type="number" groupingUsed="true"/> VNĐ</td>
                             <td>${order.orderstatus.statusName}</td>
                             <td>${order.paymentstatus.statusName}</td>
                             <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">Xem đơn</button></td>
@@ -159,7 +159,7 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${orderstatus=='Chờ xác nhận'}">
-                                        <button onclick="window.location.href = 'CancelOrder?id=${order.orderID}'">Hủy đơn</button>
+                                        <button onclick="window.location.href = 'user/CancelOrder.jsp?id=${order.orderID}'">Hủy đơn</button>
                                     </c:when>
                                     <c:otherwise>
 
