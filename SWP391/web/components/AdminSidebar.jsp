@@ -43,6 +43,11 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link text-white <%= currentPage.contains("getListBlog") ? "active" : "" %>" href="getListBlog">
+                <i class="fas fa-tags me-2"></i> Quản lý blog
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link text-danger" href="logout">
                 <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
             </a>
