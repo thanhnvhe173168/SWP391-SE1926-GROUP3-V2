@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.Staff;
+package controller.UserController;
 
 import dao.UserDAO;
 import java.io.IOException;
@@ -13,15 +13,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 import model.User;
 
 /**
  *
  * @author linhd
  */
-@WebServlet(name="getListCustomer", urlPatterns={"/getListCustomer"})
-public class getListCustomer extends HttpServlet {
+@WebServlet(name="StaffDetail", urlPatterns={"/staffDetail"})
+public class StaffDetail extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +37,10 @@ public class getListCustomer extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet getListCustomer</title>");  
+            out.println("<title>Servlet StaffDetail</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet getListCustomer at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet StaffDetail at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -55,15 +54,16 @@ public class getListCustomer extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-     @Override
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        UserDAO dao = new UserDAO();
-        List<User> list = dao.getAllCustomer(); // Lấy toàn bộ khách hàng (RoleID = 3)
-
-        request.setAttribute("listCus", list);
-        request.getRequestDispatcher("staff/customerManagement.jsp").forward(request, response);
-    }
+        String idParam = request.getParameter("id");
+        int userId = Integer.parseInt(idParam);
+       UserDAO dao = new UserDAO();
+       User user = dao.getStaffByIDForView(userId);
+      request.setAttribute("user", user);
+       request.getRequestDispatcher("admin/StaffDetail.jsp").forward(request, response);
+    } 
 
     /** 
      * Handles the HTTP <code>POST</code> method.

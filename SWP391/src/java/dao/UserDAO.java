@@ -43,88 +43,8 @@ public class UserDAO extends ConnectDB {
         }
         return null;
     }
-    // Lấy danh sách User( chỉ những cột hiển thị trong danh sách) 
 
-    public List<User> getListUser() {
-        List<User> list = new ArrayList<>();
-        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users";
-
-        try {
-            PreparedStatement ps = connect.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                User U = new User(
-                        rs.getInt("UserID"),
-                        rs.getString("FullName"),
-                        rs.getString("Email"),
-                        rs.getString("PhoneNumber"),
-                        rs.getDate("RegistrationDate"),
-                        rs.getInt("RoleID"),
-                        rs.getInt("StatusID")
-                );
-                list.add(U);
-            }
-        } catch (Exception e) {
-            System.out.println("getAllUsers" + e.getMessage());
-        }
-
-        return list;
-    }
-
-    public User getUserByID(int userID) {
-        User user = null;
-        String sql = "SELECT * FROM Users WHERE UserID = ?";
-        try {
-            PreparedStatement ps = connect.prepareStatement(sql);
-            ps.setInt(1, userID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                user = new User();
-                user.setUserID(rs.getInt("UserID"));
-                user.setFullName(rs.getString("FullName"));
-                user.setEmail(rs.getString("Email"));
-                user.setRoleID(rs.getInt("RoleID"));
-                user.setStatusID(rs.getInt("StatusID"));
-                // add more fields if needed
-            }
-        } catch (SQLException e) {
-            System.out.println("getUserByID: " + e.getMessage());
-        }
-        return user;
-    }
-
-    public int createUser(User u) {
-
-        String sql = "Insert into Users(FullName, Email, PhoneNumber, Password, RoleID, StatusID) values (?, ?, ?, ?, ?, ?)";
-        int n = 0;
-        try {
-            PreparedStatement ps = connect.prepareStatement(sql);
-            ps.setString(1, u.getFullName());
-            ps.setString(2, u.getEmail());
-            ps.setString(3, u.getPhoneNumber());
-            ps.setString(4, u.getPassword());
-            ps.setInt(5, u.getRoleID());
-            ps.setInt(6, u.getStatusID());
-            return ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return n;
-    }
-
-    public int deleteUser(int uid) {
-        int n = 0;
-        String sql = "Delete from Users where UserID = ?";
-        try {
-            PreparedStatement ps = connect.prepareStatement(sql);
-            ps.setInt(1, uid);
-            n = ps.executeUpdate();
-        } catch (Exception e) {
-            System.out.println("deleteUser" + e.getMessage());
-        }
-        return n;
-    }
-
+    //update in profile  
     public int updateUser(User u) {
         int n = 0;
         String sql = "update Users set FullName = ?, PhoneNumber = ?, Password = ?, StatusID = ? where UserID = ?";
@@ -142,23 +62,35 @@ public class UserDAO extends ConnectDB {
         return n;
 
     }
+//Linh: StaffList
 
-    public int updateUserAd(int userID, int roleID, int statusID) {
-        int n = 0;
-        String sql = "UPDATE Users SET RoleID = ?, StatusID = ? WHERE UserID = ?";
+    public List<User> getListStaff() {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, StatusID FROM Users where roleID = 2";
+
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
-            ps.setInt(1, roleID);
-            ps.setInt(2, statusID);
-            ps.setInt(3, userID);
-            n = ps.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("updateUserAd: " + e.getMessage());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User U = new User(
+                        rs.getInt("UserID"),
+                        rs.getString("FullName"),
+                        rs.getString("Email"),
+                        rs.getString("PhoneNumber"),
+                        rs.getDate("RegistrationDate"),
+                        rs.getInt("StatusID")
+                );
+                list.add(U);
+            }
+        } catch (Exception e) {
+            System.out.println("getListStaff" + e.getMessage());
         }
-        return n;
+
+        return list;
     }
 
-    public User getUserByIDForView(int userID) {
+    //Linh: StaffDetail
+    public User getStaffByIDForView(int userID) {
         User user = null;
         String sql = "SELECT * FROM Users WHERE UserID = ?";
         try {
@@ -181,9 +113,55 @@ public class UserDAO extends ConnectDB {
         }
         return user;
     }
+//Linh: StaffEditAccount
 
-    // Tìm kiếm User theo FullName + lọc RoleID + StatusID
-    public List<User> searchUsers(String search, Integer roleID, Integer statusID) {
+    public User getStaffByID(int userID) {
+        User user = null;
+        String sql = "SELECT * FROM Users WHERE UserID = ?";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = new User();
+                user.setUserID(rs.getInt("UserID"));
+                user.setFullName(rs.getString("FullName"));
+                user.setPhoneNumber(rs.getString("PhoneNumber"));
+
+                user.setPassword(rs.getString("Password"));
+                user.setStatusID(rs.getInt("StatusID"));
+                user.setRoleID(rs.getInt("RoleID"));
+
+                // add more fields if needed
+            }
+        } catch (SQLException e) {
+            System.out.println("getUserByID: " + e.getMessage());
+        }
+        return user;
+    }
+//Linh: CreateAccountStaff
+
+    public int createUser(User user) {
+
+        String sql = "Insert into Users(FullName, Email, PhoneNumber, Password, RoleID, StatusID) values (?, ?, ?, ?, ?, ?)";
+        int n = 0;
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPhoneNumber());
+            ps.setString(4, user.getPassword());
+            ps.setInt(5, user.getRoleID());
+            ps.setInt(6, user.getStatusID());
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return n;
+    }
+
+    // Tìm kiếm User theo FullName + StatusID
+    public List<User> searchUser(String search, Integer statusID) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users WHERE 1=1";
 
@@ -191,9 +169,7 @@ public class UserDAO extends ConnectDB {
         if (search != null && !search.trim().isEmpty()) {
             sql += " AND FullName LIKE ?";
         }
-        if (roleID != null) {
-            sql += " AND RoleID = ?";
-        }
+
         if (statusID != null) {
             sql += " AND StatusID = ?";
         }
@@ -206,9 +182,7 @@ public class UserDAO extends ConnectDB {
             if (search != null && !search.trim().isEmpty()) {
                 ps.setString(index++, "%" + search.trim() + "%");
             }
-            if (roleID != null) {
-                ps.setInt(index++, roleID);
-            }
+
             if (statusID != null) {
                 ps.setInt(index++, statusID);
             }
@@ -221,7 +195,6 @@ public class UserDAO extends ConnectDB {
                         rs.getString("Email"),
                         rs.getString("PhoneNumber"),
                         rs.getDate("RegistrationDate"),
-                        rs.getInt("RoleID"),
                         rs.getInt("StatusID")
                 );
                 list.add(u);
@@ -232,27 +205,43 @@ public class UserDAO extends ConnectDB {
 
         return list;
     }
-    //Hien thi staff
 
-    public List<User> getAllCustomer() {
-        List<User> list = new ArrayList<>();
-        String sql = "SELECT UserID, FullName, Email, PhoneNumber FROM Users WHERE RoleID = 3";
+    public boolean changeStatus(int userID, int statusID) {
+    String sql = "UPDATE Users SET StatusID = ? WHERE UserID = ?";
+    try {
+        PreparedStatement ps = connect.prepareStatement(sql);
+        ps.setInt(1, statusID);
+        ps.setInt(2, userID);
+        int rowsAffected = ps.executeUpdate();
+        ps.close(); // Đóng PreparedStatement
+        System.out.println("Rows affected: " + rowsAffected);
+        return rowsAffected > 0;
+    } catch (Exception e) {
+        System.out.println("changeStatus error: " + e.getMessage());
+        return false;
+    }
+}
+//Linh: UserList
+    public List<User> getAllUser() {
+         List<User> list = new ArrayList<>();
+        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, StatusID FROM Users where roleID = 3";
 
-        try (PreparedStatement ps = connect.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                User customer = new User(
+                User U = new User(
                         rs.getInt("UserID"),
                         rs.getString("FullName"),
                         rs.getString("Email"),
-                        rs.getString("PhoneNumber")
+                        rs.getString("PhoneNumber"),
+                        rs.getDate("RegistrationDate"),
+                        rs.getInt("StatusID")
                 );
-                list.add(customer);
+                list.add(U);
             }
-
         } catch (Exception e) {
-            System.out.println("getAllCustomer: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("getAllUser" + e.getMessage());
         }
 
         return list;

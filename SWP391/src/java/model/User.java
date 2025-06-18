@@ -36,7 +36,7 @@ public class User {
         this.statusID = statusID;
     }
 
-    public User(int userID, String fullName, String email, String phoneNumber, Date Date, int roleID, int statusID) {
+    public User(int userID, String fullName, String email, String phoneNumber, Date Date, int statusID) {
         this.userID = userID;
         this.fullName = fullName;
         this.email = email;

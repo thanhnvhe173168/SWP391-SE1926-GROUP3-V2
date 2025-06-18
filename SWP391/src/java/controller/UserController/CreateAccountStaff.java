@@ -2,6 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
+
 package controller.UserController;
 
 import dao.UserDAO;
@@ -18,39 +19,36 @@ import model.User;
  *
  * @author linhd
  */
-@WebServlet(name = "createUser", urlPatterns = {"/admin/createUser"})
-public class createUser extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
+@WebServlet(name="CreateAccountStaff", urlPatterns={"createAccountStaff"})
+public class CreateAccountStaff extends HttpServlet {
+   
+    /** 
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet createUser</title>");
+            out.println("<title>Servlet CreateAccountStaff</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet createUser at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet CreateAccountStaff at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    }
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
+    /** 
      * Handles the HTTP <code>GET</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -58,13 +56,44 @@ public class createUser extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
+    throws ServletException, IOException {
+          try {
+            String fullName = request.getParameter("fullName");
+            String email = request.getParameter("email");
+            String phoneNumber = request.getParameter("phoneNumber");
+            String password = request.getParameter("password");
+            int roleID = Integer.parseInt(request.getParameter("roleId"));
+            int statusID = Integer.parseInt(request.getParameter("statusId"));
+            
+            UserDAO dao = new UserDAO();
+            if(dao.checkExistUser(email)!=null){
+                request.setAttribute("error", "Email already exists");
+                request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
+                return;
+            }
+            User user = new User();
+            user.setFullName(fullName);
+            user.setEmail(email);
+            user.setPhoneNumber(phoneNumber);
+            user.setPassword(password);
+            user.setRoleID(roleID);
+            user.setStatusID(statusID);
+            
+            int result = dao.createUser(user);
+            if(result>0){
+                response.sendRedirect("StaffList");
+            }else{
+                request.setAttribute("error","Error when add new staff");
+                request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    } 
 
-    /**
+    /** 
      * Handles the HTTP <code>POST</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -72,42 +101,12 @@ public class createUser extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String fullName = request.getParameter("fullName");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String phoneNumber = request.getParameter("phoneNumber");
-        int roleID = Integer.parseInt(request.getParameter("roleID"));
-        int statusID = Integer.parseInt(request.getParameter("statusID"));
-
-        UserDAO dao = new UserDAO();
-        if (dao.checkExistUser(email) != null) {
-            request.setAttribute("error", "Email already exists");
-            request.getRequestDispatcher("/admin/CreateUser.jsp").forward(request, response);
-            return;
-        }
-
-        User newUser = new User();
-        newUser.setFullName(fullName);
-        newUser.setEmail(email);
-        newUser.setPassword(password);
-        newUser.setPhoneNumber(phoneNumber);
-        newUser.setRoleID(roleID);
-        newUser.setStatusID(statusID);
-
-        int result = dao.createUser(newUser);
-        if (result > 0) {
-            response.sendRedirect("getListUser");
-        } else {
-            request.setAttribute("error", "Lỗi khi thêm người dùng mới");
-            request.getRequestDispatcher("/admin/CreateUser.jsp").forward(request, response);
-
-        }
+    throws ServletException, IOException {
+      
     }
 
-    /**
+    /** 
      * Returns a short description of the servlet.
-     *
      * @return a String containing servlet description
      */
     @Override

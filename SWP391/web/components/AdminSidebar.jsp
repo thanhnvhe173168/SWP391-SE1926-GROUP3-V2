@@ -18,8 +18,13 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white <%= currentPage.contains("getListUser") ? "active" : "" %>" href="getListUser">
-                <i class="fas fa-users me-2"></i> Quản lý người dùng
+            <a class="nav-link text-white <%= currentPage.contains("getListUser") ? "active" : "" %>" href="staffList">
+                <i class="fas fa-users me-2"></i> Quản lý nhân viên
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= currentPage.contains("getListUser") ? "active" : "" %>" href="userList">
+                <i class="fas fa-users me-2"></i> Quản lý khách hàng
             </a>
         </li>
         <li class="nav-item">
