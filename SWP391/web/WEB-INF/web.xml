@@ -8,4 +8,13 @@
         <servlet-name>CartSeverlet</servlet-name>
         <url-pattern>/CartSeverlet</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>CreateAccountStaff</servlet-name>
+        <servlet-class>controller.UserController.CreateAccountStaff</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CreateAccountStaff</servlet-name>
+        <url-pattern>/createAccountStaff</url-pattern>
+    </servlet-mapping>
 </web-app>

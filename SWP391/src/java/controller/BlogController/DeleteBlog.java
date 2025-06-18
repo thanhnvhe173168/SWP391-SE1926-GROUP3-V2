@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.UserController;
+package controller.BlogController;
 
-import dao.UserDAO;
+import dao.BlogDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,14 +12,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.User;
 
 /**
  *
- * @author linhd
+ * @author Admin
  */
-@WebServlet(name = "createUser", urlPatterns = {"/admin/createUser"})
-public class createUser extends HttpServlet {
+@WebServlet(name = "DeleteBlog", urlPatterns = {"/deleteBlog"})
+public class DeleteBlog extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,19 +31,10 @@ public class createUser extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet createUser</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet createUser at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        BlogDAO blogDao = new BlogDAO();
+        int blogId = Integer.parseInt(request.getParameter("blogId"));
+        blogDao.deleteBlog(blogId);
+        response.sendRedirect("getListBlog");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -73,36 +63,7 @@ public class createUser extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String fullName = request.getParameter("fullName");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String phoneNumber = request.getParameter("phoneNumber");
-        int roleID = Integer.parseInt(request.getParameter("roleID"));
-        int statusID = Integer.parseInt(request.getParameter("statusID"));
-
-        UserDAO dao = new UserDAO();
-        if (dao.checkExistUser(email) != null) {
-            request.setAttribute("error", "Email already exists");
-            request.getRequestDispatcher("/admin/CreateUser.jsp").forward(request, response);
-            return;
-        }
-
-        User newUser = new User();
-        newUser.setFullName(fullName);
-        newUser.setEmail(email);
-        newUser.setPassword(password);
-        newUser.setPhoneNumber(phoneNumber);
-        newUser.setRoleID(roleID);
-        newUser.setStatusID(statusID);
-
-        int result = dao.createUser(newUser);
-        if (result > 0) {
-            response.sendRedirect("getListUser");
-        } else {
-            request.setAttribute("error", "Lỗi khi thêm người dùng mới");
-            request.getRequestDispatcher("/admin/CreateUser.jsp").forward(request, response);
-
-        }
+        processRequest(request, response);
     }
 
     /**

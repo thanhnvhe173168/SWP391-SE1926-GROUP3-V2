@@ -3,9 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.Staff;
+package controller.UserController;
 
-import dao.OrderDAO;
 import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,13 +13,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.User;
 
 /**
  *
  * @author linhd
  */
-@WebServlet(name="ViewCustomer", urlPatterns={"/viewCustomer"})
-public class ViewCustomer extends HttpServlet {
+@WebServlet(name="StaffDetail", urlPatterns={"/staffDetail"})
+public class StaffDetail extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -37,10 +37,10 @@ public class ViewCustomer extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewCustomer</title>");  
+            out.println("<title>Servlet StaffDetail</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewCustomer at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet StaffDetail at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,13 +57,12 @@ public class ViewCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        try {
-            int userID = Integer.parseInt(request.getParameter("id"));
-            UserDAO userDAO = new UserDAO();
-            OrderDAO orderDAO = new OrderDAO();
-            
-        } catch (Exception e) {
-        }
+        String idParam = request.getParameter("id");
+        int userId = Integer.parseInt(idParam);
+       UserDAO dao = new UserDAO();
+       User user = dao.getStaffByIDForView(userId);
+      request.setAttribute("user", user);
+       request.getRequestDispatcher("admin/StaffDetail.jsp").forward(request, response);
     } 
 
     /** 

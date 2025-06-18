@@ -3,9 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.UserController;
+package controller.Guest;
 
-import dao.UserDAO;
+import dao.BlogDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,13 +13,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.ResultSet;
 
 /**
  *
- * @author linhd
+ * @author Admin
  */
-@WebServlet(name="DeleteUser", urlPatterns={"/deleteUser"})
-public class DeleteUser extends HttpServlet {
+@WebServlet(name="BlogList", urlPatterns={"/blogList"})
+public class BlogList extends HttpServlet {
+    
+    private static int PAGE_SIZE = 9;
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -30,19 +33,24 @@ public class DeleteUser extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet DeleteUser</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet DeleteUser at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        BlogDAO blogDao = new BlogDAO();
+
+        int currentPage = request.getParameter("currentPage") != null
+                ? Integer.parseInt(request.getParameter("currentPage"))
+                : 1;
+        ResultSet rsBlog = blogDao.getListBlog(currentPage, PAGE_SIZE);
+        int totalPage = 0;
+        int totalRecord = blogDao.getTotalRecord("Select * from Blog");
+        if (totalRecord % PAGE_SIZE != 0) {
+            totalPage = totalRecord / PAGE_SIZE + 1;
+        } else {
+            totalPage = totalRecord / PAGE_SIZE;
         }
+
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("totalPage", totalPage);
+        request.setAttribute("rsBlog", rsBlog);
+        request.getRequestDispatcher("/guest/BlogList.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -56,13 +64,7 @@ public class DeleteUser extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-       UserDAO dao = new UserDAO();
-       int uid = Integer.parseInt(request.getParameter("uid"));
-       int check = dao.deleteUser(uid);
-       if(check>0){
-           response.sendRedirect("getListUser");
-       }
-       
+        processRequest(request, response);
     } 
 
     /** 
