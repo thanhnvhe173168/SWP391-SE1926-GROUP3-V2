@@ -13,8 +13,8 @@
     <h4 class="text-center py-3">Admin Panel</h4>
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link text-white <%= currentPage.contains("statistic") ? "active" : "" %>" href="home">
-                🏠 Trang chủ
+            <a class="nav-link text-white <%= currentPage.contains("dashboard") ? "active" : "" %>" href="dashboard">
+                🏠Dashboard
             </a>
         </li>
         <li class="nav-item">

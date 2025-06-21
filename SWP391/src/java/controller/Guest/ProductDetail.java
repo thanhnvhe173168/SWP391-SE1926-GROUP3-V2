@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
+
 package controller.Guest;
 
-import dao.BlogDAO;
 import dao.LaptopDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,28 +19,28 @@ import java.sql.ResultSet;
  *
  * @author Admin
  */
-@WebServlet(name = "Home", urlPatterns = {"/home"})
-public class Home extends HttpServlet {
-
-    private static int PAGE_SIZE = 3;
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
+@WebServlet(name="ProductDetail", urlPatterns={"/productDetail"})
+public class ProductDetail extends HttpServlet {
+   
+    /** 
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-    }
+    throws ServletException, IOException {
+        LaptopDAO laptopDao = new LaptopDAO();
+        int productId = Integer.parseInt(request.getParameter("productId"));
+        ResultSet rsLaptop = laptopDao.getDetailLaptop(productId);
+        request.setAttribute("rsLaptop", rsLaptop);
+        request.getRequestDispatcher("/guest/ProductDetail.jsp").forward(request, response);
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
+    /** 
      * Handles the HTTP <code>GET</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -48,31 +48,12 @@ public class Home extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        LaptopDAO laptopDao = new LaptopDAO();
-        BlogDAO blogDao = new BlogDAO();
+    throws ServletException, IOException {
+        processRequest(request, response);
+    } 
 
-        ResultSet rsBrand = laptopDao.getData("Select * from Brand");
-        ResultSet rsCategory = laptopDao.getData("Select * from Category");
-        ResultSet rsCPU = laptopDao.getData("Select * from CPU");
-        ResultSet rsScreen = laptopDao.getData("Select * from ScreenSize");
-        
-        ResultSet rsBlog = blogDao.getListBlog(1, PAGE_SIZE);
-
-        ResultSet rsLaptop = laptopDao.getListLaptop(1, PAGE_SIZE, null, 0, 0, 0, 0, 0);
-        request.setAttribute("rsBrand", rsBrand);
-        request.setAttribute("rsCategory", rsCategory);
-        request.setAttribute("rsCPU", rsCPU);
-        request.setAttribute("rsScreen", rsScreen);
-        request.setAttribute("rsLaptop", rsLaptop);
-        request.setAttribute("rsBlog", rsBlog);
-
-        request.getRequestDispatcher("/guest/HomePage.jsp").forward(request, response);
-    }
-
-    /**
+    /** 
      * Handles the HTTP <code>POST</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -80,13 +61,12 @@ public class Home extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
+    /** 
      * Returns a short description of the servlet.
-     *
      * @return a String containing servlet description
      */
     @Override
