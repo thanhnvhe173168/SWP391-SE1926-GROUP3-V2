@@ -1,20 +1,21 @@
 <%-- 
-    Document   : evaluate
-    Created on : Jun 11, 2025, 2:01:26 AM
+    Document   : completed
+    Created on : Jun 20, 2025, 11:46:45 AM
     Author     : Window 11
 --%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.*" %>
 <%@page import="dao.*" %>
 <%@page import="java.util.List" %>
 <%@page import="java.util.ArrayList" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Evaluate order Page</title>
+        <title>List Completed Order</title>
         <style>
             body {
                 font-family: 'Segoe UI', sans-serif;
@@ -102,10 +103,12 @@
                 font-size: 16px;
             }
         </style>
+
+
     </head>
     <body>
         <jsp:include page="/components/Header.jsp"></jsp:include>
-            <h1>Đơn hàng cần đánh giá</h1>
+            <h1>Đơn hàng hoàn tất</h1>
         <c:set var="currentStatus" value="${OrderStatus}" />
 
         <table>
@@ -123,10 +126,11 @@
                 <td class="${currentStatus == 'completed' ? 'active' : ''}" onclick="window.location.href = 'completed?id=1'" style="cursor: pointer;">Hoàn tất</td>
             </tr>
         </table>
-        <c:set var="lists" value="${list}"/> 
+
+        <c:set var="orderlists" value="${orderlist}"/> 
         <c:set var="stt" value="0"/>
         <c:choose>
-            <c:when test="${empty lists}">
+            <c:when test="${empty orderlists}">
                 <P>Không có đơn hàng nào</P>
                 </c:when>
                 <c:otherwise>
@@ -139,8 +143,9 @@
                         <th>Trạng thái thanh toán</th>
                         <th>Xem đơn</th>
                         <th>Đánh giá</th>
+                        <th>Mua lại</th>
                     </tr>
-                    <c:forEach items="${lists}" var="order">
+                    <c:forEach items="${orderlists}" var="order">
                         <tr>
                             <td>${stt+1}</td>
                             <td>${order.orderDate}</td>
@@ -148,7 +153,24 @@
                             <td>${order.orderstatus.statusName}</td>
                             <td>${order.paymentstatus.statusName}</td>
                             <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">Xem đơn</button></td>
-                            <td><button onclick="window.location.href = 'ReviewOrder?id=${order.orderID}'">Đánh giá</button></td>
+                            <c:set var="orderstatus" value="${order.orderstatus.statusName}"/>
+                            <c:set var="paymentstatus" value="${order.paymentstatus.statusName}"/>
+                            <c:set var="orderneedreviews" value="${orderneedreview}"/>
+                            <td>
+                                <c:forEach items="${orderneedreviews}" var="orderneed">
+                                    <c:choose>
+                                        <c:when test="${order.orderID==orderneed.orderID}">
+                                            <button onclick="window.location.href = 'ReviewOrder?id=${order.orderID}'">Đánh giá</button>
+                                        </c:when>
+                                        <c:otherwise>
+
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </td>
+                            <td>
+                                        <button onclick="window.location.href = 'ReOrder?id=${order.orderID}'">Mua lại</button>
+                            </td>
                         </tr>
                     </c:forEach>
                 </table>

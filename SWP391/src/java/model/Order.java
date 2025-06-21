@@ -25,6 +25,8 @@ public class Order {
     private Status orderstatus;
     private Status paymentstatus;
     private LocalDate paymentdate;
+    private LocalDate returnDate;
+    private String reasonReturn;
 
     public Order() {
     }
@@ -58,6 +60,24 @@ public class Order {
         this.orderstatus = orderstatus;
         this.paymentstatus = paymentstatus;
         this.paymentdate = paymentdate;
+    }
+
+    public Order(int orderID, int userID, LocalDate orderDate, FeeShip shipfee, Voucher voucher, PaymentMethod paymentmethod, String phoneNumber, BigDecimal totalAmount, String address, String note, Status orderstatus, Status paymentstatus, LocalDate paymentdate, LocalDate returnDate, String reasonReturn) {
+        this.orderID = orderID;
+        this.userID = userID;
+        this.orderDate = orderDate;
+        this.shipfee = shipfee;
+        this.voucher = voucher;
+        this.paymentmethod = paymentmethod;
+        this.phoneNumber = phoneNumber;
+        this.totalAmount = totalAmount;
+        this.address = address;
+        this.note = note;
+        this.orderstatus = orderstatus;
+        this.paymentstatus = paymentstatus;
+        this.paymentdate = paymentdate;
+        this.returnDate = returnDate;
+        this.reasonReturn = reasonReturn;
     }
 
    
@@ -164,6 +184,22 @@ public class Order {
 
     public void setPaymentdate(LocalDate paymentdate) {
         this.paymentdate = paymentdate;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public String getReasonReturn() {
+        return reasonReturn;
+    }
+
+    public void setReasonReturn(String reasonReturn) {
+        this.reasonReturn = reasonReturn;
     }
 
     

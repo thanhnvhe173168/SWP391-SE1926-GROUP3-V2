@@ -14,6 +14,7 @@
         <title>Laptop Store - Homepage</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             .laptop-card {
                 transition: transform 0.2s;
@@ -26,54 +27,26 @@
                 object-fit: cover;
             }
         </style>
-        <script>
-    window.alert = function (message, timeout = null) {
-        const alert = document.createElement('div');
-        const alertButton = document.createElement('button');
-        alertButton.innerHTML = 'OK';
-        alert.classList.add('alert');
-        alert.setAttribute('style', `
-            position: fixed;
-            top: 50px;
-            left: 50%;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 5px 0 #00000022;
-            display: flex;
-            flex-direction: column;
-            transform: translateX(-50%);
-            background-color: #5ced73;
-            z-index: 9999;
-        `);
-                alertButton.setAttribute('style', `
-            border: 1px solid #333;
-            background: white;
-            border-radius: 5px;
-            padding: 5px;
-            margin-top: 10px;
-            cursor: pointer;
-        `);
-                alert.innerHTML = `<span style="padding: 10px">${mess}</span>`;
-                alert.appendChild(alertButton);
-                alertButton.addEventListener('click', (e) => {
-                    alert.remove();
-                });
-                if (timeout !== null) {
-                    setTimeout(() => {
-                        alert.remove();
-                    }, Number(timeout));
-                }
-                document.body.appendChild(alert);
-            };
-        </script>
     </head>
     <body>
-        <% String mess = (String) request.getAttribute("mess"); %>
-        <% if (mess != null) { %>
+        <%
+        String mess = (String) request.getAttribute("mess");
+        String icon = (String) request.getAttribute("icon");
+        if (mess != null && icon != null) {
+        %>
         <script>
-        window.alert("<%= mess %>", 3000);
+            Swal.fire({
+                icon: '<%= icon %>',
+                title: '<%= mess %>',
+                showConfirmButton: false,
+                timer: 2000
+            });
         </script>
-        <% } %>
+        <%
+            }
+        %>
+
+
         <%
            ResultSet rsBrand = (ResultSet) request.getAttribute("rsBrand");
            ResultSet rsCategory = (ResultSet) request.getAttribute("rsCategory");
@@ -150,7 +123,7 @@
                             <p class="card-text"><%=rsLaptop.getString("Size")%>, <%=rsLaptop.getString("CPUInfo")%>, <%=rsLaptop.getString("RAM")%>, <%=rsLaptop.getString("HardDrive")%></p>
                             <p class="card-text fw-bold"><%=rsLaptop.getInt("Price")%></p>
                             <a href="product.jsp?id=1" class="btn btn-primary">View Details</a>
-                            <button class="btn btn-success ms-2" onclick="window.location.href='AddToCart?id=<%=rsLaptop.getInt("LaptopID")%>'">
+                            <button class="btn btn-success ms-2" onclick="window.location.href = 'AddToCart?id=<%=rsLaptop.getInt("LaptopID")%>'">
                                 Add to Cart
                             </button>
                         </div>

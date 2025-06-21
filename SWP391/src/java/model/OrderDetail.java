@@ -9,6 +9,7 @@ package model;
  * @author Window 11
  */
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class OrderDetail {
     private int orderID;
@@ -16,17 +17,47 @@ public class OrderDetail {
     private int quantity;
     private BigDecimal unitPrice;
     private Review review;
+    private Status orderDetailStatus;
+    private String reasonReturn;
+    private LocalDate returnDate;
+    private boolean isSelect;
 
     public OrderDetail() {
     }
 
-    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Review review) {
+    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Review review, Status orderDetailStatus, String reasonReturn, LocalDate returnDate) {
         this.orderID = orderID;
         this.laptop = laptop;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.review = review;
+        this.orderDetailStatus = orderDetailStatus;
+        this.reasonReturn = reasonReturn;
+        this.returnDate = returnDate;
     }
+
+    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Review review, Status orderDetailStatus) {
+        this.orderID = orderID;
+        this.laptop = laptop;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.review = review;
+        this.orderDetailStatus = orderDetailStatus;
+    }
+
+    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Review review, Status orderDetailStatus, String reasonReturn, LocalDate returnDate, boolean isSelect) {
+        this.orderID = orderID;
+        this.laptop = laptop;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.review = review;
+        this.orderDetailStatus = orderDetailStatus;
+        this.reasonReturn = reasonReturn;
+        this.returnDate = returnDate;
+        this.isSelect = isSelect;
+    }
+    
+    
 
     public int getOrderID() {
         return orderID;
@@ -68,6 +99,39 @@ public class OrderDetail {
         this.review = review;
     }
 
+    public Status getOrderDetailStatus() {
+        return orderDetailStatus;
+    }
+
+    public void setOrderDetailStatus(Status orderDetailStatus) {
+        this.orderDetailStatus = orderDetailStatus;
+    }
+
+    public String getReasonReturn() {
+        return reasonReturn;
+    }
+
+    public void setReasonReturn(String reasonReturn) {
+        this.reasonReturn = reasonReturn;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public boolean isIsSelect() {
+        return isSelect;
+    }
+
+    public void setIsSelect(boolean isSelect) {
+        this.isSelect = isSelect;
+    }
+
+    
     
     
 

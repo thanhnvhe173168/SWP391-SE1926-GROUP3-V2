@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.List;
 import model.Cart;
 import model.CartDetail;
@@ -73,15 +74,17 @@ public class AddToCart extends HttpServlet {
         CartDetailDAO cddao = new CartDetailDAO();
         String id_raw = request.getParameter("id");
         String mess="";
+        Cart cart = cdao.GetCartByUserID(user.getUserID());
+        BigDecimal total = cart.getTotal();
         try{
             int id = Integer.parseInt(id_raw);
             Laptop lap = ldao.getLaptopById(id);
-            Cart cart = cdao.GetCartByUserID(user.getUserID());
             List<CartDetail> listcartdetail = cddao.ListCart(cart.getCartID());
             for(CartDetail cd : listcartdetail){
                 if(cd.getLaptop().getLaptopID()==id){
                     mess="Sản phẩm đã có trong giỏ hàng.";
                     request.setAttribute("mess", mess);
+                    request.setAttribute("icon", "warning");
                     request.getRequestDispatcher("home").forward(request, response);
                     return;
                 }
@@ -92,10 +95,12 @@ public class AddToCart extends HttpServlet {
             cartdetail.setQuantity(1);
             cartdetail.setUnitPrice(lap.getPrice());
             cartdetail.setIsSelect(true);
-            listcartdetail.add(cartdetail);
             cddao.AddCart(cartdetail);
+            total = total.add(cartdetail.getUnitPrice());
+            cdao.uppdateTotal(cart.getCartID(), total);
             mess="Thêm vào giỏ hàng thành công !";
             request.setAttribute("mess", mess);
+            request.setAttribute("icon", "success");
             request.getRequestDispatcher("home").forward(request, response);
         }
         catch(NumberFormatException e){

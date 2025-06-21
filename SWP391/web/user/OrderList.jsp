@@ -11,10 +11,12 @@
 <%@page import="java.util.ArrayList" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <title>OrderList</title>
         <style>
             body {
@@ -103,10 +105,42 @@
                 font-size: 16px;
             }
         </style>
+        <script>
+            function confirmCancel() {
+                Swal.fire({
+                    title: "Bạn chắc chắn muốn hủy đơn?",
+                    text: "Sau khi hủy sẽ không thể hoàn tác!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Vâng, hủy đơn",
+                    cancelButtonText: "Không"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById("cancelform").submit();
+                    }
+                });
+            }
 
-
+        </script>
     </head>
     <body>
+        <%
+     String mess = (String) request.getAttribute("mess");
+     if (mess != null) {
+        %>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '<%= mess %>',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        </script>
+        <%
+            }
+        %>
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <h1>Đơn hàng</h1>
         <c:set var="currentStatus" value="${OrderStatus}" />
@@ -115,12 +149,15 @@
             <tr>
                 <td class="${currentStatus == 'OrderList' ? 'active' : ''}" onclick="window.location.href = 'OrderList'" style="cursor: pointer;">Tất cả đơn</td>
                 <td class="${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed?id=1'" style="cursor: pointer;">Chờ xác nhận</td>
+                <td class="${currentStatus == 'confirmed' ? 'active' : ''}" onclick="window.location.href = 'confirmed?id=1'" style="cursor: pointer;">Đã xác nhận</td>
                 <td class="${currentStatus == 'delivering' ? 'active' : ''}" onclick="window.location.href = 'delivering?id=1'" style="cursor: pointer;">Đang giao</td>
                 <td class="${currentStatus == 'delivered' ? 'active' : ''}" onclick="window.location.href = 'delivered?id=1'" style="cursor: pointer;">Đã giao</td>
                 <td class="${currentStatus == 'canceled' ? 'active' : ''}" onclick="window.location.href = 'canceled?id=1'" style="cursor: pointer;">Đã hủy</td>
+                <td class="${currentStatus == 'wantreturn' ? 'active' : ''}" onclick="window.location.href = 'wantreturn?id=1'" style="cursor: pointer;">Yêu cầu trả hàng</td>
                 <td class="${currentStatus == 'returned' ? 'active' : ''}" onclick="window.location.href = 'returned?id=1'" style="cursor: pointer;">Đã trả hàng</td>
                 <td class="${currentStatus == 'unpaid' ? 'active' : ''}" onclick="window.location.href = 'unpaid?id=1'" style="cursor: pointer;">Chưa thanh toán</td>
                 <td class="${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate?id=1'" style="cursor: pointer;">Cần đánh giá</td>
+                <td class="${currentStatus == 'completed' ? 'active' : ''}" onclick="window.location.href = 'completed?id=1'" style="cursor: pointer;">Hoàn tất</td>
             </tr>
         </table>
 
@@ -141,7 +178,6 @@
                         <th>Xem đơn</th>
                         <th>Hủy đơn</th>
                         <th>Trả hàng</th>
-                        <th>Thanh toán</th>
                         <th>Đánh giá</th>
                         <th>Mua lại</th>
                     </tr>
@@ -159,7 +195,10 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${orderstatus=='Chờ xác nhận'}">
-                                        <button onclick="window.location.href = 'user/CancelOrder.jsp?id=${order.orderID}'">Hủy đơn</button>
+                                        <form id="cancelform" action="CancelOrder" method="post">
+                                            <input type="hidden" name="id" value="${order.orderID}">
+                                            <button type="button" onclick="confirmCancel()">Hủy đơn</button>
+                                        </form>
                                     </c:when>
                                     <c:otherwise>
 
@@ -169,22 +208,12 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${orderstatus=='Đã giao'}">
-                                        <button onclick="window.location.href = 'ReturnOrder?id=${order.orderID}'">Hoàn đơn</button>
+                                        <button onclick="window.location.href = 'returnOrder?id=${order.orderID}'">Hoàn đơn</button>
                                     </c:when>
                                     <c:otherwise>
 
                                     </c:otherwise>
                                 </c:choose>
-                            </td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${paymentstatus=='Chưa thanh toán' and orderstatus=='Đã giao'}">
-                                        <button onclick="window.location.href = 'PaidOrder?id=${order.orderID}'">Thanh toán</button>
-                                    </c:when>
-                                    <c:otherwise>
-
-                                    </c:otherwise>
-                                </c:choose>   
                             </td>
                             <td>
                                 <c:forEach items="${orderneedreviews}" var="orderneed">
@@ -200,7 +229,7 @@
                             </td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${orderstatus=='Đã giao'||orderstatus=='Đã hủy'||orderstatus=='Trả hàng'}">
+                                    <c:when test="${orderstatus=='Đã giao'||orderstatus=='Đã hủy'||orderstatus=='Trả hàng'||orderstatus=='Đã hoàn'||orderstatus=='Hoàn tất'||orderstatus==' Đã hoàn một phần'}">
                                         <button onclick="window.location.href = 'ReOrder?id=${order.orderID}'">Mua lại</button>
                                     </c:when>
                                     <c:otherwise>

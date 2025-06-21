@@ -70,10 +70,15 @@ public class OrderList extends HttpServlet {
         User user = (User)session.getAttribute("user");
         List<Order> orderlist =odao.getListUserOrder(user.getUserID());
         List<Order> orderneedreview = odao.getListUserOrderNeedEvaluate(user.getUserID());
+        String mess=(String)request.getAttribute("mess");
+        if(mess != null){
+            request.setAttribute("mess", mess);
+        }
         request.setAttribute("orderlist", orderlist);
         request.setAttribute("OrderStatus","OrderList" );
         request.setAttribute("orderneedreview", orderneedreview);
         request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
+
     }
 
     /**
@@ -87,7 +92,7 @@ public class OrderList extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+         doGet(request, response); 
     }
 
     /**

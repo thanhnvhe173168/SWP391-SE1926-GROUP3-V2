@@ -67,7 +67,7 @@ public class CartDetailDAO extends ConnectDB {
     public void AddCart(CartDetail cartdetail) {
         String sql = "INSERT INTO CartDetail (CartID, LaptopID, Quantity, UnitPrice, is_selected)\n"
                 + "VALUES \n"
-                + "(?, ?, ?, ?, ?),";
+                + "(?, ?, ?, ?, ?)";
         try{
             PreparedStatement st=connect.prepareStatement(sql);
             st.setInt(1, cartdetail.getCart().getCartID());

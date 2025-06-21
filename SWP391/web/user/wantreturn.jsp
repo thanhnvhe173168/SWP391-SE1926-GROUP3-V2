@@ -1,8 +1,9 @@
 <%-- 
-    Document   : evaluate
-    Created on : Jun 11, 2025, 2:01:26 AM
+    Document   : wantreturn
+    Created on : Jun 20, 2025, 11:41:15 PM
     Author     : Window 11
 --%>
+
 <%@page import="model.*" %>
 <%@page import="dao.*" %>
 <%@page import="java.util.List" %>
@@ -14,7 +15,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Evaluate order Page</title>
+        <title>want return order Page</title>
         <style>
             body {
                 font-family: 'Segoe UI', sans-serif;
@@ -105,7 +106,7 @@
     </head>
     <body>
         <jsp:include page="/components/Header.jsp"></jsp:include>
-            <h1>Đơn hàng cần đánh giá</h1>
+            <h1>Đơn hàng yêu cầu hoàn trả</h1>
         <c:set var="currentStatus" value="${OrderStatus}" />
 
         <table>
@@ -138,7 +139,6 @@
                         <th>Trạng thái đơn hàng</th>
                         <th>Trạng thái thanh toán</th>
                         <th>Xem đơn</th>
-                        <th>Đánh giá</th>
                     </tr>
                     <c:forEach items="${lists}" var="order">
                         <tr>
@@ -148,7 +148,6 @@
                             <td>${order.orderstatus.statusName}</td>
                             <td>${order.paymentstatus.statusName}</td>
                             <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">Xem đơn</button></td>
-                            <td><button onclick="window.location.href = 'ReviewOrder?id=${order.orderID}'">Đánh giá</button></td>
                         </tr>
                     </c:forEach>
                 </table>
