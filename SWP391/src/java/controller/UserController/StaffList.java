@@ -59,7 +59,7 @@ public class StaffList extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String search = request.getParameter("search");
-        String statusParam = request.getParameter("status");
+        String statusParam = request.getParameter("statusId");
         String reset = request.getParameter("reset"); // Thêm tham số reset
         Integer statusID = null;
 
@@ -79,10 +79,16 @@ public class StaffList extends HttpServlet {
         }
         
         UserDAO dao = new UserDAO();
-        List<User> list = dao.getListStaff();
-        List<User> listSearch = (search != null || statusID != null) ? dao.searchUser(search, statusID) : list;
+        List<User> list;
+        if(search !=null && !search.trim().isEmpty()||statusID !=null){
+            list = dao.searchUser(search, statusID);
+        }else{
+            list= dao.getListStaff();
+        }
+       
+       
         
-        request.setAttribute("listStaff", listSearch);
+        request.setAttribute("listStaff", list);
         request.getRequestDispatcher("/admin/StaffList.jsp").forward(request, response);
     }
 

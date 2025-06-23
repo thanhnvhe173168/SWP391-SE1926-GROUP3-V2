@@ -19,8 +19,8 @@ import model.User;
  *
  * @author linhd
  */
-@WebServlet(name="CreateAccountStaff", urlPatterns={"createAccountStaff"})
-public class CreateAccountStaff extends HttpServlet {
+@WebServlet(name="UserDetail", urlPatterns={"/userDetail"})
+public class UserDetail extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -37,10 +37,10 @@ public class CreateAccountStaff extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CreateAccountStaff</title>");  
+            out.println("<title>Servlet UserDetail</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CreateAccountStaff at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet UserDetail at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,38 +57,20 @@ public class CreateAccountStaff extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-          try {
-            String fullName = request.getParameter("fullName");
-            String email = request.getParameter("email");
-            String phoneNumber = request.getParameter("phoneNumber");
-            String password = request.getParameter("password");
-            int roleID = Integer.parseInt(request.getParameter("roleId"));
-            int statusID = Integer.parseInt(request.getParameter("statusId"));
-            
-            UserDAO dao = new UserDAO();
-            if(dao.checkExistUser(email)!=null){
-                request.setAttribute("error", "Email already exists");
-                request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
-                return;
-            }
-            User user = new User();
-            user.setFullName(fullName);
-            user.setEmail(email);
-            user.setPhoneNumber(phoneNumber);
-            user.setPassword(password);
-            user.setRoleID(roleID);
-            user.setStatusID(statusID);
-            
-            int result = dao.createUser(user);
-            if(result>0){
-                response.sendRedirect("staffList");
-            }else{
-                request.setAttribute("error","Error when add new staff");
-                request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        String userIdStr = request.getParameter("userId");
+        if(userIdStr==null|| userIdStr.isEmpty()){
+            response.sendRedirect("admin/UserList.jsp");
         }
+        int userId = 0 ;
+        try {
+            userId=Integer.parseInt(userIdStr);
+        } catch (Exception e) {
+            response.sendRedirect("admin/UserList.jsp");
+        }
+        UserDAO dao = new UserDAO();
+        User user = dao.getUserById(userId);
+        request.setAttribute("user", user);
+        request.getRequestDispatcher("admin/UserDetail.jsp").forward(request, response);
         
     } 
 
@@ -102,7 +84,7 @@ public class CreateAccountStaff extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-      
+        processRequest(request, response);
     }
 
     /** 

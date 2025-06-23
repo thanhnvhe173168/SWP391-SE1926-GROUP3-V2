@@ -59,6 +59,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="OrderList">Đơn hàng</a>
                         </li>
+                         <li class="nav-item">
+                            <a class="nav-link" href="wishlist">WishList</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="viewProfile"><%=user.getFullName()%></a>
                         </li>

@@ -286,36 +286,36 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="user" items="${listU}">
+                    <c:forEach var="o" items="${listU}">
                         <tr>
-                            <td>${user.userID}</td>
-                            <td>${user.fullName}</td>
-                            <td>${user.email}</td>
-                            <td>${user.phoneNumber}</td>
-                            <td>${user.registrationDate}</td>
+                            <td>${o.userID}</td>
+                            <td>${o.fullName}</td>
+                            <td>${o.email}</td>
+                            <td>${o.phoneNumber}</td>
+                            <td>${o.registrationDate}</td>
                             <td>
                                 <span class="status
                                       <c:choose>
-                                          <c:when test="${user.statusID == 1}">status-active</c:when>
+                                          <c:when test="${o.statusID == 1}">status-active</c:when>
                                           <c:otherwise>status-locked</c:otherwise>
                                       </c:choose>">
                                     <c:choose>
-                                        <c:when test="${user.statusID == 1}">Đang hoạt động</c:when>
+                                        <c:when test="${o.statusID == 1}">Đang hoạt động</c:when>
                                         <c:otherwise>Đã khóa</c:otherwise>
                                     </c:choose>
                                 </span>
                             </td>
                             <td class="actions">
-                                <a href="UserDetailServlet?userId=${user.userID}"><i class="fas fa-eye"></i> View Detail</a>
+                                <a href="userDetail?userId=${o.userID}"><i class="fas fa-eye"></i> View Detail</a>
                                 <c:choose>
-                                    <c:when test="${user.statusID == 1}">
-                                        <a href="changeStatusAccount?userId=${user.userID}&statusId=2"
+                                    <c:when test="${o.statusID == 1}">
+                                        <a href="changeStatusAccount?userId=${o.userID}&statusId=2"
                                            onclick="return confirm('Bạn có chắc muốn khóa tài khoản này không?')">
                                             <i class="fas fa-lock"></i> Khóa
                                         </a>
                                     </c:when>
                                     <c:otherwise>
-                                        <a href="changeStatusAccount?userId=${user.userID}&statusId=1"
+                                        <a href="changeStatusAccount?userId=${o.userID}&statusId=1"
                                            onclick="return confirm('Bạn có chắc muốn kích hoạt tài khoản này không?')">
                                             <i class="fas fa-unlock"></i> Kích hoạt
                                         </a>

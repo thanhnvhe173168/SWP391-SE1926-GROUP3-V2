@@ -38,7 +38,7 @@ public class ChangeStatusAccount extends HttpServlet {
 
         if (userIdStr == null || statusIdStr == null) {
             System.out.println("Missing parameters!");
-            response.sendRedirect(request.getContextPath() + "/staffList?message=Thiếu thông tin yêu cầu!");
+            response.sendRedirect(request.getContextPath() + "/staffList?message=Missing Information require!");
             return;
         }
 
@@ -49,7 +49,7 @@ public class ChangeStatusAccount extends HttpServlet {
             statusId = Integer.parseInt(statusIdStr);
         } catch (NumberFormatException e) {
             System.out.println("Invalid ID format: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/staffList?message=ID không hợp lệ!");
+            response.sendRedirect(request.getContextPath() + "/staffList?message=ID is not vaLid!");
             return;
         }
 
@@ -58,11 +58,11 @@ public class ChangeStatusAccount extends HttpServlet {
 
         // Thay đổi trạng thái
         boolean isChanged = dao.changeStatus(userId, statusId);
-        String message;
+        String message = "";
         if (isChanged) {
-            message = "Thay đổi trạng thái thành công!";
+            message = "Change status is successfull!";
         } else {
-            message = "Thay đổi trạng thái thất bại!";
+            message = "Change status is failed!";
         }
 
         // Log kết quả

@@ -80,8 +80,8 @@ public class Login extends HttpServlet {
                 response.sendRedirect("getListBrand");
                 break;
             case 2: // Staff
-//                response.sendRedirect("staff/staffDashboard.jsp");
-                response.sendRedirect("getListCustomer");
+                response.sendRedirect("staff/staffDashboard.jsp");
+//                response.sendRedirect("userList");
                 break;
             case 3: // Customer
                 response.sendRedirect("home");

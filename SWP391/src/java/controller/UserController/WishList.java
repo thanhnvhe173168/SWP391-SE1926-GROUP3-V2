@@ -5,22 +5,25 @@
 
 package controller.UserController;
 
-import dao.UserDAO;
+import dao.CartDAO;
+import dao.WishListDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.User;
 
 /**
  *
  * @author linhd
  */
-@WebServlet(name="CreateAccountStaff", urlPatterns={"createAccountStaff"})
-public class CreateAccountStaff extends HttpServlet {
+@WebServlet(name="WishList", urlPatterns={"/wishList"})
+public class WishList extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -32,19 +35,30 @@ public class CreateAccountStaff extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet CreateAccountStaff</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet CreateAccountStaff at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+       HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            response.sendRedirect("guest/Login.jsp"); // Chuyển hướng nếu chưa đăng nhập
+            return;
         }
-    } 
+
+        int userId = user.getUserID();
+        WishListDAO wdao = new WishListDAO();
+        ResultSet rsWishlist = null;
+
+        try {
+            rsWishlist = wdao.getWishlistByUserId(userId); // Sử dụng getWishlistByUserId thay vì addToWishList
+            request.setAttribute("rsWishlist", rsWishlist);
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("rsWishlist", null); // Đặt null nếu có lỗi
+        }
+
+        request.getRequestDispatcher("/user/WishList.jsp").forward(request, response);
+    }
+        
+        
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -57,39 +71,7 @@ public class CreateAccountStaff extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-          try {
-            String fullName = request.getParameter("fullName");
-            String email = request.getParameter("email");
-            String phoneNumber = request.getParameter("phoneNumber");
-            String password = request.getParameter("password");
-            int roleID = Integer.parseInt(request.getParameter("roleId"));
-            int statusID = Integer.parseInt(request.getParameter("statusId"));
-            
-            UserDAO dao = new UserDAO();
-            if(dao.checkExistUser(email)!=null){
-                request.setAttribute("error", "Email already exists");
-                request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
-                return;
-            }
-            User user = new User();
-            user.setFullName(fullName);
-            user.setEmail(email);
-            user.setPhoneNumber(phoneNumber);
-            user.setPassword(password);
-            user.setRoleID(roleID);
-            user.setStatusID(statusID);
-            
-            int result = dao.createUser(user);
-            if(result>0){
-                response.sendRedirect("staffList");
-            }else{
-                request.setAttribute("error","Error when add new staff");
-                request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
+        processRequest(request, response);
     } 
 
     /** 
@@ -102,7 +84,7 @@ public class CreateAccountStaff extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-      
+        processRequest(request, response);
     }
 
     /** 
