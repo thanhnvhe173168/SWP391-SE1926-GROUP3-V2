@@ -149,7 +149,7 @@
                             <h5 class="card-title"><%=rsLaptop.getString("LaptopName")%></h5>
                             <p class="card-text"><%=rsLaptop.getString("Size")%>, <%=rsLaptop.getString("CPUInfo")%>, <%=rsLaptop.getString("RAM")%>, <%=rsLaptop.getString("HardDrive")%></p>
                             <p class="card-text fw-bold"><%=rsLaptop.getInt("Price")%></p>
-                            <a href="product.jsp?id=1" class="btn btn-primary">View Details</a>
+                            <a href="productDetail?productId=<%=rsLaptop.getInt("LaptopID")%>" class="btn btn-primary">View Details</a>
                             <button class="btn btn-success ms-2" onclick="window.location.href='AddToCart?id=<%=rsLaptop.getInt("LaptopID")%>'">
                                 Add to Cart
                             </button>
@@ -212,7 +212,7 @@
                             params.append(key, value);
                         }
                     }
-                    window.location.href = "home?" + params.toString();
+                    window.location.href = "productList?" + params.toString();
                 }
         </script>
     </body>
