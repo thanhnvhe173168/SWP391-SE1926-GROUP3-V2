@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Locale;
 import model.Cart;
 import model.CartDetail;
 import model.User;
+import org.json.JSONObject;
 
 /**
  *
@@ -84,31 +86,51 @@ public class itemSelectReOrder extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         List<CartDetail> listreorder = (List<CartDetail>) session.getAttribute("listReOrder");
-        String productid = request.getParameter("productId");
-        String selected = request.getParameter("selected");
+
         BigDecimal total = BigDecimal.valueOf(0);
+
         try {
+            // Đọc JSON từ request body
+            BufferedReader reader = request.getReader();
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            JSONObject json = new JSONObject(sb.toString());
+            String productid = json.getString("productId");
+            boolean isselect = json.getBoolean("selected");
+
             int id = Integer.parseInt(productid);
-            boolean isselect = Boolean.parseBoolean(selected);
+
+            // Cập nhật lại trạng thái chọn
             for (CartDetail cartdetail : listreorder) {
                 if (cartdetail.getLaptop().getLaptopID() == id) {
                     cartdetail.setIsSelect(isselect);
                     break;
                 }
             }
+
+            // Tính lại tổng
             for (CartDetail cd : listreorder) {
-                if (cd.isIsSelect() == true) {
+                if (cd.isIsSelect()) {
                     total = total.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
                 }
             }
+
+            // Cập nhật lại session
             session.setAttribute("listReOrder", listreorder);
+
+            // Gửi kết quả JSON về client
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
             out.print("{\"totalPrice\":\"" + formatCurrency(total) + "\"}");
             out.flush();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request");
         }
     }
 

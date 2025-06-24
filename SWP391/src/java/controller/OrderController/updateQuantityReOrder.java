@@ -12,11 +12,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import model.CartDetail;
+import org.json.JSONObject;
 
 /**
  *
@@ -74,46 +76,65 @@ public class updateQuantityReOrder extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String ids = request.getParameter("productId");
-        String quantitys = request.getParameter("quantity");
         HttpSession session = request.getSession();
         List<CartDetail> listReOrder = (List<CartDetail>) session.getAttribute("listReOrder");
+
         BigDecimal total = BigDecimal.valueOf(0);
         BigDecimal itemtotal = BigDecimal.valueOf(0);
+
         try {
-            int id = Integer.parseInt(ids);
-            int quantity = Integer.parseInt(quantitys);
+            // Đọc JSON từ body
+            BufferedReader reader = request.getReader();
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            JSONObject json = new JSONObject(sb.toString());
+            int id = Integer.parseInt(json.getString("productId"));
+            int quantity = Integer.parseInt(json.getString("quantity"));
+
+            // Cập nhật số lượng sản phẩm
             for (CartDetail cd : listReOrder) {
                 if (cd.getLaptop().getLaptopID() == id) {
                     cd.setQuantity(quantity);
-                    itemtotal = itemtotal.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
+                    itemtotal = cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity()));
                     break;
                 }
             }
+
+            // Tính tổng tiền các mục đã chọn
             for (CartDetail cartdetail : listReOrder) {
-                if (cartdetail.isIsSelect() == true) {
+                if (cartdetail.isIsSelect()) {
                     total = total.add(cartdetail.getUnitPrice().multiply(BigDecimal.valueOf(cartdetail.getQuantity())));
                 }
             }
+
+            // Lưu lại danh sách đã cập nhật vào session
             session.setAttribute("listReOrder", listReOrder);
+
+            // Trả kết quả về client
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
             out.print("{\"itemTotal\":\"" + formatCurrency(itemtotal) + "\", \"totalPrice\":\"" + formatCurrency(total) + "\"}");
             out.flush();
-        } catch (NumberFormatException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request");
         }
     }
-    
+
     private String formatCurrency(BigDecimal value) {
         NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
         return formatter.format(value) + " VNĐ";
     }
-    
 
     /**
      * Returns a short description of the servlet.

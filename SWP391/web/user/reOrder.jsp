@@ -103,16 +103,20 @@
                 fetch('updateQuantityReOrder', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
+                        'Content-Type': 'application/json'
                     },
-                    body: `productId=${productId}&quantity=${quantity}`
+                    body: JSON.stringify({
+                        productId: productId,
+                        quantity: quantity
+                    })
                 })
                         .then(res => res.json())
                         .then(data => {
                             document.getElementById('price-' + productId).innerText = data.itemTotal;
-                            document.getElementById('total-price').innerText = data.totalPrice ;
+                            document.getElementById('total-price').innerText = data.totalPrice;
                         });
             }
+
 
             function itemSelectReOrder(checkbox) {
                 const productId = checkbox.dataset.productid;
@@ -121,15 +125,19 @@
                 fetch('itemSelectReOrder', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
+                        'Content-Type': 'application/json'
                     },
-                    body: `productId=${productId}&selected=${isChecked}`
+                    body: JSON.stringify({
+                        productId: productId,
+                        selected: isChecked
+                    })
                 })
                         .then(res => res.json())
                         .then(data => {
                             document.getElementById('total-price').innerText = data.totalPrice;
                         });
             }
+
         </script>
     </body>
 </html>
