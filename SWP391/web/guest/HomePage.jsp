@@ -1,9 +1,3 @@
-<%-- 
-    Document   : HomePage
-    Created on : May 24, 2025, 11:21:28 PM
-    Author     : Admin
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.sql.ResultSet"%>
 <!DOCTYPE html>
@@ -160,6 +154,9 @@
                             <button class="btn btn-success ms-2" onclick="window.location.href = 'AddToCart?id=<%=rsLaptop.getInt("LaptopID")%>'">
                                 Add to Cart
                             </button>
+                            <button class="btn btn-outline-danger ms-2" onclick="addToWishlist(<%=rsLaptop.getInt("LaptopID")%>)">
+                            <i class="fas fa-heart"></i>
+                        </button>
                         </div>
                     </div>
                 </div>
@@ -200,6 +197,10 @@
             function handleRedirectBlog() {
                 window.location.href = "blogList";
             }
+
+            function addToWishlist(laptopId) {
+                window.location.href = '/swp391/addToWishList?id=' + laptopId;
+        }
 
         </script>
     </body>

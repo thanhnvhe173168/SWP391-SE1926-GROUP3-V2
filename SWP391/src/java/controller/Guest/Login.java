@@ -80,7 +80,6 @@ public class Login extends HttpServlet {
                 response.sendRedirect("dashboard");
                 break;
             case 2: // Staff
-//                response.sendRedirect("staff/staffDashboard.jsp");
                 response.sendRedirect("dashboard");
                 break;
             case 3: // Customer

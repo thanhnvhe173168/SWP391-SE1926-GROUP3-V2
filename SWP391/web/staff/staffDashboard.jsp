@@ -140,6 +140,7 @@
         <div class="sidebar">
             <div class="sidebar-title">Staff Management</div>
             <a href="home">🏠 Trang chủ</a>
+            <a href="userList">🏠 Quản lý khách hàng</a>
             <a href="productManagement">📦 Quản lý sản phẩm</a>
             <a href="recentOrders">🛒 Quản lý đơn hàng</a>
             <a href="RevenueManagementServlet">💰 Quản lý doanh thu</a>
