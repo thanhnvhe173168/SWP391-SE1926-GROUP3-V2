@@ -90,10 +90,22 @@
     <body>
         <jsp:include page="/components/Header.jsp"></jsp:include>
 
-        <div class="wishlist-container">
-            <div class="wishlist-header">
-                <h2>Danh sách yêu thích</h2>
+            <div class="wishlist-container">
+                <div class="wishlist-header">
+                    <h2>Danh sách yêu thích</h2>
+                </div>
+            <%
+    String mess = (String) session.getAttribute("mess");
+    if (mess != null) {
+            %>
+            <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                <%= mess %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+            <%
+                    session.removeAttribute("mess");
+                }
+            %>
             <% 
                 ResultSet rsWishlist = (ResultSet) request.getAttribute("rsWishlist");
                 boolean hasData = false;

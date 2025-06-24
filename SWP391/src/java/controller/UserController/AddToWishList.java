@@ -84,9 +84,9 @@ public class AddToWishList extends HttpServlet {
         boolean added = wdao.addToWishList(userId, laptopId);
 
         if (added) {
-            request.setAttribute("mess", "Đã thêm vào danh sách yêu thích!");
+            session.setAttribute("mess", "Đã thêm vào danh sách yêu thích!");
         } else {
-            request.setAttribute("mess", "Sản phẩm đã có trong danh sách yêu thích!");
+            session.setAttribute("mess", "Sản phẩm đã có trong danh sách yêu thích!");
         }
 
         response.sendRedirect("wishList"); // Chuyển hướng đến trang wishlist
