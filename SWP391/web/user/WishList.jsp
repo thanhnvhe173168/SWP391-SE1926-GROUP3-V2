@@ -143,7 +143,7 @@
                             <button class="btn btn-success btn-custom ms-2" onclick="window.location.href = 'AddToCart?id=<%=rs.getInt("LaptopID")%>'">
                                 Thêm vào giỏ
                             </button>
-                            <button class="btn btn-danger btn-custom ms-2" onclick="removeFromWishlist(<%=rs.getInt("LaptopID")%>)">
+                            <button class="btn btn-danger btn-custom ms-2" onclick="removeWishList(<%=rs.getInt("WishlistID")%>)">
                                 <i class="fas fa-trash"></i> Xóa
                             </button>
                         </td>
@@ -182,7 +182,7 @@
         <script>
             function removeFromWishlist(laptopId) {
                 if (confirm("Bạn có chắc muốn xóa sản phẩm này khỏi danh sách yêu thích?")) {
-                    window.location.href = 'RemoveFromWishlistServlet?id=' + laptopId;
+                    window.location.href = 'removeWishList?id=' + WishlistID;
                 }
             }
         </script>

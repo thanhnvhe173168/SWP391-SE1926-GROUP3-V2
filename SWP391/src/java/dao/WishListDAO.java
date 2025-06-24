@@ -3,6 +3,7 @@ package dao;
 import config.ConnectDB;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import model.WishList;
 
 public class WishListDAO extends ConnectDB {
@@ -34,9 +35,9 @@ public class WishListDAO extends ConnectDB {
     }
 
     public ResultSet getWishlistByUserId(int userId) {
-        String sql = "SELECT w.WishlistID, w.LaptopID, l.LaptopName, l.Price, l.ImageURL " +
-                     "FROM Wishlist w JOIN Laptop l ON w.LaptopID = l.LaptopID " +
-                     "WHERE w.UserID = ?";
+        String sql = "SELECT w.WishlistID, w.LaptopID, l.LaptopName, l.Price, l.ImageURL "
+                + "FROM Wishlist w JOIN Laptop l ON w.LaptopID = l.LaptopID "
+                + "WHERE w.UserID = ?";
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setInt(1, userId);
@@ -46,4 +47,21 @@ public class WishListDAO extends ConnectDB {
             return null;
         }
     }
+
+    public int removeWishList(int wishlistID) throws SQLException {
+        int n = 0;
+        String sql = "DELETE FROM WishList WHERE WishlistID = ?";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, wishlistID);
+            n = ps.executeUpdate();
+            ps.close(); 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return n;
+    }
+
 }
+
+
