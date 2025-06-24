@@ -4,7 +4,8 @@
  */
 package controller.OrderController;
 
-import dao.OrderDAO;
+import dao.CartDAO;
+import dao.CartDetailDAO;
 import dao.OrderDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,16 +14,21 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
+import jakarta.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.List;
-import model.OrderDetail;
+import java.util.Locale;
+import model.Cart;
+import model.CartDetail;
+import model.User;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "returnOrder", urlPatterns = {"/returnOrder"})
-public class returnOrder extends HttpServlet {
+@WebServlet(name = "itemSelectReOrder", urlPatterns = {"/itemSelectReOrder"})
+public class itemSelectReOrder extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +47,10 @@ public class returnOrder extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet returnOrder</title>");            
+            out.println("<title>Servlet itemSelectReOrder</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet returnOrder at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet itemSelectReOrder at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -76,27 +82,39 @@ public class returnOrder extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id = request.getParameter("orderID");
-        String reason = request.getParameter("reason");
-        OrderDetailDAO oddao = new OrderDetailDAO();
-        OrderDAO odao = new OrderDAO();
-        LocalDate returndate = LocalDate.now();
-        try{
-            int orderid = Integer.parseInt(id);
-            odao.upDateOrderStatus(12, orderid);
-            odao.updateReasonReturn(orderid, reason, returndate);
-            List<OrderDetail> list = oddao.GetListOrderDetailByID(orderid);
-            for(OrderDetail od : list){
-                oddao.upDateOrderDetailStatuswhenreturn(21, orderid, od.getLaptop().getLaptopID());
-                oddao.updateReasonReturn(orderid, od.getLaptop().getLaptopID(), reason, returndate);
+        HttpSession session = request.getSession();
+        List<CartDetail> listreorder = (List<CartDetail>) session.getAttribute("listReOrder");
+        String productid = request.getParameter("productId");
+        String selected = request.getParameter("selected");
+        BigDecimal total = BigDecimal.valueOf(0);
+        try {
+            int id = Integer.parseInt(productid);
+            boolean isselect = Boolean.parseBoolean(selected);
+            for (CartDetail cartdetail : listreorder) {
+                if (cartdetail.getLaptop().getLaptopID() == id) {
+                    cartdetail.setIsSelect(isselect);
+                    break;
+                }
             }
-            request.setAttribute("mess", "Gửi yêu cầu thành công");
-            request.getRequestDispatcher("OrderList").forward(request, response);
-            
-        }
-        catch(NumberFormatException e){
+            for (CartDetail cd : listreorder) {
+                if (cd.isIsSelect() == true) {
+                    total = total.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
+                }
+            }
+            session.setAttribute("listReOrder", listreorder);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
+            out.print("{\"totalPrice\":\"" + formatCurrency(total) + "\"}");
+            out.flush();
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+    }
+
+    private String formatCurrency(BigDecimal value) {
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+        return formatter.format(value) + " VNĐ";
     }
 
     /**

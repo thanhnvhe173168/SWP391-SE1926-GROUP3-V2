@@ -13,16 +13,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
 import java.util.List;
+import model.Order;
 import model.OrderDetail;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "returnOrder", urlPatterns = {"/returnOrder"})
-public class returnOrder extends HttpServlet {
+@WebServlet(name = "detailReturnOrder", urlPatterns = {"/detailReturnOrder"})
+public class detailReturnOrder extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -62,7 +62,7 @@ public class returnOrder extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        doPost(request, response);
     }
 
     /**
@@ -76,23 +76,16 @@ public class returnOrder extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id = request.getParameter("orderID");
-        String reason = request.getParameter("reason");
-        OrderDetailDAO oddao = new OrderDetailDAO();
+        String ids = request.getParameter("id");
         OrderDAO odao = new OrderDAO();
-        LocalDate returndate = LocalDate.now();
+        OrderDetailDAO oddao = new OrderDetailDAO();
         try{
-            int orderid = Integer.parseInt(id);
-            odao.upDateOrderStatus(12, orderid);
-            odao.updateReasonReturn(orderid, reason, returndate);
-            List<OrderDetail> list = oddao.GetListOrderDetailByID(orderid);
-            for(OrderDetail od : list){
-                oddao.upDateOrderDetailStatuswhenreturn(21, orderid, od.getLaptop().getLaptopID());
-                oddao.updateReasonReturn(orderid, od.getLaptop().getLaptopID(), reason, returndate);
-            }
-            request.setAttribute("mess", "Gửi yêu cầu thành công");
-            request.getRequestDispatcher("OrderList").forward(request, response);
-            
+            int id = Integer.parseInt(ids);
+            Order od = odao.GetOrderByID(id);
+            List<OrderDetail> list = oddao.GetListOrderDetailByID(od.getOrderID());
+            request.setAttribute("od", od);
+            request.setAttribute("list", list);
+            request.getRequestDispatcher("user/detailReturnOrder.jsp").forward(request, response);
         }
         catch(NumberFormatException e){
             e.printStackTrace();

@@ -15,14 +15,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.List;
+import model.Order;
 import model.OrderDetail;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "returnOrder", urlPatterns = {"/returnOrder"})
-public class returnOrder extends HttpServlet {
+@WebServlet(name = "returnLaptop", urlPatterns = {"/returnLaptop"})
+public class returnLaptop extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +42,10 @@ public class returnOrder extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet returnOrder</title>");            
+            out.println("<title>Servlet returnLaptop</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet returnOrder at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet returnLaptop at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -76,23 +77,32 @@ public class returnOrder extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id = request.getParameter("orderID");
+        String lapids = request.getParameter("laptopID");
+        String orderids = request.getParameter("orderID");
         String reason = request.getParameter("reason");
         OrderDetailDAO oddao = new OrderDetailDAO();
         OrderDAO odao = new OrderDAO();
         LocalDate returndate = LocalDate.now();
         try{
-            int orderid = Integer.parseInt(id);
-            odao.upDateOrderStatus(12, orderid);
-            odao.updateReasonReturn(orderid, reason, returndate);
-            List<OrderDetail> list = oddao.GetListOrderDetailByID(orderid);
-            for(OrderDetail od : list){
-                oddao.upDateOrderDetailStatuswhenreturn(21, orderid, od.getLaptop().getLaptopID());
-                oddao.updateReasonReturn(orderid, od.getLaptop().getLaptopID(), reason, returndate);
+            int lapid = Integer.parseInt(lapids);
+            int orderid = Integer.parseInt(orderids);
+            oddao.upDateOrderDetailStatuswhenreturn(21, orderid, lapid);
+            Order od = odao.GetOrderByID(orderid);
+            List<OrderDetail> orderdetailist = oddao.GetListOrderDetailByID(orderid);
+            int quantity=0;
+            for(OrderDetail orderdetail : orderdetailist){
+                quantity=quantity+1;
             }
+            if(quantity>1){
+                odao.upDateOrderStatus(10, orderid);
+            }
+            else{
+                odao.upDateOrderStatus(12, orderid);
+            }
+            odao.updateReasonReturn(orderid, reason, returndate);
+            oddao.updateReasonReturn(orderid, lapid, reason, returndate);
             request.setAttribute("mess", "Gửi yêu cầu thành công");
             request.getRequestDispatcher("OrderList").forward(request, response);
-            
         }
         catch(NumberFormatException e){
             e.printStackTrace();

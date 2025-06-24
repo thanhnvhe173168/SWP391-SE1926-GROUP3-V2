@@ -4,6 +4,7 @@
  */
 package controller.OrderController;
 
+import dao.CartDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
 import java.io.IOException;
@@ -13,16 +14,24 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
+import jakarta.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import model.Cart;
+import model.CartDetail;
+import model.Order;
 import model.OrderDetail;
+import model.User;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "returnOrder", urlPatterns = {"/returnOrder"})
-public class returnOrder extends HttpServlet {
+@WebServlet(name = "reOrder", urlPatterns = {"/reOrder"})
+public class reOrder extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +50,10 @@ public class returnOrder extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet returnOrder</title>");            
+            out.println("<title>Servlet reOrder</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet returnOrder at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet reOrder at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,7 +71,42 @@ public class returnOrder extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        CartDAO cdao =new CartDAO();
+        Cart cart = cdao.GetCartByUserID(user.getUserID());
+        String ids = request.getParameter("id");
+        OrderDAO odao = new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        BigDecimal total = BigDecimal.valueOf(0);
+        List<CartDetail> lists = new ArrayList<>();
+        try{
+            int id = Integer.parseInt(ids);
+            List<OrderDetail> list = oddao.GetListOrderDetailByID(id);
+            for(OrderDetail odd : list){
+                CartDetail cd =new CartDetail();
+                cd.setCart(cart);
+                cd.setLaptop(odd.getLaptop());
+                cd.setQuantity(odd.getQuantity());
+                cd.setUnitPrice(odd.getUnitPrice());
+                cd.setIsSelect(true);
+                lists.add(cd);
+                
+            }
+            Order order = odao.GetOrderByID(id);
+            total = order.getTotalAmount();
+            session.setAttribute("listReOrder", lists);
+            request.setAttribute("totalPrice", formatCurrency(total));
+            request.getRequestDispatcher("user/reOrder.jsp").forward(request, response);
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+    
+    private String formatCurrency(BigDecimal value) {
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+        return formatter.format(value) + " VNĐ";
     }
 
     /**
@@ -76,27 +120,7 @@ public class returnOrder extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id = request.getParameter("orderID");
-        String reason = request.getParameter("reason");
-        OrderDetailDAO oddao = new OrderDetailDAO();
-        OrderDAO odao = new OrderDAO();
-        LocalDate returndate = LocalDate.now();
-        try{
-            int orderid = Integer.parseInt(id);
-            odao.upDateOrderStatus(12, orderid);
-            odao.updateReasonReturn(orderid, reason, returndate);
-            List<OrderDetail> list = oddao.GetListOrderDetailByID(orderid);
-            for(OrderDetail od : list){
-                oddao.upDateOrderDetailStatuswhenreturn(21, orderid, od.getLaptop().getLaptopID());
-                oddao.updateReasonReturn(orderid, od.getLaptop().getLaptopID(), reason, returndate);
-            }
-            request.setAttribute("mess", "Gửi yêu cầu thành công");
-            request.getRequestDispatcher("OrderList").forward(request, response);
-            
-        }
-        catch(NumberFormatException e){
-            e.printStackTrace();
-        }
+        processRequest(request, response);
     }
 
     /**

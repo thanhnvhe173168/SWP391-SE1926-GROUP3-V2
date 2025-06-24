@@ -46,7 +46,7 @@
                         <td><fmt:formatNumber value="${orderdetail.laptop.price}" type="number" groupingUsed="true"/> VNĐ</td>
                         <td><fmt:formatNumber value="${orderdetail.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
                         <td>
-                            <button type="button" onclick="window.location.href = 'user/reasonReturnLaptop.jsp?id=${orderdetail.laptop.laptopID}'">Hoàn sản phẩm</button>
+                            <button type="button" onclick="window.location.href = 'user/reasonReturnLaptop.jsp?lapid=${orderdetail.laptop.laptopID}&orderid=${order.orderID}'">Hoàn sản phẩm</button>
                         </td>
                     </tr>
                 </c:forEach>

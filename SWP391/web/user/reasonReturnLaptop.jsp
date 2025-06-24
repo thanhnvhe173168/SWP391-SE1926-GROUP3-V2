@@ -67,17 +67,19 @@
             }
         </style>
         <%
-        String ids = request.getParameter("id");
-        int id = Integer.parseInt(ids);
-        
+        String lapids = request.getParameter("lapid");
+        int laptopid = Integer.parseInt(lapids);
+        String orderids = request.getParameter("orderid");
+        int orderid = Integer.parseInt(orderids);
         %>
     </head>
     <body>
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <div class="return-container">
                 <h2>Hoàn sản phẩm</h2>
-            <form action="returnOrder" method="post">
-                <input type="hidden" name="laptopID" value="<%= id %>">
+                <form action="${pageContext.request.contextPath}/returnLaptop" method="post">
+                <input type="hidden" name="laptopID" value="<%= laptopid %>">
+                <input type="hidden" name="orderID" value="<%= orderid %>">
                 <label for="reason">Lý do hoàn hàng:</label>
                 <textarea name="reason" id="reason" required placeholder="Ví dụ: sản phẩm bị lỗi, giao nhầm..."></textarea>
                 <button type="submit">Gửi yêu cầu</button>

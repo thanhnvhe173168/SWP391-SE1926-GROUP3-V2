@@ -77,7 +77,7 @@
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <div class="return-container">
                 <h2>Hoàn đơn hàng</h2>
-            <form action="returnOrder" method="post">
+            <form action="${pageContext.request.contextPath}/returnOrder" method="post">
                 <input type="hidden" name="orderID" value="<%= order.getOrderID() %>">
                 <label for="reason">Lý do hoàn hàng:</label>
                 <textarea name="reason" id="reason" required placeholder="Ví dụ: sản phẩm bị lỗi, giao nhầm..."></textarea>

@@ -123,7 +123,24 @@
                 });
             }
 
+            function confirmReturn(){
+                Swal.fire({
+                    title: "Bạn chắc chắn muốn hoàn đơn?",
+                    text: "Sau khi hoàn sẽ không thể hoàn tác!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Vâng, hoàn đơn",
+                    cancelButtonText: "Không"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById("returnform").submit();
+                    }
+                });
+            }
         </script>
+        
     </head>
     <body>
         <%
@@ -208,7 +225,10 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${orderstatus=='Đã giao'}">
-                                        <button onclick="window.location.href = 'returnOrder?id=${order.orderID}'">Hoàn đơn</button>
+                                        <form id="returnform" action="detailReturnOrder" method="post">
+                                            <input type="hidden" name="id" value="${order.orderID}">
+                                            <button type="button" onclick="confirmReturn()">Hoàn đơn</button>
+                                        </form>
                                     </c:when>
                                     <c:otherwise>
 
@@ -230,7 +250,7 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${orderstatus=='Đã giao'||orderstatus=='Đã hủy'||orderstatus=='Trả hàng'||orderstatus=='Đã hoàn'||orderstatus=='Hoàn tất'||orderstatus==' Đã hoàn một phần'}">
-                                        <button onclick="window.location.href = 'ReOrder?id=${order.orderID}'">Mua lại</button>
+                                        <button onclick="window.location.href = 'reOrder?id=${order.orderID}'">Mua lại</button>
                                     </c:when>
                                     <c:otherwise>
 

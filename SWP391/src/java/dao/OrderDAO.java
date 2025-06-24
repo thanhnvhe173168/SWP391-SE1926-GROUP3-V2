@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -321,7 +322,7 @@ public class OrderDAO extends ConnectDB {
         }
         return list;
     }
-    
+
     public List<Order> getListReturnOrderByStatusName(String statusname1, String statusname2) {
         String sql = "select * from orders o \n"
                 + "join Statuses s on o.StatusID=s.StatusID\n"
@@ -588,8 +589,8 @@ public class OrderDAO extends ConnectDB {
         }
         return list;
     }
-    
-    public List<Order> getListUserReturnOrderByStatusName(String statusname1, String statusname2,int userid) {
+
+    public List<Order> getListUserReturnOrderByStatusName(String statusname1, String statusname2, int userid) {
         String sql = "select * from orders o \n"
                 + "join Statuses s on o.StatusID=s.StatusID\n"
                 + "where (s.StatusName=? or s.StatusName=?) and userid=?";
@@ -697,18 +698,33 @@ public class OrderDAO extends ConnectDB {
         }
         return list;
     }
-    
+
     public void upDateOrderStatus(int statusid, int orderid) {
         String sql = "update Orders\n"
                 + "set StatusID=?\n"
                 + "where OrderID=?";
-        try{
+        try {
             PreparedStatement st = connect.prepareStatement(sql);
             st.setInt(1, statusid);
             st.setInt(2, orderid);
             st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        catch(SQLException e){
+    }
+
+    public void updateReasonReturn(int orderid, String reason, LocalDate returndate) {
+        String sql = "UPDATE Orders\n"
+                + "set ReasonReturn=?,\n"
+                + "ReturnDate=?\n"
+                + "where OrderID=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setNString(1, reason);
+            st.setDate(2, java.sql.Date.valueOf(returndate));
+            st.setInt(3, orderid);
+            st.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

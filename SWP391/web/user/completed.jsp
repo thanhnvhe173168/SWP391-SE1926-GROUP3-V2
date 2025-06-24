@@ -169,7 +169,7 @@
                                 </c:forEach>
                             </td>
                             <td>
-                                        <button onclick="window.location.href = 'ReOrder?id=${order.orderID}'">Mua lại</button>
+                                        <button onclick="window.location.href = 'reOrder?id=${order.orderID}'">Mua lại</button>
                             </td>
                         </tr>
                     </c:forEach>

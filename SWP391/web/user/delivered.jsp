@@ -149,7 +149,7 @@
                             <td>${order.orderstatus.statusName}</td>
                             <td>${order.paymentstatus.statusName}</td>
                             <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">Xem đơn</button></td>
-                            <td><button onclick="window.location.href = 'ReturnOrder?id=${order.orderID}'">Hoàn đơn</button></td>
+                            <td><button onclick="window.location.href = 'detailReturnOrder?id=${order.orderID}'">Hoàn đơn</button></td>
                             <td><button onclick="window.location.href = 'reOrder?id=${order.orderID}'">Mua lại</button></td>
                             <td><button onclick="window.location.href = 'ReviewOrder?id=${order.orderID}'">Đánh giá</button></td>
                         </tr>
