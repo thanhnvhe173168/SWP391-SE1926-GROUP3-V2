@@ -2,10 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.CartController;
+package controller.OrderController;
 
-import dao.CartDAO;
-import dao.CartDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,19 +12,20 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import model.CartDetail;
-import model.Cart;
-import model.User;
+import org.json.JSONObject;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "UppdateTotal", urlPatterns = {"/UppdateTotal"})
-public class UppdateTotal extends HttpServlet {
+@WebServlet(name = "updateQuantityReOrder", urlPatterns = {"/updateQuantityReOrder"})
+public class updateQuantityReOrder extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +44,10 @@ public class UppdateTotal extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UppdateTotal</title>");            
+            out.println("<title>Servlet updateQuantityReOrder</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UppdateTotal at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet updateQuantityReOrder at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,7 +65,7 @@ public class UppdateTotal extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doPost(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -77,49 +76,65 @@ public class UppdateTotal extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        CartDetailDAO cartdetaildao = new CartDetailDAO();
-        String[] selectedIds = request.getParameterValues("selectedItem"); // các laptop được tick
-        HttpSession session = request.getSession(); 
-        User user = (User)session.getAttribute("user");
-        CartDAO cdao = new CartDAO();
-        Cart cart = cdao.GetCartByUserID(user.getUserID());
-        List<CartDetail> items = cartdetaildao.ListCart(cart.getCartID());
-        BigDecimal total = new BigDecimal("0");
-        
+        HttpSession session = request.getSession();
+        List<CartDetail> listReOrder = (List<CartDetail>) session.getAttribute("listReOrder");
 
-        for (CartDetail item : items) {
-            boolean selected = false;
+        BigDecimal total = BigDecimal.valueOf(0);
+        BigDecimal itemtotal = BigDecimal.valueOf(0);
 
-            if (selectedIds != null) {
-                for (String id : selectedIds) {
-                    int ids = Integer.parseInt(id);
-                    if (item.getLaptop().getLaptopID()==ids) {
-                        selected = true;
-                        break;
-                    }
+        try {
+            // Đọc JSON từ body
+            BufferedReader reader = request.getReader();
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            JSONObject json = new JSONObject(sb.toString());
+            int id = Integer.parseInt(json.getString("productId"));
+            int quantity = Integer.parseInt(json.getString("quantity"));
+
+            // Cập nhật số lượng sản phẩm
+            for (CartDetail cd : listReOrder) {
+                if (cd.getLaptop().getLaptopID() == id) {
+                    cd.setQuantity(quantity);
+                    itemtotal = cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity()));
+                    break;
                 }
             }
 
-            item.setIsSelect(selected); // lưu trạng thái tick
-            if (selected) {
-                total = total.add(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
-
+            // Tính tổng tiền các mục đã chọn
+            for (CartDetail cartdetail : listReOrder) {
+                if (cartdetail.isIsSelect()) {
+                    total = total.add(cartdetail.getUnitPrice().multiply(BigDecimal.valueOf(cartdetail.getQuantity())));
+                }
             }
 
-           cartdetaildao.updateBoolean(item.getCart().getCartID(), item.getLaptop().getLaptopID(), selected);
+            // Lưu lại danh sách đã cập nhật vào session
+            session.setAttribute("listReOrder", listReOrder);
+
+            // Trả kết quả về client
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
+            out.print("{\"itemTotal\":\"" + formatCurrency(itemtotal) + "\", \"totalPrice\":\"" + formatCurrency(total) + "\"}");
+            out.flush();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request");
         }
-
-        cart.setTotal(total);
-        cdao.uppdateTotal(cart.getCartID(), total);
-        
-
-        request.getRequestDispatcher("CartSeverlet").forward(request, response);
     }
-    
+
+    private String formatCurrency(BigDecimal value) {
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+        return formatter.format(value) + " VNĐ";
+    }
 
     /**
      * Returns a short description of the servlet.

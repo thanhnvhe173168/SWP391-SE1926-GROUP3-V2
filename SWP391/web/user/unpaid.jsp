@@ -14,7 +14,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>unpaid Page</title>
+        <title>unpaid order Page</title>
         <style>
             body {
                 font-family: 'Segoe UI', sans-serif;
@@ -112,12 +112,15 @@
             <tr>
                 <td class="${currentStatus == 'OrderList' ? 'active' : ''}" onclick="window.location.href = 'OrderList'" style="cursor: pointer;">Tất cả đơn</td>
                 <td class="${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed?id=1'" style="cursor: pointer;">Chờ xác nhận</td>
+                <td class="${currentStatus == 'confirmed' ? 'active' : ''}" onclick="window.location.href = 'confirmed?id=1'" style="cursor: pointer;">Đã xác nhận</td>
                 <td class="${currentStatus == 'delivering' ? 'active' : ''}" onclick="window.location.href = 'delivering?id=1'" style="cursor: pointer;">Đang giao</td>
                 <td class="${currentStatus == 'delivered' ? 'active' : ''}" onclick="window.location.href = 'delivered?id=1'" style="cursor: pointer;">Đã giao</td>
                 <td class="${currentStatus == 'canceled' ? 'active' : ''}" onclick="window.location.href = 'canceled?id=1'" style="cursor: pointer;">Đã hủy</td>
+                <td class="${currentStatus == 'wantreturn' ? 'active' : ''}" onclick="window.location.href = 'wantreturn?id=1'" style="cursor: pointer;">Yêu cầu trả hàng</td>
                 <td class="${currentStatus == 'returned' ? 'active' : ''}" onclick="window.location.href = 'returned?id=1'" style="cursor: pointer;">Đã trả hàng</td>
                 <td class="${currentStatus == 'unpaid' ? 'active' : ''}" onclick="window.location.href = 'unpaid?id=1'" style="cursor: pointer;">Chưa thanh toán</td>
                 <td class="${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate?id=1'" style="cursor: pointer;">Cần đánh giá</td>
+                <td class="${currentStatus == 'completed' ? 'active' : ''}" onclick="window.location.href = 'completed?id=1'" style="cursor: pointer;">Hoàn tất</td>
             </tr>
         </table>
         <c:set var="lists" value="${list}"/> 
@@ -135,26 +138,15 @@
                         <th>Trạng thái đơn hàng</th>
                         <th>Trạng thái thanh toán</th>
                         <th>Xem đơn</th>
-                        <th>Thanh toán</th>
                     </tr>
                     <c:forEach items="${lists}" var="order">
                         <tr>
                             <td>${stt+1}</td>
                             <td>${order.orderDate}</td>
-                            <td>${order.totalAmount}</td>
+                            <td><fmt:formatNumber value="${order.totalAmount}" type="number" groupingUsed="true"/> VNĐ</td>
                             <td>${order.orderstatus.statusName}</td>
                             <td>${order.paymentstatus.statusName}</td>
                             <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">Xem đơn</button></td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${order.orderstatus.statusName=='Đã giao'}">
-                                        <button onclick="window.location.href = 'PaidOrder?id=${order.orderID}'">Thanh toán</button>
-                                    </c:when>      
-                                    <c:otherwise>
-
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
                         </tr>
                     </c:forEach>
                 </table>

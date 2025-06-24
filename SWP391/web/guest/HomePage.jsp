@@ -14,6 +14,7 @@
         <title>Laptop Store - Homepage</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             .laptop-card {
                 transition: transform 0.2s;
@@ -68,12 +69,25 @@
         </script>
     </head>
     <body>
-        <% String mess = (String) request.getAttribute("mess"); %>
-        <% if (mess != null) { %>
+        <%
+        String mess = (String) request.getAttribute("mess");
+        String icon = (String) request.getAttribute("icon");
+        if (mess != null && icon != null) {
+        %>
         <script>
             window.alert("<%= mess %>", 3000);
+            Swal.fire({
+                icon: '<%= icon %>',
+                title: '<%= mess %>',
+                showConfirmButton: false,
+                timer: 2000
+            });
         </script>
-        <% } %>
+        <%
+            }
+        %>
+
+
         <%
            ResultSet rsBrand = (ResultSet) request.getAttribute("rsBrand");
            ResultSet rsCategory = (ResultSet) request.getAttribute("rsCategory");

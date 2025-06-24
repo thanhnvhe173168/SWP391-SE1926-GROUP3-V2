@@ -2,13 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.CartController;
+package controller.OrderController;
 
-import dao.CartDAO;
-import model.*;
-import dao.CartDetailDAO;
-import dao.LaptopDAO;
-import dao.UserDAO;
+import dao.OrderDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,16 +13,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import model.Order;
+import model.User;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "RemoveFromCart", urlPatterns = {"/RemoveFromCart"})
-public class RemoveFromCart extends HttpServlet {
+@WebServlet(name = "wantreturn", urlPatterns = {"/wantreturn"})
+public class wantreturn extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +41,10 @@ public class RemoveFromCart extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RemoveFromCart</title>");
+            out.println("<title>Servlet wantreturn</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet RemoveFromCart at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet wantreturn at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,32 +62,25 @@ public class RemoveFromCart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CartDetailDAO cartdetaildao = new CartDetailDAO();
+        response.setContentType("text/html;charset=UTF-8");
+        OrderDAO odao = new OrderDAO();
         String id_raw = request.getParameter("id");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        CartDAO cdao = new CartDAO();
-        Cart cart = cdao.GetCartByUserID(user.getUserID());
-        List<CartDetail> listcartdetail = new ArrayList<>();
-        listcartdetail = cartdetaildao.ListCart(cart.getCartID());
-        BigDecimal total = BigDecimal.valueOf(0);
         try {
             int id = Integer.parseInt(id_raw);
-            for (CartDetail cd : listcartdetail) {
-                if (cd.getLaptop().getLaptopID() == id) {
-                    cartdetaildao.Remove(cd);
-                    listcartdetail.remove(cd);
-                    for (CartDetail cartdetail : listcartdetail) {
-                        if (cartdetail.isIsSelect() == true) {
-                            total = total.add(cartdetail.getUnitPrice().multiply(BigDecimal.valueOf(cartdetail.getQuantity())));
-                        }
-                    }
-                    cdao.uppdateTotal(cart.getCartID(), total);
-                    request.getRequestDispatcher("CartSeverlet").forward(request, response);
-                    return;
-                }
+            if (id == 1) {
+                List<Order> list = odao.getListUserReturnOrderByStatusName("Yêu cầu hoàn đơn", "Yêu cầu hoàn một phần", user.getUserID());
+                request.setAttribute("OrderStatus", "wantreturn");
+                request.setAttribute("list", list);
+                request.getRequestDispatcher("user/wantreturn.jsp").forward(request, response);
+            } else if (id == 2) {
+                List<Order> orderlist = odao.getListReturnOrderByStatusName("Yêu cầu hoàn đơn", "Yêu cầu hoàn một phần");
+                request.setAttribute("OrderStatus", "wantreturn");
+                request.setAttribute("orderlist", orderlist);
+                request.getRequestDispatcher("admin/managewantreturned.jsp").forward(request, response);
             }
-        } catch (IOException e) {
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
     }
@@ -107,7 +96,7 @@ public class RemoveFromCart extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        processRequest(request, response);
     }
 
     /**

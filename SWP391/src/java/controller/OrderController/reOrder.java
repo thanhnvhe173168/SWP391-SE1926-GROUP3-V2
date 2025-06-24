@@ -2,13 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.CartController;
+package controller.OrderController;
 
 import dao.CartDAO;
-import model.*;
-import dao.CartDetailDAO;
-import dao.LaptopDAO;
-import dao.UserDAO;
+import dao.OrderDAO;
+import dao.OrderDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,15 +16,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import model.Cart;
+import model.CartDetail;
+import model.Order;
+import model.OrderDetail;
+import model.User;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "RemoveFromCart", urlPatterns = {"/RemoveFromCart"})
-public class RemoveFromCart extends HttpServlet {
+@WebServlet(name = "reOrder", urlPatterns = {"/reOrder"})
+public class reOrder extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +50,10 @@ public class RemoveFromCart extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RemoveFromCart</title>");
+            out.println("<title>Servlet reOrder</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet RemoveFromCart at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet reOrder at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,34 +71,42 @@ public class RemoveFromCart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CartDetailDAO cartdetaildao = new CartDetailDAO();
-        String id_raw = request.getParameter("id");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        CartDAO cdao = new CartDAO();
+        CartDAO cdao =new CartDAO();
         Cart cart = cdao.GetCartByUserID(user.getUserID());
-        List<CartDetail> listcartdetail = new ArrayList<>();
-        listcartdetail = cartdetaildao.ListCart(cart.getCartID());
+        String ids = request.getParameter("id");
+        OrderDAO odao = new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
         BigDecimal total = BigDecimal.valueOf(0);
-        try {
-            int id = Integer.parseInt(id_raw);
-            for (CartDetail cd : listcartdetail) {
-                if (cd.getLaptop().getLaptopID() == id) {
-                    cartdetaildao.Remove(cd);
-                    listcartdetail.remove(cd);
-                    for (CartDetail cartdetail : listcartdetail) {
-                        if (cartdetail.isIsSelect() == true) {
-                            total = total.add(cartdetail.getUnitPrice().multiply(BigDecimal.valueOf(cartdetail.getQuantity())));
-                        }
-                    }
-                    cdao.uppdateTotal(cart.getCartID(), total);
-                    request.getRequestDispatcher("CartSeverlet").forward(request, response);
-                    return;
-                }
+        List<CartDetail> lists = new ArrayList<>();
+        try{
+            int id = Integer.parseInt(ids);
+            List<OrderDetail> list = oddao.GetListOrderDetailByID(id);
+            for(OrderDetail odd : list){
+                CartDetail cd =new CartDetail();
+                cd.setCart(cart);
+                cd.setLaptop(odd.getLaptop());
+                cd.setQuantity(odd.getQuantity());
+                cd.setUnitPrice(odd.getUnitPrice());
+                cd.setIsSelect(true);
+                lists.add(cd);
+                
             }
-        } catch (IOException e) {
+            Order order = odao.GetOrderByID(id);
+            total = order.getTotalAmount();
+            session.setAttribute("listReOrder", lists);
+            request.setAttribute("totalPrice", formatCurrency(total));
+            request.getRequestDispatcher("user/reOrder.jsp").forward(request, response);
+        }
+        catch(IOException e){
             e.printStackTrace();
         }
+    }
+    
+    private String formatCurrency(BigDecimal value) {
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+        return formatter.format(value) + " VNĐ";
     }
 
     /**
@@ -107,7 +120,7 @@ public class RemoveFromCart extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        processRequest(request, response);
     }
 
     /**

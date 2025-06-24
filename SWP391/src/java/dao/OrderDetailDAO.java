@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -17,12 +19,14 @@ import java.util.List;
  * @author Window 11
  */
 public class OrderDetailDAO extends ConnectDB {
+
     ReviewDAO rdao = new ReviewDAO();
     LaptopDAO ldao = new LaptopDAO();
+    StatusDAO sdao = new StatusDAO();
 
     public void addorderdetail(OrderDetail ord) {
-        String sql = "INSERT INTO OrderDetail (OrderID, LaptopID, Quantity, UnitPrice, ReviewID) "
-                + "VALUES (?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO OrderDetail (OrderID, LaptopID, Quantity, UnitPrice, ReviewID, OrderDetailStatusID, ReasonReturn, ReturnDate, is_select) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try {
             PreparedStatement st = connect.prepareStatement(sql);
             st.setInt(1, ord.getOrderID());
@@ -30,13 +34,26 @@ public class OrderDetailDAO extends ConnectDB {
             st.setInt(3, ord.getQuantity());
             st.setBigDecimal(4, ord.getUnitPrice());
 
-            // Kiểm tra xem review có null không
             if (ord.getReview() == null) {
                 st.setNull(5, java.sql.Types.INTEGER);
             } else {
                 st.setInt(5, ord.getReview().getReviewID());
             }
 
+            st.setInt(6, ord.getOrderDetailStatus().getStatusID());
+
+            if (ord.getReasonReturn() == null) {
+                st.setNull(7, java.sql.Types.NVARCHAR);
+            } else {
+                st.setNString(7, ord.getReasonReturn());
+            }
+
+            if (ord.getReturnDate() == null) {
+                st.setNull(8, java.sql.Types.DATE);
+            } else {
+                st.setDate(8, java.sql.Date.valueOf(ord.getReturnDate()));
+            }
+            st.setBoolean(9, ord.isIsSelect());
             st.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -53,15 +70,138 @@ public class OrderDetailDAO extends ConnectDB {
             while (rs.next()) {
                 OrderDetail od = new OrderDetail();
                 od.setOrderID(id);
-                od.setLaptop(ldao.getLaptopById(rs.getInt("laptopid")));
-                od.setQuantity(rs.getInt("quantity"));
-                od.setUnitPrice(rs.getBigDecimal("unitprice"));
-                od.setReview(rdao.getReviewByID(rs.getInt("ReviewID")));
+
+                // LaptopID - không null
+                od.setLaptop(ldao.getLaptopById(rs.getInt("LaptopID")));
+
+                // Quantity, UnitPrice - không null
+                od.setQuantity(rs.getInt("Quantity"));
+                od.setUnitPrice(rs.getBigDecimal("UnitPrice"));
+
+                // ReviewID - có thể null
+                int reviewId = rs.getInt("ReviewID");
+                if (!rs.wasNull()) {
+                    od.setReview(rdao.getReviewByID(reviewId));
+                } else {
+                    od.setReview(null);
+                }
+
+                // OrderDetailStatusID - không null
+                od.setOrderDetailStatus(sdao.GetStatus(rs.getInt("OrderDetailStatusID")));
+
+                // ReturnDate - có thể null
+                Date returnDate = rs.getDate("ReturnDate");
+                if (returnDate != null) {
+                    od.setReturnDate(returnDate.toLocalDate());
+                } else {
+                    od.setReturnDate(null);
+                }
+
+                // ReasonReturn - có thể null
+                String reasonReturn = rs.getNString("ReasonReturn");
+                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+                od.setIsSelect(rs.getBoolean("is_select"));
                 list.add(od);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public void upDateOrderDetailStatuswhenreturn(int statusid, int orderid, int laptopid) {
+        String sql = "update OrderDetail\n"
+                + "set OrderDetailStatusID=?\n"
+                + "where OrderID=?\n"
+                + "and LaptopID=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, statusid);
+            st.setInt(2, orderid);
+            st.setInt(3, laptopid);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void upDateOrderDetailStatuswhencancel(int statusid, int orderid) {
+        String sql = "update OrderDetail\n"
+                + "set OrderDetailStatusID=?\n"
+                + "where OrderID=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, statusid);
+            st.setInt(2, orderid);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public OrderDetail getOrderDetailByLapID(int id) {
+        String sql = "select * from OrderDetail\n"
+                + "where LaptopID=?";
+        OrderDetail od = new OrderDetail();
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                od.setOrderID(id);
+
+                // LaptopID - không null
+                od.setLaptop(ldao.getLaptopById(rs.getInt("LaptopID")));
+
+                // Quantity, UnitPrice - không null
+                od.setQuantity(rs.getInt("Quantity"));
+                od.setUnitPrice(rs.getBigDecimal("UnitPrice"));
+
+                // ReviewID - có thể null
+                int reviewId = rs.getInt("ReviewID");
+                if (!rs.wasNull()) {
+                    od.setReview(rdao.getReviewByID(reviewId));
+                } else {
+                    od.setReview(null);
+                }
+
+                // OrderDetailStatusID - không null
+                od.setOrderDetailStatus(sdao.GetStatus(rs.getInt("OrderDetailStatusID")));
+
+                // ReturnDate - có thể null
+                Date returnDate = rs.getDate("ReturnDate");
+                if (returnDate != null) {
+                    od.setReturnDate(returnDate.toLocalDate());
+                } else {
+                    od.setReturnDate(null);
+                }
+
+                // ReasonReturn - có thể null
+                String reasonReturn = rs.getNString("ReasonReturn");
+                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+                od.setIsSelect(rs.getBoolean("is_select"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return od;
+    }
+
+    public void updateReasonReturn(int orderid, int lapid, String reason, LocalDate returndate) {
+        String sql = "update OrderDetail\n"
+                + "set ReasonReturn=?,\n"
+                + "    ReturnDate=?\n"
+                + "where OrderID=?\n"
+                + "and LaptopID=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setNString(1, reason);
+            st.setInt(3, orderid);
+            st.setInt(4, lapid);
+            st.setDate(2, java.sql.Date.valueOf(returndate));
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import dao.*;
+import jakarta.servlet.http.HttpSession;
 import model.*;
 
 /**
@@ -76,6 +77,8 @@ public class OrderSuccess extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         VoucherDAO voudao = new VoucherDAO();
+        HttpSession session = request.getSession(); 
+        User user = (User)session.getAttribute("user");
         PaymentMethodDAO paydao = new PaymentMethodDAO();
         OrderDAO oddao = new OrderDAO();
         FeeShipDAO fsdao=new FeeShipDAO();
@@ -93,7 +96,7 @@ public class OrderSuccess extends HttpServlet {
             int voucherid = voudao.GetIDbyCode(voucher);
             int payid = paydao.GetPaymentIDbyMethod(paymentmethod);
             float total = Float.parseFloat(total_raw);
-            Order od = new Order(1, LocalDate.now(), fsdao.getFeeShipByID(shipid), voudao.GetVoucherByID(voucherid), paydao.GetPaymentMethodByID(payid), phoneNumber, BigDecimal.valueOf(total), address, note, sdao.GetStatus(5),sdao.GetStatus(10),null);
+            Order od = new Order(user.getUserID(), LocalDate.now(), fsdao.getFeeShipByID(shipid), voudao.GetVoucherByID(voucherid), paydao.GetPaymentMethodByID(payid), phoneNumber, BigDecimal.valueOf(total), address, note, sdao.GetStatus(5),sdao.GetStatus(10),null);
             oddao.uppdateorder(od);
             
             request.setAttribute("list_id", list_id);

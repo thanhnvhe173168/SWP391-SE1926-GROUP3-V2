@@ -42,12 +42,12 @@ public class returned extends HttpServlet {
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
-                List<Order> list = odao.getListUserOrderByStatusName("Trả hàng", user.getUserID());
+                List<Order> list = odao.getListUserReturnOrderByStatusName("Đã hoàn", " Đã hoàn một phần", user.getUserID());
                 request.setAttribute("OrderStatus", "returned");
                 request.setAttribute("list", list);
                 request.getRequestDispatcher("user/returned.jsp").forward(request, response);
             } else if (id == 2) {
-                List<Order> orderlist = odao.getListOrderByStatusName("Trả hàng");
+                List<Order> orderlist = odao.getListReturnOrderByStatusName("Đã hoàn", " Đã hoàn một phần");
                 request.setAttribute("OrderStatus", "returned");
                 request.setAttribute("orderlist", orderlist);
                 request.getRequestDispatcher("admin/managereturned.jsp").forward(request, response);

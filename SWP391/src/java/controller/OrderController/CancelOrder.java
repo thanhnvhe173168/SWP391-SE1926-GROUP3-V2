@@ -4,6 +4,8 @@
  */
 package controller.OrderController;
 
+import dao.OrderDAO;
+import dao.OrderDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Order;
 
 /**
  *
@@ -72,7 +75,20 @@ public class CancelOrder extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id_raw = request.getParameter("id");
-        int id = Integer.parseInt(id_raw);
+        OrderDAO odao =new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        
+        try{
+            int id = Integer.parseInt(id_raw);
+            odao.upDateOrderStatus(8, id);
+            oddao.upDateOrderDetailStatuswhencancel(20, id);
+            String mess= "Hủy đơn thành công";
+            request.setAttribute("mess", mess);
+            request.getRequestDispatcher("OrderList").forward(request, response);
+        }catch(NumberFormatException e){
+            e.printStackTrace();
+        }
+        
         
     }
 

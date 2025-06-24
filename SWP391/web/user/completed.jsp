@@ -1,6 +1,6 @@
 <%-- 
-    Document   : OrderList
-    Created on : Jun 7, 2025, 9:59:09 AM
+    Document   : completed
+    Created on : Jun 20, 2025, 11:46:45 AM
     Author     : Window 11
 --%>
 
@@ -11,13 +11,11 @@
 <%@page import="java.util.ArrayList" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <title>OrderList</title>
+        <title>List Completed Order</title>
         <style>
             body {
                 font-family: 'Segoe UI', sans-serif;
@@ -105,61 +103,12 @@
                 font-size: 16px;
             }
         </style>
-        <script>
-            function confirmCancel() {
-                Swal.fire({
-                    title: "Bạn chắc chắn muốn hủy đơn?",
-                    text: "Sau khi hủy sẽ không thể hoàn tác!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Vâng, hủy đơn",
-                    cancelButtonText: "Không"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById("cancelform").submit();
-                    }
-                });
-            }
 
-            function confirmReturn(){
-                Swal.fire({
-                    title: "Bạn chắc chắn muốn hoàn đơn?",
-                    text: "Sau khi hoàn sẽ không thể hoàn tác!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Vâng, hoàn đơn",
-                    cancelButtonText: "Không"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById("returnform").submit();
-                    }
-                });
-            }
-        </script>
-        
+
     </head>
     <body>
-        <%
-     String mess = (String) request.getAttribute("mess");
-     if (mess != null) {
-        %>
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: '<%= mess %>',
-                showConfirmButton: false,
-                timer: 2000
-            });
-        </script>
-        <%
-            }
-        %>
         <jsp:include page="/components/Header.jsp"></jsp:include>
-            <h1>Đơn hàng</h1>
+            <h1>Đơn hàng hoàn tất</h1>
         <c:set var="currentStatus" value="${OrderStatus}" />
 
         <table>
@@ -193,8 +142,6 @@
                         <th>Trạng thái đơn hàng</th>
                         <th>Trạng thái thanh toán</th>
                         <th>Xem đơn</th>
-                        <th>Hủy đơn</th>
-                        <th>Trả hàng</th>
                         <th>Đánh giá</th>
                         <th>Mua lại</th>
                     </tr>
@@ -210,32 +157,6 @@
                             <c:set var="paymentstatus" value="${order.paymentstatus.statusName}"/>
                             <c:set var="orderneedreviews" value="${orderneedreview}"/>
                             <td>
-                                <c:choose>
-                                    <c:when test="${orderstatus=='Chờ xác nhận'}">
-                                        <form id="cancelform" action="CancelOrder" method="post">
-                                            <input type="hidden" name="id" value="${order.orderID}">
-                                            <button type="button" onclick="confirmCancel()">Hủy đơn</button>
-                                        </form>
-                                    </c:when>
-                                    <c:otherwise>
-
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>        
-                            <td>
-                                <c:choose>
-                                    <c:when test="${orderstatus=='Đã giao'}">
-                                        <form id="returnform" action="detailReturnOrder" method="post">
-                                            <input type="hidden" name="id" value="${order.orderID}">
-                                            <button type="button" onclick="confirmReturn()">Hoàn đơn</button>
-                                        </form>
-                                    </c:when>
-                                    <c:otherwise>
-
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td>
                                 <c:forEach items="${orderneedreviews}" var="orderneed">
                                     <c:choose>
                                         <c:when test="${order.orderID==orderneed.orderID}">
@@ -248,14 +169,7 @@
                                 </c:forEach>
                             </td>
                             <td>
-                                <c:choose>
-                                    <c:when test="${orderstatus=='Đã giao'||orderstatus=='Đã hủy'||orderstatus=='Trả hàng'||orderstatus=='Đã hoàn'||orderstatus=='Hoàn tất'||orderstatus==' Đã hoàn một phần'}">
                                         <button onclick="window.location.href = 'reOrder?id=${order.orderID}'">Mua lại</button>
-                                    </c:when>
-                                    <c:otherwise>
-
-                                    </c:otherwise>
-                                </c:choose>
                             </td>
                         </tr>
                     </c:forEach>
