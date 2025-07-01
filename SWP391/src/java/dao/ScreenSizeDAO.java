@@ -26,7 +26,7 @@ public class ScreenSizeDAO extends ConnectDB {
             while (rs.next()) {
                 ScreenSize screen = new ScreenSize();
                 screen.setScreenID(rs.getInt("ScreenID"));
-                screen.setSize(rs.getString("Size"));
+                screen.setSize(rs.getNString("Size"));
                 list.add(screen);
             }
         } catch (SQLException e) {
