@@ -207,23 +207,23 @@ public class UserDAO extends ConnectDB {
     }
 
     public boolean changeStatus(int userID, int statusID) {
-    String sql = "UPDATE Users SET StatusID = ? WHERE UserID = ?";
-    try {
-        PreparedStatement ps = connect.prepareStatement(sql);
-        ps.setInt(1, statusID);
-        ps.setInt(2, userID);
-        int rowsAffected = ps.executeUpdate();
-        ps.close(); // Đóng PreparedStatement
-        System.out.println("Rows affected: " + rowsAffected);
-        return rowsAffected > 0;
-    } catch (Exception e) {
-        System.out.println("changeStatus error: " + e.getMessage());
-        return false;
+        String sql = "UPDATE Users SET StatusID = ? WHERE UserID = ?";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, statusID);
+            ps.setInt(2, userID);
+            int rowsAffected = ps.executeUpdate();
+            ps.close(); // Đóng PreparedStatement
+            return true;
+        } catch (Exception e) {
+            System.out.println("changeStatus error: " + e.getMessage());
+            return false;
+        }
     }
-}
 //Linh: UserList
+
     public List<User> getAllUser() {
-         List<User> list = new ArrayList<>();
+        List<User> list = new ArrayList<>();
         String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, StatusID FROM Users where roleID = 3";
 
         try {
@@ -246,21 +246,45 @@ public class UserDAO extends ConnectDB {
 
         return list;
     }
-    
-    public int getUserIDByEmail(String email){
-        String sql="select userID from Users where Email=?";
-        int userID=0;
-        try{
+    //Linh: UserDetail
+
+    public User getUserById(int userId) {
+        User user = null;
+        String sql = "SELECT * FROM Users WHERE UserID = ? AND RoleID = 3"; 
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = new User();
+                user.setUserID(rs.getInt("UserID"));
+                user.setFullName(rs.getString("FullName"));
+                user.setEmail(rs.getString("Email"));
+                user.setPhoneNumber(rs.getString("PhoneNumber"));
+                user.setPassword(rs.getString("Password"));
+                user.setRegistrationDate(rs.getDate("RegistrationDate"));
+                user.setRoleID(rs.getInt("RoleID"));
+                user.setStatusID(rs.getInt("StatusID"));
+            }
+        } catch (SQLException e) {
+            System.out.println("getUserById: " + e.getMessage());
+        }
+        return user;
+    }
+
+    public int getUserIDByEmail(String email) {
+        String sql = "select userID from Users where Email=?";
+        int userID = 0;
+        try {
             PreparedStatement st = connect.prepareStatement(sql);
             st.setString(1, email);
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
-                userID=rs.getInt("userID");
+            while (rs.next()) {
+                userID = rs.getInt("userID");
             }
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return userID;
-}
+    }
 }

@@ -125,9 +125,7 @@
                 </div>
 
                 <div class="btn-group">
-                    <a href="staffEditAccount?userID=${user.userID}" class="btn-edit">
-                        <i class="fas fa-edit me-1"></i> Chỉnh sửa
-                    </a>
+                    
                     <button class="btn-back" onclick="location.href = 'staffList'">
                         <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
                     </button>

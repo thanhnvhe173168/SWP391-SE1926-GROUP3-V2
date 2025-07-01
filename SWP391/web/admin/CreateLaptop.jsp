@@ -11,7 +11,24 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+        <style>
+            /* Tùy chỉnh kích thước CKEditor */
+            .ck-editor__editable_inline {
+                min-height: 400px; /* Chiều cao tối thiểu */
+                max-height: 600px; /* Chiều cao tối đa */
+                width: 100%; /* Chiều rộng full */
+                font-size: 16px; /* Cỡ chữ */
+            }
+
+            /* Đảm bảo container không giới hạn kích thước */
+            .ck-editor__main {
+                width: 100%;
+            }
+        </style>
     </head>
     <body>
         <%
@@ -69,7 +86,7 @@
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label for="name" class="form-label">Mô tả</label>
-                                    <textarea id="description" name="description" rows="5" style="width: 100%"></textarea>
+                                    <textarea id="editor" name="description" style="height: 120px"></textarea>
                                 </div>
                                 <div class="col-4 mb-3">
                                     <label for="name" class="form-label">Ổ cứng</label>
@@ -155,6 +172,15 @@
             </div>
         </div>
         <script>
+
+            ClassicEditor
+                    .create(document.querySelector('#editor'))
+                    .then(editor => {
+                        console.log('Editor was initialized', editor);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
 
             function handleRedirect() {
                 window.location.href = "getListLaptop";

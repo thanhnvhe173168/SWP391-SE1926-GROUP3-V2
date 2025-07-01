@@ -2,10 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller.UserController;
 
-import dao.UserDAO;
+import dao.WishListDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,42 +12,44 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.User;
 
 /**
  *
  * @author linhd
  */
-@WebServlet(name="CreateAccountStaff", urlPatterns={"createAccountStaff"})
-public class CreateAccountStaff extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+@WebServlet(name = "RemoveWishList", urlPatterns = {"/removeWishList"})
+public class RemoveWishList extends HttpServlet {
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CreateAccountStaff</title>");  
+            out.println("<title>Servlet RemoveWishList</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CreateAccountStaff at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet RemoveWishList at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -56,44 +57,41 @@ public class CreateAccountStaff extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-          try {
-            String fullName = request.getParameter("fullName");
-            String email = request.getParameter("email");
-            String phoneNumber = request.getParameter("phoneNumber");
-            String password = request.getParameter("password");
-            int roleID = Integer.parseInt(request.getParameter("roleId"));
-            int statusID = Integer.parseInt(request.getParameter("statusId"));
-            
-            UserDAO dao = new UserDAO();
-            if(dao.checkExistUser(email)!=null){
-                request.setAttribute("error", "Email already exists");
-                request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
-                return;
+            throws ServletException, IOException {
+        String id_raw = request.getParameter("id");
+        if (id_raw == null) {
+            response.sendRedirect("wishList");
+            return;
+        }
+        try {
+            int wishlistID = Integer.parseInt(id_raw);
+            WishListDAO dao = new WishListDAO();
+
+            int check = 0;
+            try {
+                check = dao.removeWishList(wishlistID);
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.getSession().setAttribute("mess", "Lỗi khi xóa sản phẩm khỏi wishlist!");
             }
-            User user = new User();
-            user.setFullName(fullName);
-            user.setEmail(email);
-            user.setPhoneNumber(phoneNumber);
-            user.setPassword(password);
-            user.setRoleID(roleID);
-            user.setStatusID(statusID);
-            
-            int result = dao.createUser(user);
-            if(result>0){
-                response.sendRedirect("staffList");
-            }else{
-                request.setAttribute("error","Error when add new staff");
-                request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
+
+            if (check > 0) {
+                request.getSession().setAttribute("mess", "Đã xóa khỏi danh sách yêu thích!");
+            } else {
+                request.getSession().setAttribute("mess", "Không thể xóa sản phẩm khỏi danh sách yêu thích!");
             }
-        } catch (Exception e) {
+
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("mess", "ID sản phẩm không hợp lệ!");
             e.printStackTrace();
         }
-        
-    } 
 
-    /** 
+        response.sendRedirect("wishList");
+    }
+
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -101,12 +99,13 @@ public class CreateAccountStaff extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-      
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

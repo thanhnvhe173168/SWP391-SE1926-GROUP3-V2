@@ -178,19 +178,21 @@
             }
 
             function handleFilter(key, value) {
+                var intValue = +value;
                 if (key === 'currentPage') {
-                    if (value < 1)
+                    if (intValue < 1)
                         return;
-                    if (value > totalPage)
+                    if (intValue > totalPage)
                         return;
                 }
-                if (value === 0) {
+                if (intValue === 0) {
                     params.delete(key);
-                }
-                if (params.get(key)) {
-                    params.set(key, value);
                 } else {
-                    params.append(key, value);
+                    if (params.get(key)) {
+                        params.set(key, value);
+                    } else {
+                        params.append(key, value);
+                    }
                 }
                 window.location.href = "getListLaptop?" + params.toString();
             }

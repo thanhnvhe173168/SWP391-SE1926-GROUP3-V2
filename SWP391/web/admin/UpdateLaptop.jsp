@@ -13,6 +13,23 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <style>
+            /* Tùy chỉnh kích thước CKEditor */
+            .ck-editor__editable_inline {
+                min-height: 400px; /* Chiều cao tối thiểu */
+                max-height: 600px; /* Chiều cao tối đa */
+                width: 100%; /* Chiều rộng full */
+                font-size: 16px; /* Cỡ chữ */
+            }
+
+            /* Đảm bảo container không giới hạn kích thước */
+            .ck-editor__main {
+                width: 100%;
+            }
+        </style>
     </head>
     <body>
         <%
@@ -25,7 +42,7 @@
         <div class="d-flex">
             <jsp:include page="/components/AdminSidebar.jsp"></jsp:include>
                 <div style="height: calc(100vh - 86px); overflow: hidden auto;" class="container">
-                    <p style="color: #dd3726; font-size: 40px; font-weight: 700">Thêm mới laptop</p>
+                    <p style="color: #dd3726; font-size: 40px; font-weight: 700">Chỉnh sửa laptop</p>
                     <div class="container">
                         <form id="formUpdateLaptop">
                             <input 
@@ -83,7 +100,7 @@
                             </div>
                             <div class="col-12 mb-3">
                                 <label for="name" class="form-label">Mô tả</label>
-                                <textarea  id="description" name="description" rows="5" style="width: 100%">
+                                <textarea  id="editor" name="description" rows="5" style="width: 100%">
                                     <%=laptop.getDescription()%>
                                 </textarea>
                             </div>
@@ -170,7 +187,7 @@
                                     <option 
                                         value="<%=rsScreen.getInt("ScreenID")%>"
                                         <%=rsScreen.getInt("ScreenID") == laptop.getScreen() ? "selected" : ""%>
-                                    >
+                                        >
                                         <%=rsScreen.getString("Size")%>
                                     </option>
                                     <%}%>
@@ -194,6 +211,15 @@
             </div>
         </div>
         <script>
+
+            ClassicEditor
+                    .create(document.querySelector('#editor'))
+                    .then(editor => {
+                        console.log('Editor was initialized', editor);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
 
             function handleRedirect() {
                 window.location.href = "getListLaptop";

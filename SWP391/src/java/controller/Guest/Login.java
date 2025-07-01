@@ -77,11 +77,10 @@ public class Login extends HttpServlet {
         session.setAttribute("user", user);
         switch (user.getRoleID()) {
             case 1: // Admin
-                response.sendRedirect("getListBrand");
+                response.sendRedirect("dashboard");
                 break;
             case 2: // Staff
-//                response.sendRedirect("staff/staffDashboard.jsp");
-                response.sendRedirect("getListCustomer");
+                response.sendRedirect("dashboard");
                 break;
             case 3: // Customer
                 response.sendRedirect("home");

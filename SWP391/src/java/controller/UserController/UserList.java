@@ -21,8 +21,8 @@ public class UserList extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String search = request.getParameter("search");
-        String statusParam = request.getParameter("statusId"); // Đổi tên tham số để khớp với JSP
-        String reset = request.getParameter("reset"); // Thêm tham số reset
+        String statusParam = request.getParameter("statusId"); 
+        String reset = request.getParameter("reset"); 
 
         // Reset về danh sách gốc nếu nhấn nút "Trở về"
         if ("true".equals(reset)) {
