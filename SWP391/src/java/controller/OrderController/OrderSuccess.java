@@ -95,10 +95,11 @@ public class OrderSuccess extends HttpServlet {
             int shipid = Integer.parseInt(shipid_raw);
             int voucherid = voudao.GetIDbyCode(voucher);
             int payid = paydao.GetPaymentIDbyMethod(paymentmethod);
-            float total = Float.parseFloat(total_raw);
-            Order od = new Order(user.getUserID(), LocalDate.now(), fsdao.getFeeShipByID(shipid), voudao.GetVoucherByID(voucherid), paydao.GetPaymentMethodByID(payid), phoneNumber, BigDecimal.valueOf(total), address, note, sdao.GetStatus(5),sdao.GetStatus(10),null);
+            double total = Double.parseDouble(total_raw);
+            Order od = new Order(user.getUserID(), LocalDate.now(), fsdao.getFeeShipByID(shipid), voudao.GetVoucherByID(voucherid), paydao.GetPaymentMethodByID(payid), phoneNumber, BigDecimal.valueOf(total), address, note, sdao.GetStatus(5),sdao.GetStatus(15),null);
             oddao.uppdateorder(od);
-            
+            request.setAttribute("paymentmethodid", payid);
+            request.setAttribute("total", total);
             request.setAttribute("list_id", list_id);
             request.getRequestDispatcher("OrderDetailServlet").forward(request, response);
             

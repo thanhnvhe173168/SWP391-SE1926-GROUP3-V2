@@ -54,10 +54,10 @@
                             User user = (User) session.getAttribute("user");
                         %>
                          <li class="nav-item">
-                            <a class="nav-link" href="CartSeverlet">Giỏ hàng</a>
+                            <a class="nav-link" href="CartSeverlet">Cart</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="OrderList">Đơn hàng</a>
+                            <a class="nav-link" href="OrderList">Order</a>
                         </li>
                          <li class="nav-item">
                             <a class="nav-link" href="wishList">WishList</a>
@@ -66,7 +66,7 @@
                             <a class="nav-link" href="viewProfile"><%=user.getFullName()%></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="logout">Đăng xuất</a>
+                            <a class="nav-link" href="logout">Login</a>
                         </li>
                         <%} else {%>      
                         <li class="nav-item">

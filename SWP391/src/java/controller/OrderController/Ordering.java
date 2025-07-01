@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,19 +65,41 @@ public class Ordering extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String id_raw=request.getParameter("id");
+        String ids = request.getParameter("ids");
         CartDetailDAO cartdetaildao = new CartDetailDAO();
         List<CartDetail> listordering =new ArrayList<>();
         CartDetail cd =new CartDetail();
+        BigDecimal total =new BigDecimal("0");
+        if(ids !=null){
+            try{
+                int id = Integer.parseInt(id_raw);
+                int ID = Integer.parseInt(ids);
+                if(ID==1){
+                    HttpSession session = request.getSession();
+                    List<CartDetail> listReOrder =(List<CartDetail>) session.getAttribute("listReOrder");
+                    for(CartDetail cd1 : listReOrder){
+                        if(cd1.getLaptop().getLaptopID()==id){
+                            listordering.add(cd1);
+                            total=cd1.getUnitPrice().multiply(BigDecimal.valueOf(cd1.getQuantity()));
+                        }
+                    }
+                }
+            }
+            catch(NumberFormatException e){
+                e.printStackTrace();
+            }
+        }
+        else{
         try{
            int id=Integer.parseInt(id_raw);
            cd=cartdetaildao.GetCartDetail(id);
            listordering.add(cd);
+           total=cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity()));
         }
         catch(NumberFormatException e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        BigDecimal total =new BigDecimal("0");
-        total=cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity()));
+        }
         request.setAttribute("total", total);
         request.setAttribute("listordering", listordering);
         request.getRequestDispatcher("user/order.jsp").forward(request, response);

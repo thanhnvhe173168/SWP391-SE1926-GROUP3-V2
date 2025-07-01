@@ -77,57 +77,64 @@ public class updateQuantityReOrder extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
 
-    @Override
+     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        List<CartDetail> listReOrder = (List<CartDetail>) session.getAttribute("listReOrder");
 
-        BigDecimal total = BigDecimal.valueOf(0);
-        BigDecimal itemtotal = BigDecimal.valueOf(0);
-
-        try {
-            // Đọc JSON từ body
-            BufferedReader reader = request.getReader();
-            StringBuilder sb = new StringBuilder();
+        // Đọc dữ liệu JSON từ body
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = request.getReader()) {
             String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
+        }
 
+        try {
             JSONObject json = new JSONObject(sb.toString());
-            int id = Integer.parseInt(json.getString("productId"));
-            int quantity = Integer.parseInt(json.getString("quantity"));
+            int productId = json.getInt("productId");
+            int quantity = json.getInt("quantity");
 
-            // Cập nhật số lượng sản phẩm
+            HttpSession session = request.getSession();
+            List<CartDetail> listReOrder = (List<CartDetail>) session.getAttribute("listReOrder");
+
+            BigDecimal total = BigDecimal.ZERO;
+            BigDecimal itemTotal = BigDecimal.ZERO;
+
+            // Cập nhật số lượng sản phẩm được chỉnh
             for (CartDetail cd : listReOrder) {
-                if (cd.getLaptop().getLaptopID() == id) {
+                if (cd.getLaptop().getLaptopID() == productId) {
                     cd.setQuantity(quantity);
-                    itemtotal = cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity()));
+                    itemTotal = cd.getUnitPrice().multiply(BigDecimal.valueOf(quantity));
                     break;
                 }
             }
 
-            // Tính tổng tiền các mục đã chọn
-            for (CartDetail cartdetail : listReOrder) {
-                if (cartdetail.isIsSelect()) {
-                    total = total.add(cartdetail.getUnitPrice().multiply(BigDecimal.valueOf(cartdetail.getQuantity())));
+            // Tính lại tổng tiền các sản phẩm được chọn
+            for (CartDetail cd : listReOrder) {
+                if (cd.isIsSelect()) {
+                    total = total.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
                 }
             }
 
-            // Lưu lại danh sách đã cập nhật vào session
+            // Cập nhật lại listReOrder vào session
             session.setAttribute("listReOrder", listReOrder);
 
-            // Trả kết quả về client
+            // Trả JSON phản hồi
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
+
+            JSONObject responseJson = new JSONObject();
+            responseJson.put("itemTotal", formatCurrency(itemTotal));
+            responseJson.put("totalPrice", formatCurrency(total));
+
             PrintWriter out = response.getWriter();
-            out.print("{\"itemTotal\":\"" + formatCurrency(itemtotal) + "\", \"totalPrice\":\"" + formatCurrency(total) + "\"}");
+            out.print(responseJson.toString());
             out.flush();
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON or server error");
         }
     }
 

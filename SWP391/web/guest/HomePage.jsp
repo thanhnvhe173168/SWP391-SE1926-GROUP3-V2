@@ -96,7 +96,7 @@
                 <div class="row mb-4">
                     <div class="col-md-3">
                         <select name="brandId" id="brandId" style="width: 100%" onchange="handleRedirectProduct('brandId', this.value)">
-                            <option value="0">Nhãn hiệu</option>
+                            <option value="0">Brand</option>
                         <%while(rsBrand.next()) {%>
                         <option value="<%=rsBrand.getInt("BrandID")%>">
                             <%=rsBrand.getString("BrandName")%>
@@ -106,7 +106,7 @@
                 </div>
                 <div class="col-md-3">
                     <select name="categoryId" id="categoryId" style="width: 100%" onchange="handleRedirectProduct('categoryId', this.value)">
-                        <option value="0">Loại laptop</option>
+                        <option value="0">Categories</option>
                         <%while(rsCategory.next()) {%>
                         <option
                             value="<%=rsCategory.getInt("CategoryID")%>"
@@ -130,7 +130,7 @@
                 </div>
                 <div class="col-md-3">
                     <select name="screenId" id="screenId" style="width: 100%" onchange="handleRedirectProduct('screenId', this.value)">
-                        <option value="0">Màn hình</option>
+                        <option value="0">Screen</option>
                         <%while(rsScreen.next()) {%>
                         <option 
                             value="<%=rsScreen.getInt("ScreenID")%>"
