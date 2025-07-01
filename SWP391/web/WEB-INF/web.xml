@@ -17,13 +17,9 @@
         <servlet-name>CreateAccountStaff</servlet-name>
         <url-pattern>/createAccountStaff</url-pattern>
     </servlet-mapping>
-    <dependency>
+<dependency>
     <groupId>org.json</groupId>
     <artifactId>json</artifactId>
-    <version>20240303</version> <!-- hoặc phiên bản mới hơn -->
-</dependency><dependency>
-    <groupId>org.json</groupId>
-    <artifactId>json</artifactId>
-    <version>20240303</version> <!-- hoặc phiên bản mới hơn -->
+    <version>20210307</version>
 </dependency>
 </web-app>

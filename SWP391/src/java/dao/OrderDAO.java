@@ -728,4 +728,18 @@ public class OrderDAO extends ConnectDB {
             e.printStackTrace();
         }
     }
+
+    public void updateOrderPaymentStatus(Order order) {
+        String sql = "update Orders\n"
+                + "set PaymentStatusID=?\n"
+                + "where OrderID=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, order.getPaymentstatus().getStatusID());
+            st.setInt(2, order.getOrderID());
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
