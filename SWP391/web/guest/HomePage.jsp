@@ -146,7 +146,7 @@
                 <%while(rsLaptop.next()) {%>
                 <div class="col">
                     <div class="card laptop-card">
-                        <img src="<%=rsLaptop.getString("ImageURL")%>" class="card-img-top laptop-image" alt="Dell XPS 133456246524">
+                        <img src="images/<%=rsLaptop.getString("ImageURL")%>" class="card-img-top laptop-image" alt="Dell XPS 133456246524">
                         <div class="card-body">
                             <h5 class="card-title"><%=rsLaptop.getString("LaptopName")%></h5>
                             <p class="card-text"><%=rsLaptop.getString("Size")%>, <%=rsLaptop.getString("CPUInfo")%>, <%=rsLaptop.getString("RAM")%>, <%=rsLaptop.getString("HardDrive")%></p>
@@ -171,7 +171,7 @@
                 <%while(rsBlog.next()) {%>
                 <div class="col">
                     <div class="card laptop-card">
-                        <img src="<%=rsBlog.getString("Avatar")%>" class="card-img-top laptop-image" alt="Dell XPS 133456246524">
+                        <img src="images/<%=rsBlog.getString("Avatar")%>" class="card-img-top laptop-image" alt="Dell XPS 133456246524">
                         <div class="card-body">
                             <h5 class="card-title"><%=rsBlog.getString("Title")%></h5>
                             <a href="blogDetail?blogId=<%=rsBlog.getInt("BlogID")%>" class="btn btn-primary">View Details</a>

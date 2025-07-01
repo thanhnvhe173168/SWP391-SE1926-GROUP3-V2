@@ -104,7 +104,7 @@
             <%if(rsLaptop.next()) {%>
             <div class="row">
                 <div class="col-md-8">
-                    <img src="<%=rsLaptop.getString("ImageURL")%>" class="product-image" alt="">
+                    <img src="images/<%=rsLaptop.getString("ImageURL")%>" class="product-image" alt="">
                 </div>
                 <!-- Thông tin sản phẩm -->
                 <div class="col-md-4">
