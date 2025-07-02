@@ -179,7 +179,6 @@
         </table>
 
         <c:set var="orderlists" value="${orderlist}"/> 
-        <c:set var="stt" value="0"/>
         <c:choose>
             <c:when test="${empty orderlists}">
                 <P>Không có đơn hàng nào</P>
@@ -198,9 +197,9 @@
                         <th>Đánh giá</th>
                         <th>Mua lại</th>
                     </tr>
-                    <c:forEach items="${orderlists}" var="order">
+                    <c:forEach items="${orderlists}" var="order" varStatus="status">
                         <tr>
-                            <td>${stt+1}</td>
+                            <td>${status.index + 1}</td>
                             <td>${order.orderDate}</td>
                             <td><fmt:formatNumber value="${order.totalAmount}" type="number" groupingUsed="true"/> VNĐ</td>
                             <td>${order.orderstatus.statusName}</td>

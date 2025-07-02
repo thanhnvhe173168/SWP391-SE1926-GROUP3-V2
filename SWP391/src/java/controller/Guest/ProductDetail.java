@@ -62,7 +62,13 @@ public class ProductDetail extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        LaptopDAO laptopDao = new LaptopDAO();
+        int productId = Integer.parseInt(request.getParameter("productId"));
+        ResultSet rsLaptop = laptopDao.getDetailLaptop(productId);
+        String mess=(String)request.getAttribute("mess");
+        request.setAttribute("mess", mess);
+        request.setAttribute("rsLaptop", rsLaptop);
+        request.getRequestDispatcher("/guest/ProductDetail.jsp").forward(request, response);
     }
 
     /** 

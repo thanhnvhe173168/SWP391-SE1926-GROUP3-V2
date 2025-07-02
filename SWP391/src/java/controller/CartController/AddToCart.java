@@ -120,7 +120,47 @@ public class AddToCart extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        User user =(User)session.getAttribute("user");
+        LaptopDAO ldao = new LaptopDAO();
+        CartDAO cdao = new CartDAO();
+        CartDetailDAO cddao = new CartDetailDAO();
+        String id_raw = request.getParameter("productId");
+        String quantity_raw = request.getParameter("quantity");
+        String mess="";
+        Cart cart = cdao.GetCartByUserID(user.getUserID());
+        BigDecimal total = cart.getTotal();
+        try{
+            int quantity = Integer.parseInt(quantity_raw);
+            int id = Integer.parseInt(id_raw);
+            Laptop lap = ldao.getLaptopById(id);
+            List<CartDetail> listcartdetail = cddao.ListCart(cart.getCartID());
+            for(CartDetail cd : listcartdetail){
+                if(cd.getLaptop().getLaptopID()==id){
+                    mess="Sản phẩm đã có trong giỏ hàng.";
+                    request.setAttribute("mess", mess);
+                    request.setAttribute("icon", "warning");
+                    request.getRequestDispatcher("productDetail").forward(request, response);
+                    return;
+                }
+            }
+            CartDetail cartdetail = new CartDetail();
+            cartdetail.setCart(cart);
+            cartdetail.setLaptop(lap);
+            cartdetail.setQuantity(quantity);
+            cartdetail.setUnitPrice(lap.getPrice());
+            cartdetail.setIsSelect(true);
+            cddao.AddCart(cartdetail);
+            total = total.add(cartdetail.getUnitPrice());
+            cdao.uppdateTotal(cart.getCartID(), total);
+            mess="Thêm vào giỏ hàng thành công !";
+            request.setAttribute("mess", mess);
+            request.setAttribute("icon", "success");
+            request.getRequestDispatcher("productDetail").forward(request, response);
+        }
+        catch(NumberFormatException e){
+            e.printStackTrace();
+        }
     }
 
     /**

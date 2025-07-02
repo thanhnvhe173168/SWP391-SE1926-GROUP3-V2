@@ -59,15 +59,16 @@
                 font-size: 1rem;
             }
             .add-to-cart-btn {
-                background-color: #fff;
+                background-color: #1e88e5;
                 border: 1px solid #ccc;
+                border-radius: 5px;
                 padding: 10px 20px;
                 margin-right: 10px;
                 display: flex;
                 align-items: center;
             }
             .add-to-cart-btn:hover {
-                background-color: #f8f9fa;
+                background-color: #00a8ff;
             }
             .add-to-cart-btn span {
                 color: #dc3545;
@@ -96,6 +97,24 @@
         </style>
     </head>
     <body>
+        <%
+        String mess = (String) request.getAttribute("mess");
+        String icon = (String) request.getAttribute("icon");
+        if (mess != null && icon != null) {
+        %>
+        <script>
+            window.alert("<%= mess %>", 3000);
+            Swal.fire({
+                icon: '<%= icon %>',
+                title: '<%= mess %>',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        </script>
+        <%
+            }
+        %>
+
         <%
            ResultSet rsLaptop = (ResultSet) request.getAttribute("rsLaptop");
         %>
@@ -126,8 +145,16 @@
                         <input type="number" id="quantity" class="quantity-input" value="1" min="1" readonly>
                         <button class="quantity-btn" onclick="updateQuantity(1)">+</button>
                     </div>
+                    <button class="add-to-cart-btn" onclick="addToCart()">
+                        Add To Cart
+                    </button>
+                    <form id="addToCartForm" action="AddToCart" method="post">
+                        <input type="hidden" name="productId" id="productId" value="<%=rsLaptop.getInt("LaptopID")%>">
+                        <input type="hidden" name="quantity" id="quantityhidden">
+                    </form>
+                    <br>
                     <button class="buy-now-btn" onclick="buyNow()">
-                        Thêm vào giỏ hàng
+                        Buy Now
                     </button>
                 </div>
             </div>
@@ -136,25 +163,27 @@
         <jsp:include page="/components/Footer.jsp"></jsp:include>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                        function updateQuantity(change) {
-                            let quantity = parseInt(document.getElementById('quantity').value);
-                            quantity += change;
-                            if (quantity < 1)
-                                quantity = 1;
-                            document.getElementById('quantity').value = quantity;
-                        }
 
-                        function addToCart() {
-                            let quantity = document.getElementById('quantity').value;
-                            alert('Đã thêm ' + quantity + ' sản phẩm vào giỏ hàng!');
-                            // Thêm logic thực tế tại đây (gọi Servlet, cập nhật giỏ hàng, v.v.)
-                        }
 
-                        function buyNow() {
-                            let quantity = document.getElementById('quantity').value;
-                            alert('Mua ngay ' + quantity + ' sản phẩm!');
-                            // Thêm logic thực tế tại đây (chuyển đến trang thanh toán, v.v.)
-                        }
+                    function updateQuantity(change) {
+                        let quantity = parseInt(document.getElementById('quantity').value);
+                        quantity += change;
+                        if (quantity < 1)
+                            quantity = 1;
+                        document.getElementById('quantity').value = quantity;
+                    }
+
+                    function addToCart() {
+                        let quantity = document.getElementById('quantity').value;
+                        document.getElementById('quantityhidden').value = quantity;
+                        document.getElementById('addToCartForm').submit();
+                    }
+
+                    function buyNow() {
+                        let quantity = document.getElementById('quantity').value;
+                        alert('Mua ngay ' + quantity + ' sản phẩm!');
+                        // Thêm logic thực tế tại đây (chuyển đến trang thanh toán, v.v.)
+                    }
         </script>
     </body>
 </html>
