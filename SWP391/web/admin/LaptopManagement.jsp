@@ -225,7 +225,8 @@
                                 <tr>
                                     <th><%=index%></th>
                                     <td>
-                                        <img src="<%=rsLaptop.getString("ImageURL")%>" alt="" style="width: 40px; height: 40px"/>
+                                     <img src="images/<%=rsLaptop.getString("ImageURL")%>" alt="<%=rsLaptop.getString("LaptopName")%>" style="width: 40px; height: 40px"/>
+
                                     </td>
                                     <td><%=rsLaptop.getString("LaptopName")%></td>
                                     <td><%=rsLaptop.getString("Price")%></td>
