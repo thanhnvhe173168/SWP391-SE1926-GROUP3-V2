@@ -66,7 +66,7 @@
                             <a class="nav-link" href="viewProfile"><%=user.getFullName()%></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="logout">Login</a>
+                            <a class="nav-link" href="logout">Logout</a>
                         </li>
                         <%} else {%>      
                         <li class="nav-item">
