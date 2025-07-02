@@ -124,12 +124,12 @@
                         do {
                     %>
                     <tr>
-                        <td><img src="<%= rsWishlist.getString("ImageURL") %>" alt="<%= rsWishlist.getString("LaptopName") %>"></td>
+                        <td><img src="images/<%= rsWishlist.getString("ImageURL") %>" alt="<%= rsWishlist.getString("LaptopName") %>"></td>
                         <td><%= rsWishlist.getString("LaptopName") %></td>
                         <td><%= rsWishlist.getInt("Price") %> VNĐ</td>
                         <td>
                             <a href="${pageContext.request.contextPath}/productDetail?productId=<%= rsWishlist.getInt("LaptopID") %>" class="btn btn-primary btn-custom">Xem chi tiết</a>
-                            <a href="${pageContext.request.contextPath}/AddtoCart?id=<%= rsWishlist.getInt("LaptopID") %>" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</a>
+                            <a href="${pageContext.request.contextPath}/AddToCart?id=<%= rsWishlist.getInt("LaptopID") %>" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</a>
                             <a href="${pageContext.request.contextPath}/removeWishList?id=<%= rsWishlist.getInt("WishlistID") %>" class="btn btn-danger btn-custom ms-2" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
                                 <i class="fas fa-trash"></i> Xóa
                             </a>

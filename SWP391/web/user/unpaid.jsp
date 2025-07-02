@@ -139,9 +139,9 @@
                         <th>Trạng thái thanh toán</th>
                         <th>Xem đơn</th>
                     </tr>
-                    <c:forEach items="${lists}" var="order">
+                    <c:forEach items="${lists}" var="order" varStatus="status">
                         <tr>
-                            <td>${stt+1}</td>
+                            <td>${status.index + 1}</td>
                             <td>${order.orderDate}</td>
                             <td><fmt:formatNumber value="${order.totalAmount}" type="number" groupingUsed="true"/> VNĐ</td>
                             <td>${order.orderstatus.statusName}</td>

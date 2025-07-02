@@ -124,7 +124,6 @@
             </tr>
         </table>
         <c:set var="lists" value="${list}"/> 
-        <c:set var="stt" value="0"/>
         <c:choose>
             <c:when test="${empty lists}">
                 <P>Không có đơn hàng nào</P>
@@ -140,9 +139,9 @@
                         <th>Xem đơn</th>
                         <th>Mua lại</th>
                     </tr>
-                    <c:forEach items="${lists}" var="order">
+                    <c:forEach items="${lists}" var="order" varStatus="status">
                         <tr>
-                            <td>${stt+1}</td>
+                            <td>${status.index + 1}</td>
                             <td>${order.orderDate}</td>
                             <td><fmt:formatNumber value="${order.totalAmount}" type="number" groupingUsed="true"/> VNĐ</td>
                             <td>${order.orderstatus.statusName}</td>
