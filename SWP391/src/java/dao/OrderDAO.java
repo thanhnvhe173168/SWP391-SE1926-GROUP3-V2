@@ -742,4 +742,60 @@ public class OrderDAO extends ConnectDB {
             e.printStackTrace();
         }
     }
+
+    public List<Order> getShipperOrderList() {
+        String sql = "select * from orders o \n"
+                + "join Statuses s on o.StatusID=s.StatusID\n"
+                + "where s.StatusName=N'Chờ xác nhận'\n"
+                + "or s.StatusName=N'Lấy hàng thành công'\n"
+                + "or s.StatusName=N'Đang giao'\n"
+                + "or s.StatusName=N'Giao hàng thành công'\n"
+                + "or s.StatusName=N'Giao hàng thất bại'";
+        List<Order> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+                Date paymentDate = rs.getDate("PaymentDate");
+                if (paymentDate != null) {
+                    od.setPaymentdate(paymentDate.toLocalDate());
+                } else {
+                    od.setPaymentdate(null);
+                }
+                Date returnDate = rs.getDate("ReturnDate");
+                if (returnDate != null) {
+                    od.setReturnDate(returnDate.toLocalDate());
+                } else {
+                    od.setReturnDate(null);
+                }
+                String reasonReturn = rs.getNString("ReasonReturn");
+                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
