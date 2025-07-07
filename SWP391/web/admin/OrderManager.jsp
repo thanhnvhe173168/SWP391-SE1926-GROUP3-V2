@@ -139,6 +139,7 @@
                         <th>Xem lý do hủy</th>
                         <th>Xem lý do hoàn</th>
                         <th>Xem đánh giá</th>
+                        <th>Hoàn tiền</th>
                     </tr>
                     <c:forEach items="${lists}" var="order" varStatus="status">
                         <tr>
@@ -180,7 +181,9 @@
                                     </c:otherwise>
                                 </c:choose>
                             </td>
-                            
+                            <td>
+                                <button onclick="window.location.href = 'vnpayRefundInput?id=${order.orderID}'">Hoàn tiền</button>
+                            </td>
                         </tr>
                     </c:forEach>
                 </table>

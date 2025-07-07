@@ -41,7 +41,7 @@ public class ShipperOrderList extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ShipperOrderList</title>");            
+            out.println("<title>Servlet ShipperOrderList</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ShipperOrderList at " + request.getContextPath() + "</h1>");
@@ -62,10 +62,22 @@ public class ShipperOrderList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        int page = 1;
+        int pageSize = 5;
+
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+        int offset = (page - 1) * pageSize;
         OrderDAO orderdao = new OrderDAO();
-        List<Order> shipperorderlist = new ArrayList<>();
-        shipperorderlist = orderdao.getShipperOrderList();
+
+        int totalShipOrders = orderdao.countShipOrders();
+        int totalPages = (int) Math.ceil((double) totalShipOrders / pageSize);
+        List<Order> shipperorderlist = orderdao.getShipOrdersByPage(offset, pageSize);
         request.setAttribute("shipperorderlist", shipperorderlist);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("shipper/shipperOrderList.jsp").forward(request, response);
     }
 

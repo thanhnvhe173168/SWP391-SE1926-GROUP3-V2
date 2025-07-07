@@ -63,6 +63,35 @@
             button:hover {
                 background-color: #0056b3;
             }
+
+            .pagination {
+                display: inline-block;
+                margin-top: 20px;
+            }
+
+            .pagination a,
+            .pagination span {
+                color: #007bff;
+                float: left;
+                padding: 8px 16px;
+                text-decoration: none;
+                border: 1px solid #007bff;
+                margin: 0 4px;
+                border-radius: 4px;
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+            .pagination a:hover {
+                background-color: #007bff;
+                color: white;
+            }
+
+            .pagination span {
+                background-color: #007bff;
+                color: white;
+                cursor: default;
+            }
+
         }
     </style>
 
@@ -77,7 +106,7 @@
                     <P>Không có đơn hàng nào</P>
                     </c:when>
                     <c:otherwise>
-                    <table border="1">
+                    <table>
                         <tr>
                             <th>STT</th>
                             <th>Ngày đặt hàng</th>
@@ -99,6 +128,29 @@
                     </table>
                 </c:otherwise>
             </c:choose>
+            <!-- Phân trang -->
+            <div class="pagination" style="text-align: center;">
+                <c:if test="${totalPages > 1}">
+                    <c:if test="${currentPage > 1}">
+                        <a href="?page=${currentPage - 1}">Previous</a>
+                    </c:if>
+
+                    <c:forEach begin="1" end="${totalPages}" var="i">
+                        <c:choose>
+                            <c:when test="${i == currentPage}">
+                                <span>${i}</span>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="?page=${i}">${i}</a>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+
+                    <c:if test="${currentPage < totalPages}">
+                        <a href="?page=${currentPage + 1}">Next</a>
+                    </c:if>
+                </c:if>
+            </div> 
         </div>
     </div>
 </body> 

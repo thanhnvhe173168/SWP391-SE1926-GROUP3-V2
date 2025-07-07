@@ -85,6 +85,9 @@ public class Login extends HttpServlet {
             case 3: // Customer
                 response.sendRedirect("home");
                 break;
+            case 4: // Shipper   
+                response.sendRedirect("shipperdashboard");
+                break;
             default:
                 throw new AssertionError();
         }
