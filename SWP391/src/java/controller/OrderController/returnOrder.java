@@ -83,11 +83,11 @@ public class returnOrder extends HttpServlet {
         LocalDate returndate = LocalDate.now();
         try{
             int orderid = Integer.parseInt(id);
-            odao.upDateOrderStatus(12, orderid);
+            odao.upDateOrderStatus(15, orderid);
             odao.updateReasonReturn(orderid, reason, returndate);
             List<OrderDetail> list = oddao.GetListOrderDetailByID(orderid);
             for(OrderDetail od : list){
-                oddao.upDateOrderDetailStatuswhenreturn(21, orderid, od.getLaptop().getLaptopID());
+                oddao.upDateOrderDetailStatuswhenreturn(15, orderid, od.getLaptop().getLaptopID());
                 oddao.updateReasonReturn(orderid, od.getLaptop().getLaptopID(), reason, returndate);
             }
             request.setAttribute("mess", "Gửi yêu cầu thành công");

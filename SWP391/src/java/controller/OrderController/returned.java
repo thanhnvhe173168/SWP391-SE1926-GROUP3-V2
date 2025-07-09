@@ -4,7 +4,9 @@
  */
 package controller.OrderController;
 
+import dao.CategoryDAO;
 import dao.OrderDAO;
+import dao.OrderDetailDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,18 +38,25 @@ public class returned extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         OrderDAO odao = new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        CategoryDAO cdao = new CategoryDAO();
         String id_raw = request.getParameter("id");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
-                List<Order> list = odao.getListUserReturnOrderByStatusName("Đã hoàn", " Đã hoàn một phần", user.getUserID());
+                List<Order> list = odao.getListUserReturnOrderByStatusName("Đã hoàn", "Đã hoàn 1 phần", user.getUserID());
+                request.setAttribute("title", "Returned order");
+                request.setAttribute("cdao", cdao);
+                request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "returned");
                 request.setAttribute("list", list);
-                request.getRequestDispatcher("user/returned.jsp").forward(request, response);
+                request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
-                List<Order> orderlist = odao.getListReturnOrderByStatusName("Đã hoàn", " Đã hoàn một phần");
+                List<Order> orderlist = odao.getListReturnOrderByStatusName("Đã hoàn", "Đã hoàn 1 phần");
+                request.setAttribute("cdao", cdao);
+                request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "returned");
                 request.setAttribute("orderlist", orderlist);
                 request.getRequestDispatcher("admin/managereturned.jsp").forward(request, response);

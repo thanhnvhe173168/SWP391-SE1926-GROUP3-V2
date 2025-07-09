@@ -30,7 +30,6 @@
         if (mess != null && icon != null) {
         %>
         <script>
-            window.alert("<%= mess %>", 3000);
             Swal.fire({
                 icon: '<%= icon %>',
                 title: '<%= mess %>',

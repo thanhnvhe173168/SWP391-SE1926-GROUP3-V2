@@ -5,6 +5,7 @@
 package controller.OrderController;
 
 import dao.CartDAO;
+import dao.CategoryDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
 import java.io.IOException;
@@ -66,6 +67,8 @@ public class OrderList extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         OrderDAO odao=new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        CategoryDAO cdao = new CategoryDAO();
         HttpSession session = request.getSession(); 
         User user = (User)session.getAttribute("user");
         List<Order> orderlist =odao.getListUserOrder(user.getUserID());
@@ -74,11 +77,13 @@ public class OrderList extends HttpServlet {
         if(mess != null){
             request.setAttribute("mess", mess);
         }
-        request.setAttribute("orderlist", orderlist);
+        request.setAttribute("title", "Order History");
+        request.setAttribute("cdao", cdao);
+        request.setAttribute("oddao", oddao);
+        request.setAttribute("list", orderlist);
         request.setAttribute("OrderStatus","OrderList" );
         request.setAttribute("orderneedreview", orderneedreview);
         request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
-
     }
 
     /**

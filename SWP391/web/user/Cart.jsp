@@ -21,49 +21,97 @@
         <style>
             body {
                 font-family: 'Segoe UI', Tahoma, sans-serif;
-                background-color: #f9f9f9;
+                background-color: #f5f5f5;
+                padding: 30px;
             }
 
             h2 {
                 text-align: center;
-                color: #2c3e50;
-                margin-bottom: 20px;
+                margin-bottom: 30px;
+                color: #ee4d2d; /* Shopee cam */
             }
 
             table {
                 width: 100%;
-                border-collapse: collapse;
-                background-color: white;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                border-radius: 10px;
+                border-collapse: separate;
+                border-spacing: 0;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.1);
                 overflow: hidden;
             }
 
-            th, td {
-                padding: 14px;
-                text-align: center;
-                border-bottom: 1px solid #ddd;
+            th {
+                background: #007bff;  /* Cam Shopee nổi bật */
+                color: #fff;          /* Chữ trắng dễ đọc */
+                font-weight: bold;
+                text-transform: uppercase; /* Viết hoa tất cả tiêu đề */
+                letter-spacing: 0.5px;
+                padding: 18px;
             }
 
-            th {
-                background-color: #f1f1f1;
-                color: #333;
+            td {
+                text-align: center;
+                padding: 20px 15px;
+                border-bottom: 1px solid #f2f2f2;
+                vertical-align: middle;
             }
 
             tr:hover {
-                background-color: #f5f5f5;
+                background: #fffdfa;
             }
 
             img {
+                width: 100px;   /* Tăng từ 80 lên 100 */
+                height: 100px;  /* Đảm bảo tỷ lệ vuông */
                 border-radius: 8px;
+                object-fit: cover;
+                box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+            }
+            input[type="checkbox"] {
+                transform: scale(1.2);
+                cursor: pointer;
             }
 
-            button {
+            .price {
+                color: #ee4d2d;
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+            .qty-control {
+                display: inline-flex;
+                align-items: center;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                overflow: hidden;
+            }
+
+            .qty-control button {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .qty-control span {
+                width: 40px;
+                line-height: 36px;
+            }
+
+            button[onclick*='Order'] {
+                background: #27ae60;
+                color: #fff;
                 padding: 6px 12px;
-                border-radius: 6px;
+                border-radius: 4px;
                 border: none;
-                cursor: pointer;
-                font-size: 14px;
+            }
+
+            button[onclick*='RemoveFromCart'] {
+                background: #e74c3c;
+                color: #fff;
+                padding: 6px 12px;
+                border-radius: 4px;
+                border: none;
             }
 
             button:hover {
@@ -71,39 +119,22 @@
             }
 
             .total-row {
-                background-color: #f1f1f1;
+                background: #fafafa;
                 font-weight: bold;
-                font-size: 1.1em;
+                color: #555;
             }
 
-            button[onclick*="QuantityChange"][onclick*='dec'],
-            button[onclick*="QuantityChange"][onclick*='inc'] {
-                background-color: #ecf0f1;
-                color: #333;
-            }
-
-            button[onclick*='Order'] {
-                background-color: #2ecc71 !important;
-                color: white;
-            }
-
-            button[onclick*='RemoveFromCart'] {
-                background-color: #e74c3c !important;
-                color: white;
+            .total-row td {
+                font-size: 18px;
             }
 
             .empty-cart {
                 text-align: center;
-                font-size: 18px;
                 color: #888;
-                margin-top: 40px;
+                font-size: 20px;
+                margin: 50px auto;
             }
 
-            button[onclick*='home'] {
-                background-color: #3498db;
-                color: white;
-                margin-bottom: 20px;
-            }
         </style>
         <%  
             User user = (User)session.getAttribute("user");
@@ -146,15 +177,15 @@
                                 </td>
                                 <td><button type="button" onclick="window.location.href = 'LaptopInfo?id=${item.getLaptop().getLaptopID()}'"><img src="images/${item.laptop.imageURL}" width="100" alt="${item.laptop.laptopName}" /></button></td>
                                 <td>${item.laptop.laptopName}</td>
-                                <td><fmt:formatNumber value="${item.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
+                                <td class="price"><fmt:formatNumber value="${item.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
                                 <td>
-                                    <button type="button" onclick="window.location.href = 'QuantityChange?action=dec&id=${item.getLaptop().getLaptopID()}'">-</button>
-
-                                    ${item.quantity}
-                                    <button type="button" onclick="window.location.href = 'QuantityChange?action=inc&id=${item.getLaptop().getLaptopID()}'">+</button>
-
+                                    <div class="qty-control">
+                                        <button type="button" onclick="window.location.href = 'QuantityChange?action=dec&id=${item.getLaptop().getLaptopID()}'">-</button>
+                                        <span>${item.quantity}</span>
+                                        <button type="button" onclick="window.location.href = 'QuantityChange?action=inc&id=${item.getLaptop().getLaptopID()}'">+</button>
+                                    </div>
                                 </td>
-                                <td><fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ</td>
+                                <td class="price"><fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ</td>
                                 <td><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?id=${item.getLaptop().getLaptopID()}'">Mua</button></td>
                                 <td>
                                     <button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'RemoveFromCart?id=${item.getLaptop().getLaptopID()}'">Xóa</button>

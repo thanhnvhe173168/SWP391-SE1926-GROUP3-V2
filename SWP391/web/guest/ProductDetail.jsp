@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <title>JSP Title</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -103,7 +104,6 @@
         if (mess != null && icon != null) {
         %>
         <script>
-            window.alert("<%= mess %>", 3000);
             Swal.fire({
                 icon: '<%= icon %>',
                 title: '<%= mess %>',
@@ -156,6 +156,11 @@
                     <button class="buy-now-btn" onclick="buyNow()">
                         Buy Now
                     </button>
+                    <form id="buynow" action="Order" method="get">
+                        <input type="hidden" name="id" id="productId" value="<%=rsLaptop.getInt("LaptopID")%>">
+                        <input type="hidden" name="idss" value="1">
+                        <input type="hidden" name="quantity2" id="quantityhidden2">
+                    </form>
                 </div>
             </div>
             <%}%>
@@ -181,8 +186,8 @@
 
                     function buyNow() {
                         let quantity = document.getElementById('quantity').value;
-                        alert('Mua ngay ' + quantity + ' sản phẩm!');
-                        // Thêm logic thực tế tại đây (chuyển đến trang thanh toán, v.v.)
+                        document.getElementById('quantityhidden2').value = quantity;
+                        document.getElementById('buynow').submit();
                     }
         </script>
     </body>

@@ -76,6 +76,9 @@
                 </tbody>
                 <tfoot>
                     <tr>
+                        <td>
+                            <button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?ids=2'">Mua</button>
+                        </td>
                         <td colspan="3"><strong>Tổng tiền:</strong></td>
                         <td id="total-price">
                             ${totalPrice}

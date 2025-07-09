@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import dao.*;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import model.*;
 
 /**
@@ -96,7 +97,7 @@ public class OrderSuccess extends HttpServlet {
             int voucherid = voudao.GetIDbyCode(voucher);
             int payid = paydao.GetPaymentIDbyMethod(paymentmethod);
             double total = Double.parseDouble(total_raw);
-            Order od = new Order(user.getUserID(), LocalDate.now(), fsdao.getFeeShipByID(shipid), voudao.GetVoucherByID(voucherid), paydao.GetPaymentMethodByID(payid), phoneNumber, BigDecimal.valueOf(total), address, note, sdao.GetStatus(5),sdao.GetStatus(15),null);
+            Order od = new Order(user.getUserID(), LocalDate.now(), fsdao.getFeeShipByID(shipid), voudao.GetVoucherByID(voucherid), paydao.GetPaymentMethodByID(payid), phoneNumber, BigDecimal.valueOf(total), address, note, sdao.GetStatus(5),sdao.GetStatus(23));
             oddao.uppdateorder(od);
             request.setAttribute("paymentmethodid", payid);
             request.setAttribute("total", total);

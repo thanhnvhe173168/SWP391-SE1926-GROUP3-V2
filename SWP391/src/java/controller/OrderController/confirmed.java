@@ -4,7 +4,9 @@
  */
 package controller.OrderController;
 
+import dao.CategoryDAO;
 import dao.OrderDAO;
+import dao.OrderDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -41,7 +43,7 @@ public class confirmed extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet confirmed</title>");            
+            out.println("<title>Servlet confirmed</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet confirmed at " + request.getContextPath() + "</h1>");
@@ -64,17 +66,24 @@ public class confirmed extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         OrderDAO odao = new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        CategoryDAO cdao = new CategoryDAO();
         User user = (User) session.getAttribute("user");
         String id_raw = request.getParameter("id");
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
                 List<Order> orderlist = odao.getListUserOrderByStatusName("Đã xác nhận", user.getUserID());
+                request.setAttribute("title", "Order confirmed");
+                request.setAttribute("cdao", cdao);
+                request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "confirmed");
-                request.setAttribute("orderlist", orderlist);
-                request.getRequestDispatcher("user/confirmed.jsp").forward(request, response);
+                request.setAttribute("list", orderlist);
+                request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
                 List<Order> orderlist = odao.getListOrderByStatusName("Đã xác nhận");
+                request.setAttribute("cdao", cdao);
+                request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "confirmed");
                 request.setAttribute("orderlist", orderlist);
                 request.getRequestDispatcher("admin/manageconfirmed.jsp").forward(request, response);

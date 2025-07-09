@@ -86,7 +86,7 @@ public class returnLaptop extends HttpServlet {
         try{
             int lapid = Integer.parseInt(lapids);
             int orderid = Integer.parseInt(orderids);
-            oddao.upDateOrderDetailStatuswhenreturn(21, orderid, lapid);
+            oddao.upDateOrderDetailStatuswhenreturn(15, orderid, lapid);
             Order od = odao.GetOrderByID(orderid);
             List<OrderDetail> orderdetailist = oddao.GetListOrderDetailByID(orderid);
             int quantity=0;
@@ -94,10 +94,10 @@ public class returnLaptop extends HttpServlet {
                 quantity=quantity+1;
             }
             if(quantity>1){
-                odao.upDateOrderStatus(10, orderid);
+                odao.upDateOrderStatus(25, orderid);
             }
             else{
-                odao.upDateOrderStatus(12, orderid);
+                odao.upDateOrderStatus(15, orderid);
             }
             odao.updateReasonReturn(orderid, reason, returndate);
             oddao.updateReasonReturn(orderid, lapid, reason, returndate);

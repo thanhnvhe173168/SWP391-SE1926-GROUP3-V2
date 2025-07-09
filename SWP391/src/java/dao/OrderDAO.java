@@ -29,9 +29,9 @@ public class OrderDAO extends ConnectDB {
         String sql = "INSERT INTO Orders (\n"
                 + "    UserID, OrderDate, ShipFeeID, TotalAmount, Address,\n"
                 + "    Note, PhoneNumber, StatusID, VoucherID,\n"
-                + "    PaymentMethodID, PaymentDate, PaymentStatusID,\n"
+                + "    PaymentMethodID, PaymentStatusID,\n"
                 + "    ReturnDate, ReasonReturn\n"
-                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try {
             PreparedStatement st = connect.prepareStatement(sql);
@@ -59,27 +59,20 @@ public class OrderDAO extends ConnectDB {
 
             st.setInt(10, od.getPaymentmethod().getPaymentMethodID());
 
-            // PaymentDate (nullable, override default if present)
-            if (od.getPaymentdate() != null) {
-                st.setDate(11, java.sql.Date.valueOf(od.getPaymentdate()));
-            } else {
-                st.setNull(11, java.sql.Types.DATE);
-            }
-
-            st.setInt(12, od.getPaymentstatus().getStatusID());
+            st.setInt(11, od.getPaymentstatus().getStatusID());
 
             // ReturnDate (nullable)
             if (od.getReturnDate() != null) {
-                st.setDate(13, java.sql.Date.valueOf(od.getReturnDate()));
+                st.setDate(12, java.sql.Date.valueOf(od.getReturnDate()));
             } else {
-                st.setNull(13, java.sql.Types.DATE);
+                st.setNull(12, java.sql.Types.DATE);
             }
 
             // ReasonReturn (nullable)
             if (od.getReasonReturn() != null) {
-                st.setNString(14, od.getReasonReturn());
+                st.setNString(13, od.getReasonReturn());
             } else {
-                st.setNull(14, java.sql.Types.NVARCHAR);
+                st.setNull(13, java.sql.Types.NVARCHAR);
             }
 
             st.executeUpdate();
@@ -135,12 +128,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -187,12 +174,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -203,12 +184,6 @@ public class OrderDAO extends ConnectDB {
                 od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
 
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-
-                if (rs.getDate("paymentDate") != null) {
-                    od.setPaymentdate(rs.getDate("paymentDate").toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 orderlist.add(od);
             }
         } catch (SQLException e) {
@@ -248,12 +223,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -301,12 +270,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -355,12 +318,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -381,7 +338,7 @@ public class OrderDAO extends ConnectDB {
         String sql = "select * from Orders o \n"
                 + "join OrderDetail od on o.OrderID=od.OrderID\n"
                 + "where od.ReviewID is null \n"
-                + "and (o.StatusID = 7 or o.StatusID = 14)";
+                + "and (o.StatusID = 11 or o.StatusID = 19)";
         List<Order> list = new ArrayList<>();
         try {
             PreparedStatement st = connect.prepareStatement(sql);
@@ -408,12 +365,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -460,12 +411,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -514,12 +459,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -568,12 +507,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -623,12 +556,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -649,7 +576,7 @@ public class OrderDAO extends ConnectDB {
         String sql = "select * from Orders o \n"
                 + "join OrderDetail od on o.OrderID=od.OrderID\n"
                 + "where od.ReviewID is null \n"
-                + "and (o.StatusID = 7 or o.StatusID = 14)and userid=?";
+                + "and (o.StatusID = 11 or o.StatusID = 19)and userid=?";
         List<Order> list = new ArrayList<>();
         try {
             PreparedStatement st = connect.prepareStatement(sql);
@@ -677,12 +604,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -744,13 +665,8 @@ public class OrderDAO extends ConnectDB {
     }
 
     public List<Order> getShipperOrderList() {
-        String sql = "select * from orders o \n"
-                + "join Statuses s on o.StatusID=s.StatusID\n"
-                + "where s.StatusName=N'Lấy hàng thành công'\n"
-                + "or s.StatusName=N'Đang giao'\n"
-                + "or s.StatusName=N'Giao hàng thành công'\n"
-                + "or s.StatusName=N'Giao hàng thất bại'\n"
-                + "or s.StatusName=N'Đã giao'";
+        String sql = "select * from Orders \n"
+                + "where StatusID=9 or StatusID=10 or StatusID=11 or StatusID=12 or StatusID=13 or StatusID=14 or StatusID=22 or StatusID=20 or StatusID=21";
         List<Order> list = new ArrayList<>();
         try {
             PreparedStatement st = connect.prepareStatement(sql);
@@ -777,12 +693,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -831,12 +741,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -887,12 +791,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -912,8 +810,7 @@ public class OrderDAO extends ConnectDB {
     public List<Order> getShipOrdersByPage(int offset, int pageSize) {
         List<Order> list = new ArrayList<>();
         String sql = "select * from Orders\n"
-                + "where StatusID=6\n"
-                + "or StatusID=7\n"
+                + "where StatusID=9 or StatusID=10 or StatusID=11 or StatusID=12 or StatusID=13 or StatusID=14 or StatusID=22 or StatusID=20 or StatusID=21\n"
                 + "order by OrderID desc\n"
                 + "offset ? rows fetch next ? rows only";
         try {
@@ -943,12 +840,6 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
                 Date returnDate = rs.getDate("ReturnDate");
                 if (returnDate != null) {
                     od.setReturnDate(returnDate.toLocalDate());
@@ -980,11 +871,11 @@ public class OrderDAO extends ConnectDB {
 
     public int countShipOrders() {
         int count = 0;
-        String sql = "select COUNT(*) from Orders where StatusID=6 or StatusID=7";
+        String sql = "select COUNT(*) from Orders where StatusID=9 or StatusID=10 or StatusID=11 or StatusID=12 or StatusID=13 or StatusID=14 or StatusID=22 or StatusID=20 or StatusID=21";
         try {
             PreparedStatement st = connect.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 count = rs.getInt(1);
             }
         } catch (SQLException e) {

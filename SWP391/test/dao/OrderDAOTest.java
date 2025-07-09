@@ -62,7 +62,6 @@ public class OrderDAOTest {
         od.setOrderstatus(new Status(6, "Orders", "Đang giao"));
         od.setVoucher(null); // hoặc set null nếu cần
         od.setPaymentmethod(new PaymentMethod(1, "VN PAY"));
-        od.setPaymentdate(null);
         od.setPaymentstatus(new Status(15, "Payment", "Chưa thanh toán"));
         od.setReturnDate(null);
         od.setReasonReturn(null);

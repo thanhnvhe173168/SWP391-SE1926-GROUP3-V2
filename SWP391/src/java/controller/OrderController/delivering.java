@@ -5,7 +5,9 @@
 package controller.OrderController;
 
 import dao.CartDAO;
+import dao.CategoryDAO;
 import dao.OrderDAO;
+import dao.OrderDetailDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -38,24 +40,30 @@ public class delivering extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         OrderDAO odao = new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        CategoryDAO cdao = new CategoryDAO();
         String id_raw = request.getParameter("id");
-        HttpSession session = request.getSession(); 
-        User user = (User)session.getAttribute("user");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
                 List<Order> list = odao.getListUserOrderByStatusName("Đang giao", user.getUserID());
+                request.setAttribute("title", "Order in transit");
+                request.setAttribute("cdao", cdao);
+                request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "delivering");
                 request.setAttribute("list", list);
-                request.getRequestDispatcher("user/delivering.jsp").forward(request, response);
+                request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
                 List<Order> orderlist = odao.getListOrderByStatusName("Đang giao");
+                request.setAttribute("cdao", cdao);
+                request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "delivering");
                 request.setAttribute("orderlist", orderlist);
                 request.getRequestDispatcher("admin/managedelivering.jsp").forward(request, response);
             }
-        }
-        catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
     }

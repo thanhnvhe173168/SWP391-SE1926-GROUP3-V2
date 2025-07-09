@@ -1,8 +1,3 @@
-<%-- 
-    Document   : OrderManager
-    Created on : Jun 12, 2025, 9:17:58 PM
-    Author     : Window 11
---%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.*" %>
 <%@page import="dao.*" %>
@@ -10,11 +5,13 @@
 <%@page import="java.util.ArrayList" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Order Manager Page</title>
+        <meta charset="UTF-8">
+        <title>OrderList</title>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             body {
                 font-family: 'Segoe UI', sans-serif;
@@ -22,171 +19,224 @@
                 margin: 0;
                 padding: 20px;
             }
-
             h1 {
                 text-align: center;
                 color: #333;
-                margin-bottom: 30px;
+                margin-bottom: 20px;
             }
 
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 30px;
-            }
+            /* Tabs giữ nguyên nếu cần */
 
-            /* Thanh menu trạng thái */
-            table:first-of-type td {
-                text-align: center;
-                padding: 12px 20px;
-                background-color: #ffffff;
+            .order-card {
+                background: #fff;
                 border: 1px solid #ddd;
-                transition: background-color 0.3s, color 0.3s;
+                margin-bottom: 20px;
+                padding: 15px;
+            }
+            .shop-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+                font-weight: bold;
+            }
+            .order-status {
+                color: #ee4d2d;
+            }
+            .product-info {
+                display: flex;
+                border-top: 1px solid #f0f0f0;
+                padding-top: 10px;
+                margin-top: 10px;
+            }
+            .product-info img {
+                width: 80px;
+                height: 80px;
+                margin-right: 15px;
+                border: 1px solid #eee;
+            }
+            .product-details {
+                flex: 1;
+            }
+            .product-details div {
+                margin-bottom: 4px;
+            }
+            .order-footer {
+                text-align: right;
+                border-top: 1px solid #eee;
+                padding-top: 10px;
+                margin-top: 10px;
+            }
+            .order-footer p {
+                margin: 5px 0;
+                font-size: 16px;
+            }
+            .order-footer span {
+                color: #ee4d2d;
+                font-size: 20px;
+                font-weight: bold;
+            }
+            .order-footer button {
+                background: #ee4d2d;
+                color: #fff;
+                border: none;
+                padding: 8px 16px;
+                margin-left: 5px;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+            .order-footer button.contact {
+                background: #fff;
+                color: #333;
+                border: 1px solid #ccc;
+            }
+            .order-tabs {
+                display: flex;
+                flex-wrap: wrap;
+                background: #fff;
+                border-bottom: 2px solid #f1f1f1;
+                margin-bottom: 20px;
+            }
+
+            .order-tabs .tab {
+                padding: 10px 18px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border-radius: 4px 4px 0 0;
+                margin-right: 5px;
                 font-weight: 500;
             }
 
-            table:first-of-type td:hover {
-                background-color: #e3f2fd;
-                cursor: pointer;
+            .order-tabs .tab:hover {
+                background: #f5f5f5;
             }
 
-            table:first-of-type td.active {
-                background-color: #1976d2;
-                color: white;
+            .order-tabs .tab.active {
+                background: #ee4d2d;
+                color: #fff;
                 font-weight: bold;
-                border-bottom: 3px solid #0d47a1;
             }
-
-            /* Bảng danh sách đơn hàng */
-            table:last-of-type {
-                background-color: #ffffff;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-                overflow: hidden;
-            }
-
-            table:last-of-type th,
-            table:last-of-type td {
-                padding: 12px 16px;
-                border: 1px solid #e0e0e0;
-                text-align: center;
-            }
-
-            table:last-of-type th {
-                background-color: #f1f1f1;
-                font-weight: 600;
-                color: #333;
-            }
-
-            table:last-of-type tr:hover {
-                background-color: #fafafa;
-            }
-
-            button {
-                padding: 8px 14px;
-                background-color: #1976d2;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                transition: background-color 0.3s;
-                cursor: pointer;
-            }
-
-            button:hover {
-                background-color: #0d47a1;
-            }
-
-            p {
-                text-align: center;
-                color: #888;
-                font-size: 16px;
+            .order-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
             }
         </style>
+        <script>
+            function confirmCancel(id) {
+                Swal.fire({
+                    title: "Bạn chắc chắn muốn hủy đơn?",
+                    text: "Sau khi hủy sẽ không thể hoàn tác!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Vâng, hủy đơn",
+                    cancelButtonText: "Không"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById("cancelform-" + id).submit();
+                    }
+                });
+            }
+        </script>
     </head>
     <body>
-        <h1>Quản lý đơn hàng</h1>
-        <c:set var="lists" value="${list}"/>
+        <%
+            String mess = (String) request.getAttribute("mess");
+            if (mess != null) {
+        %>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '<%= mess %>',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        </script>
+        <% } %>
+        <h1>${title}</h1>
         <c:set var="currentStatus" value="${OrderStatus}" />
-        <table>
-            <tr>
-                <td class="${currentStatus == 'OrderList' ? 'active' : ''}" onclick="window.location.href = 'OrderManager'" style="cursor: pointer;">Tất cả đơn</td>
-                <td class="${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed?id=2'" style="cursor: pointer;">Chờ xác nhận</td>
-                <td class="${currentStatus == 'delivering' ? 'active' : ''}" onclick="window.location.href = 'delivering?id=2'" style="cursor: pointer;">Đang giao</td>
-                <td class="${currentStatus == 'delivered' ? 'active' : ''}" onclick="window.location.href = 'delivered?id=2'" style="cursor: pointer;">Đã giao</td>
-                <td class="${currentStatus == 'canceling' ? 'active' : ''}" onclick="window.location.href = 'canceling?id=2'" style="cursor: pointer;">Yêu cầu hủy</td>
-                <td class="${currentStatus == 'canceled' ? 'active' : ''}" onclick="window.location.href = 'canceled?id=2'" style="cursor: pointer;">Đã hủy</td>
-                <td class="${currentStatus == 'returning' ? 'active' : ''}" onclick="window.location.href = 'returning?id=2'" style="cursor: pointer;">Yêu cầu trả hàng</td>
-                <td class="${currentStatus == 'returned' ? 'active' : ''}" onclick="window.location.href = 'returned?id=2'" style="cursor: pointer;">Đã trả hàng</td>
-                <td class="${currentStatus == 'unpaid' ? 'active' : ''}" onclick="window.location.href = 'unpaid?id=2'" style="cursor: pointer;">Chưa thanh toán</td>
-                <td class="${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate?id=2'" style="cursor: pointer;">Cần đánh giá</td>
-            </tr>
-        </table>
-        <c:set var="stt" value="0"/>
+
+        <div class="order-tabs">
+            <div class="tab ${currentStatus == 'OrderList' ? 'active' : ''}" onclick="window.location.href = 'OrderManger'">Tất cả đơn</div>
+            <div class="tab ${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed?id=2'">Chờ xác nhận</div>
+            <div class="tab ${currentStatus == 'confirmed' ? 'active' : ''}" onclick="window.location.href = 'confirmed?id=2'">Đã xác nhận</div>
+            <div class="tab ${currentStatus == 'delivering' ? 'active' : ''}" onclick="window.location.href = 'delivering?id=2'">Đang giao</div>
+            <div class="tab ${currentStatus == 'delivered' ? 'active' : ''}" onclick="window.location.href = 'delivered?id=2'">Đã giao</div>
+            <div class="tab ${currentStatus == 'canceled' ? 'active' : ''}" onclick="window.location.href = 'canceled?id=2'">Đã hủy</div>
+            <div class="tab ${currentStatus == 'wantreturn' ? 'active' : ''}" onclick="window.location.href = 'wantreturn?id=2'">Yêu cầu trả hàng</div>
+            <div class="tab ${currentStatus == 'returned' ? 'active' : ''}" onclick="window.location.href = 'returned?id=2'">Đã trả hàng</div>
+            <div class="tab ${currentStatus == 'unpaid' ? 'active' : ''}" onclick="window.location.href = 'unpaid?id=2'">Chưa thanh toán</div>
+            <div class="tab ${currentStatus == 'evaluate' ? 'active' : ''}" onclick="window.location.href = 'evaluate?id=2'">Cần đánh giá</div>
+            <div class="tab ${currentStatus == 'completed' ? 'active' : ''}" onclick="window.location.href = 'completed?id=2'">Hoàn tất</div>
+        </div>
+
+
+
+        <!-- Danh sách đơn -->
+        <c:set var="orderlists" value="${list}" />
         <c:choose>
-            <c:when test="${empty lists}">
-                <P>Không có đơn hàng nào</P>
-                </c:when>
-                <c:otherwise>
-                <table border="1">
-                    <tr>
-                        <th>STT</th>
-                        <th>Ngày đặt hàng</th>
-                        <th>Tổng tiền</th>
-                        <th>Trạng thái đơn hàng</th>
-                        <th>Trạng thái thanh toán</th>
-                        <th>Xem đơn</th>
-                        <th>Xác nhận đơn hàng</th>
-                        <th>Xem lý do hủy</th>
-                        <th>Xem lý do hoàn</th>
-                        <th>Xem đánh giá</th>
-                        <th>Hoàn tiền</th>
-                    </tr>
-                    <c:forEach items="${lists}" var="order" varStatus="status">
-                        <tr>
-                            <td>${status.index+1}</td>
-                            <td>${order.orderDate}</td>
-                            <td>${order.totalAmount}</td>
-                            <td>${order.orderstatus.statusName}</td>
-                            <td>${order.paymentstatus.statusName}</td>
-                            <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">Xem đơn</button></td>
-                            <c:set var="orderstatus" value="${order.orderstatus.statusName}"/>
-                            <c:set var="paymentstatus" value="${order.paymentstatus.statusName}"/>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${orderstatus=='Chờ xác nhận'}">
-                                        <button onclick="window.location.href = 'ConfirmlOrder?id=${order.orderID}'">Xác nhận đơn hàng</button>
-                                    </c:when>
-                                    <c:otherwise>
-
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>        
-                            <td>
-                                <c:choose>
-                                    <c:when test="${orderstatus=='Đã hủy'}">
-                                        <button onclick="window.location.href = 'ViewCancelReason?id=${order.orderID}'">Xem lý do hủy</button>
-                                    </c:when>
-                                    <c:otherwise>
-
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${orderstatus=='Trả hàng'}">
-                                        <button onclick="window.location.href = 'ViewReturnReason?id=${order.orderID}'">Xem lý do hoàn</button>
-                                    </c:when>
-                                    <c:otherwise>
-                            
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td>
-                                <button onclick="window.location.href = 'vnpayRefundInput?id=${order.orderID}'">Hoàn tiền</button>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </table>
+            <c:when test="${empty orderlists}">
+                <p>Không có đơn hàng nào</p>
+            </c:when>
+            <c:otherwise>
+                <c:forEach items="${orderlists}" var="order">
+                    <div class="order-card">
+                        <div class="shop-header">
+                            <span>Order Date: ${order.orderDate}</span>
+                            <span class="order-status">${order.orderstatus.statusName}</span>
+                        </div>
+                        <c:forEach items="${oddao.GetListOrderDetailByID(order.orderID)}" var="orderdetail">
+                            <div class="product-info">
+                                <img src="images/${orderdetail.laptop.imageURL}" alt="Product">
+                                <div class="product-details">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <div>Laptop Name: ${orderdetail.laptop.laptopName}</div>
+                                            <div>Category: ${cdao.GetCategory(orderdetail.laptop.category).categoryName}</div>
+                                            <div>x ${orderdetail.quantity}</div>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <span style="color:#ee4d2d; font-weight:bold; font-size:16px;">
+                                                Price: <fmt:formatNumber value="${orderdetail.laptop.price}" type="number" groupingUsed="true"/> VNĐ
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
+                        <div class="order-footer">
+                            <div style="color:#ee4d2d; font-weight:bold; font-size: 16px;">
+                                Total amount: <fmt:formatNumber value="${order.totalAmount}" type="number" groupingUsed="true"/> VNĐ
+                            </div>
+                            <c:if test="${order.orderstatus.statusName eq 'Đã giao' || order.orderstatus.statusName eq 'Đã hủy' || order.orderstatus.statusName eq 'Đã hoàn' || order.orderstatus.statusName eq 'Hoàn tất' || order.orderstatus.statusName eq 'Đã hoàn 1 phần'}">
+                                <form action="reOrder" method="get" style="display:inline;">
+                                    <input type="hidden" name="id" value="${order.orderID}" />
+                                    <button>Re Order</button>
+                                </form>
+                            </c:if>
+                            <c:if test="${order.orderstatus.statusName eq 'Chờ xác nhận'}">
+                                <form id="cancelform-${order.orderID}" action="CancelOrder" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="${order.orderID}" />
+                                    <button type="button" onclick="confirmCancel('${order.orderID}')">Cancel Order</button>
+                                </form>
+                            </c:if>
+                            <c:if test="${order.orderstatus.statusName eq 'Đã giao'}">
+                                <div style="display: inline">
+                                    <button type="button" onclick="window.location.href = 'detailReturnOrder?id=${order.orderID}'">Return Order</button>
+                                </div>
+                                <c:forEach items="${orderneedreview}" var="orderneed">
+                                    <c:if test="${orderneed.orderID==order.orderID}">
+                                        <div style="display: inline">
+                                            <button type="button" onclick="window.location.href = 'Review?id=${order.orderID}'">Review Order</button>
+                                        </div>
+                                    </c:if>
+                                </c:forEach>
+                            </c:if>  
+                            <button>Liên hệ người bán</button>
+                        </div>
+                    </div>
+                </c:forEach>
             </c:otherwise>
         </c:choose>
     </body>

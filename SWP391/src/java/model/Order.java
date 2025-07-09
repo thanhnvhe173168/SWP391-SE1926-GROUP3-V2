@@ -24,14 +24,13 @@ public class Order {
     private String note;
     private Status orderstatus;
     private Status paymentstatus;
-    private LocalDate paymentdate;
     private LocalDate returnDate;
     private String reasonReturn;
 
     public Order() {
     }
 
-    public Order(int orderID, int userID, LocalDate orderDate, FeeShip shipfee, Voucher voucher, PaymentMethod paymentmethod, String phoneNumber, BigDecimal totalAmount, String address, String note, Status orderstatus, Status paymentstatus, LocalDate paymentdate) {
+    public Order(int orderID, int userID, LocalDate orderDate, FeeShip shipfee, Voucher voucher, PaymentMethod paymentmethod, String phoneNumber, BigDecimal totalAmount, String address, String note, Status orderstatus, Status paymentstatus) {
         this.orderID = orderID;
         this.userID = userID;
         this.orderDate = orderDate;
@@ -44,10 +43,9 @@ public class Order {
         this.note = note;
         this.orderstatus = orderstatus;
         this.paymentstatus = paymentstatus;
-        this.paymentdate = paymentdate;
     }
 
-    public Order(int userID, LocalDate orderDate, FeeShip shipfee, Voucher voucher, PaymentMethod paymentmethod, String phoneNumber, BigDecimal totalAmount, String address, String note, Status orderstatus, Status paymentstatus, LocalDate paymentdate) {
+    public Order(int userID, LocalDate orderDate, FeeShip shipfee, Voucher voucher, PaymentMethod paymentmethod, String phoneNumber, BigDecimal totalAmount, String address, String note, Status orderstatus, Status paymentstatus) {
         this.userID = userID;
         this.orderDate = orderDate;
         this.shipfee = shipfee;
@@ -59,10 +57,10 @@ public class Order {
         this.note = note;
         this.orderstatus = orderstatus;
         this.paymentstatus = paymentstatus;
-        this.paymentdate = paymentdate;
+
     }
 
-    public Order(int orderID, int userID, LocalDate orderDate, FeeShip shipfee, Voucher voucher, PaymentMethod paymentmethod, String phoneNumber, BigDecimal totalAmount, String address, String note, Status orderstatus, Status paymentstatus, LocalDate paymentdate, LocalDate returnDate, String reasonReturn) {
+    public Order(int orderID, int userID, LocalDate orderDate, FeeShip shipfee, Voucher voucher, PaymentMethod paymentmethod, String phoneNumber, BigDecimal totalAmount, String address, String note, Status orderstatus, Status paymentstatus, LocalDate returnDate, String reasonReturn) {
         this.orderID = orderID;
         this.userID = userID;
         this.orderDate = orderDate;
@@ -75,7 +73,6 @@ public class Order {
         this.note = note;
         this.orderstatus = orderstatus;
         this.paymentstatus = paymentstatus;
-        this.paymentdate = paymentdate;
         this.returnDate = returnDate;
         this.reasonReturn = reasonReturn;
     }
@@ -176,14 +173,6 @@ public class Order {
 
     public void setPaymentstatus(Status paymentstatus) {
         this.paymentstatus = paymentstatus;
-    }
-
-    public LocalDate getPaymentdate() {
-        return paymentdate;
-    }
-
-    public void setPaymentdate(LocalDate paymentdate) {
-        this.paymentdate = paymentdate;
     }
 
     public LocalDate getReturnDate() {

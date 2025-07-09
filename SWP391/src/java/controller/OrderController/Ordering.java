@@ -64,19 +64,24 @@ public class Ordering extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        User user = (User)session.getAttribute("user");
+        List<CartDetail> listReOrder =(List<CartDetail>) session.getAttribute("listReOrder");
+        LaptopDAO lapdao = new LaptopDAO();
+        String quantity_raw = request.getParameter("quantity2");
         String id_raw=request.getParameter("id");
         String ids = request.getParameter("ids");
+        String idss_raw =request.getParameter("idss");
         CartDetailDAO cartdetaildao = new CartDetailDAO();
+        CartDAO cdao = new CartDAO();
         List<CartDetail> listordering =new ArrayList<>();
         CartDetail cd =new CartDetail();
         BigDecimal total =new BigDecimal("0");
         if(ids !=null){
             try{
-                int id = Integer.parseInt(id_raw);
                 int ID = Integer.parseInt(ids);
                 if(ID==1){
-                    HttpSession session = request.getSession();
-                    List<CartDetail> listReOrder =(List<CartDetail>) session.getAttribute("listReOrder");
+                    int id = Integer.parseInt(id_raw);
                     for(CartDetail cd1 : listReOrder){
                         if(cd1.getLaptop().getLaptopID()==id){
                             listordering.add(cd1);
@@ -84,9 +89,33 @@ public class Ordering extends HttpServlet {
                         }
                     }
                 }
+                else if(ID==2){
+                    for(CartDetail cd2 : listReOrder){
+                        if(cd2.isIsSelect()==true){
+                            listordering.add(cd2);
+                            total=cd2.getUnitPrice().multiply(BigDecimal.valueOf(cd2.getQuantity()));
+                        }
+                    }
+                }
             }
             catch(NumberFormatException e){
                 e.printStackTrace();
+            }
+        }
+        else if(idss_raw !=null){
+            int idss = Integer.parseInt(idss_raw);
+            int quantity = Integer.parseInt(quantity_raw);
+            int id = Integer.parseInt(id_raw);
+            if(idss==1){
+               Laptop laptop = lapdao.getLaptopById(id);
+               CartDetail cartdetail = new CartDetail();
+               cartdetail.setCart(cdao.GetCartByUserID(user.getUserID()));
+               cartdetail.setLaptop(laptop);
+               cartdetail.setQuantity(quantity);
+               cartdetail.setUnitPrice(laptop.getPrice());
+               cartdetail.setIsSelect(true);
+               listordering.add(cartdetail);
+               total=cartdetail.getUnitPrice().multiply(BigDecimal.valueOf(cartdetail.getQuantity()));
             }
         }
         else{

@@ -85,18 +85,18 @@ public class VnpayReturn extends HttpServlet {
                 if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
                     //update banking system
                     PaymentDAO pdao = new PaymentDAO();
-                    order.setPaymentstatus(stDao.GetStatus(16));
+                    order.setPaymentstatus(stDao.GetStatus(24));
                     Payment p = new Payment();
                     p.setOrderId(order.getOrderID());
                     p.setAmount(Amount.divide(BigDecimal.valueOf(100)));
                     p.setPayDate(payDate);
                     p.setBankCode(bankcode);
                     p.setTransactionNo(TranNo);
-                    p.setTransactionStatus(16);
+                    p.setTransactionStatus(24);
                     pdao.addpayment(p);
                     transSuccess = true;
                 } else {
-                    order.setPaymentstatus(stDao.GetStatus(15));
+                    order.setPaymentstatus(stDao.GetStatus(23));
                 }
                 orderDao.updateOrderPaymentStatus(order);
                 request.setAttribute("transResult", transSuccess);

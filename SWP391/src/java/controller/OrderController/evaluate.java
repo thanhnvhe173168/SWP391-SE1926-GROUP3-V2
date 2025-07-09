@@ -4,7 +4,9 @@
  */
 package controller.OrderController;
 
+import dao.CategoryDAO;
 import dao.OrderDAO;
+import dao.OrderDetailDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,6 +38,8 @@ public class evaluate extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         OrderDAO odao = new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        CategoryDAO cdao = new CategoryDAO();
         String id_raw = request.getParameter("id");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
@@ -43,9 +47,14 @@ public class evaluate extends HttpServlet {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
                 List<Order> list = odao.getListUserOrderNeedEvaluate(user.getUserID());
+                List<Order> orderneedreview = odao.getListUserOrderNeedEvaluate(user.getUserID());
+                request.setAttribute("title", "Order to be evaluated");
+                request.setAttribute("cdao", cdao);
+                request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "evaluate");
                 request.setAttribute("list", list);
-                request.getRequestDispatcher("user/evaluate.jsp").forward(request, response);
+                request.setAttribute("orderneedreview", orderneedreview);
+                request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
                 List<Order> orderlist = odao.getListOrderNeedEvaluate();
                 request.setAttribute("OrderStatus", "evaluate");

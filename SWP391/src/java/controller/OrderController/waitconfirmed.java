@@ -4,7 +4,9 @@
  */
 package controller.OrderController;
 
+import dao.CategoryDAO;
 import dao.OrderDAO;
+import dao.OrderDetailDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -37,23 +39,29 @@ public class waitconfirmed extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String id_raw = request.getParameter("id");
         OrderDAO odao = new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        CategoryDAO cdao = new CategoryDAO();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
                 List<Order> list = odao.getListUserOrderByStatusName("Chờ xác nhận", user.getUserID());
+                request.setAttribute("title", "Order pending confirmation");
+                request.setAttribute("cdao", cdao);
+                request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "waitconfirmed");
                 request.setAttribute("list", list);
-                request.getRequestDispatcher("user/waitconfirmed.jsp").forward(request, response);
+                request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
                 List<Order> orderlist = odao.getListOrderByStatusName("Chờ xác nhận");
+                request.setAttribute("cdao", cdao);
+                request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "waitconfirmed");
                 request.setAttribute("orderlist", orderlist);
                 request.getRequestDispatcher("admin/managewaitconfirmed.jsp").forward(request, response);
             }
-        }
-        catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
     }

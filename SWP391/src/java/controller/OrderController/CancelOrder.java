@@ -80,8 +80,8 @@ public class CancelOrder extends HttpServlet {
         
         try{
             int id = Integer.parseInt(id_raw);
-            odao.upDateOrderStatus(8, id);
-            oddao.upDateOrderDetailStatuswhencancel(20, id);
+            odao.upDateOrderStatus(6, id);
+            oddao.upDateOrderDetailStatuswhencancel(6, id);
             String mess= "Hủy đơn thành công";
             request.setAttribute("mess", mess);
             request.getRequestDispatcher("OrderList").forward(request, response);
