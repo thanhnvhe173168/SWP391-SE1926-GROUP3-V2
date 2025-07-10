@@ -33,6 +33,11 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link text-white <%= currentPage.contains("getListPromotion") ? "active" : "" %>" href="getListPromotion">
+                <i class="fas fa-tags me-2"></i> Quản lý khuyến mãi
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link text-white <%= currentPage.contains("getListCategory") ? "active" : "" %>" href="getListCategory">
                 <i class="fas fa-list me-2"></i> Quản lý danh mục sản phẩm
             </a>
