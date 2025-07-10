@@ -27,16 +27,14 @@
             <c:set var="order" value="${od}"/>
             <table>
                 <tr>
-                    <th>STT</th>
                     <th>Hình ảnh</th>
                     <th>Số lượng</th>
                     <th>Giá</th>
                     <th>Đơn giá</th>
                     <th>Hoàn đơn</th>
                 </tr>
-                <c:forEach items="${lists}" var="orderdetail" varStatus="status">
+                <c:forEach items="${lists}" var="orderdetail" >
                     <tr>
-                        <td>${status.index + 1}</td>
                         <td>
                             <a href="LaptopInfo?id=${orderdetail.laptop.laptopID}">
                                 <img src="images/${orderdetail.laptop.imageURL}" width="100" alt="${orderdetail.laptop.laptopName}" />

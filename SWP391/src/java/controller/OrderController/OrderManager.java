@@ -5,6 +5,8 @@
 package controller.OrderController;
 
 import dao.OrderDAO;
+import dao.StatusDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import model.Order;
+import model.Status;
 
 /**
  *
@@ -66,7 +69,11 @@ public class OrderManager extends HttpServlet {
         OrderDAO odao =new OrderDAO();
         List<Order> list =new ArrayList<>();
         list = odao.getListOrder();
-        
+        UserDAO udao = new UserDAO();
+        StatusDAO sdao = new StatusDAO();
+        List<Status> liststatus=sdao.getListStatusSelect();
+        request.setAttribute("liststatus", liststatus);
+        request.setAttribute("udao", udao);
         request.setAttribute("list", list);
         request.setAttribute("OrderStatus","OrderList" );
         request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);

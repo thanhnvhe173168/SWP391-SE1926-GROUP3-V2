@@ -16,8 +16,6 @@
             body {
                 font-family: 'Segoe UI', sans-serif;
                 background-color: #f7f9fc;
-                margin: 0;
-                padding: 20px;
             }
             h1 {
                 text-align: center;
@@ -120,6 +118,9 @@
                 overflow-x: auto;
                 white-space: nowrap;
             }
+            .main{
+                padding: 30px;
+            }
         </style>
         <script>
             function confirmCancel(id) {
@@ -158,6 +159,7 @@
         <h1>${title}</h1>
         <c:set var="currentStatus" value="${OrderStatus}" />
 
+        <div class="main">
         <div class="order-tabs">
             <div class="tab ${currentStatus == 'OrderList' ? 'active' : ''}" onclick="window.location.href = 'OrderList'">Tất cả đơn</div>
             <div class="tab ${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed?id=1'">Chờ xác nhận</div>
@@ -233,14 +235,15 @@
                                         </div>
                                     </c:if>
                                 </c:forEach>
-                            </c:if>  
+                            </c:if>
+                            <button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}'">View Detail</button>
                             <button>Liên hệ người bán</button>
                         </div>
                     </div>
                 </c:forEach>
             </c:otherwise>
         </c:choose>
-
+        </div>
         <jsp:include page="/components/Footer.jsp"></jsp:include>
     </body>
 </html>

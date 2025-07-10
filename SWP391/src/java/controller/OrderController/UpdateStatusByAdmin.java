@@ -1,30 +1,32 @@
-                                                                                                                            /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.CartController;
+package controller.OrderController;
 
+import dao.LaptopDAO;
+import dao.OrderDAO;
+import dao.OrderDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import dao.*;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpSession;
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.io.BufferedReader;
 import java.util.List;
-import model.Cart;
-import model.CartDetail;
-import model.User;
+import model.Laptop;
+import model.Order;
+import model.OrderDetail;
+import org.json.JSONObject;
+
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "UppdateTotalwhenchange", urlPatterns = {"/UppdateTotalwhenchange"})
-public class UppdateTotalwhenchange extends HttpServlet {
+@WebServlet(name = "UpdateStatusByAdmin", urlPatterns = {"/UpdateStatusByAdmin"})
+public class UpdateStatusByAdmin extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +45,10 @@ public class UppdateTotalwhenchange extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UppdateTotalwhenchange</title>");            
+            out.println("<title>Servlet UpdateStatusByAdmin</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UppdateTotalwhenchange at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateStatusByAdmin at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,21 +66,7 @@ public class UppdateTotalwhenchange extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CartDetailDAO cdDAO =new CartDetailDAO();
-        BigDecimal total =new BigDecimal("0");
-        HttpSession session = request.getSession(); 
-        User user = (User)session.getAttribute("user");
-        CartDAO cdao = new CartDAO();
-        Cart cart = cdao.GetCartByUserID(user.getUserID());
-        List<CartDetail> listCart=cdDAO.ListCart(cart.getCartID());
-        for(CartDetail cd : listCart){
-            if(cd.isIsSelect()==true){
-                total=total.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
-            }
-        }
-        cart.setTotal(total);
-        cdao.uppdateTotal(cart.getCartID(), total);
-        request.getRequestDispatcher("CartSeverlet").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -92,7 +80,39 @@ public class UppdateTotalwhenchange extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        OrderDAO odao = new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        LaptopDAO ldao = new LaptopDAO();
+        try {
+            BufferedReader reader = request.getReader();
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            JSONObject json = new JSONObject(sb.toString());
+            String orderId = json.getString("orderId");
+            String statusId = json.getString("newStatusID");
+
+            int statusid = Integer.parseInt(statusId);
+            int orderid = Integer.parseInt(orderId);
+            Order order = odao.GetOrderByID(orderid);
+            if(order.getOrderstatus().getStatusID()==5 && statusid==7){
+                List<OrderDetail> listorderdetail = oddao.GetListOrderDetailByID(orderid);
+                for(OrderDetail od : listorderdetail){
+                    ldao.updateLaptopStock(od.getLaptop().getLaptopID(), od.getLaptop().getStock()-od.getQuantity());
+                }
+            }
+            odao.upDateOrderStatus(statusid, orderid);
+            oddao.upDateOrderDetailStatusByAdmin(statusid, orderid);
+
+            response.setContentType("text/plain");
+            response.getWriter().write("success");
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request");
+        }
     }
 
     /**

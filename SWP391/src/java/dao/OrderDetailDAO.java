@@ -139,6 +139,21 @@ public class OrderDetailDAO extends ConnectDB {
         }
     }
 
+     public void upDateOrderDetailStatusByAdmin(int statusid, int orderid) {
+        String sql = "update OrderDetail\n"
+                + "set OrderDetailStatusID=?\n"
+                + "where OrderID=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, statusid);
+            st.setInt(2, orderid);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
     public OrderDetail getOrderDetailByLapID(int id) {
         String sql = "select * from OrderDetail\n"
                 + "where LaptopID=?";

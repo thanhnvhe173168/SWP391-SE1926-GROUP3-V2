@@ -82,7 +82,7 @@
 
     // Nếu bạn có tên sản phẩm thì lấy luôn:
     LaptopDAO ldao = new LaptopDAO();
-    Laptop laptop = ldao.GetLaptopByID(laptopid);
+    Laptop laptop = ldao.getLaptopById(laptopid);
   %>
 </head>
 <body>

@@ -49,6 +49,8 @@ public class delivered extends HttpServlet {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
                 List<Order> list = odao.getListUserOrderByStatusName("Đã giao", user.getUserID());
+                List<Order> orderneedreview = odao.getListUserOrderNeedEvaluate(user.getUserID());
+                request.setAttribute("orderneedreview", orderneedreview);
                 request.setAttribute("title", "Order Delivered");
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);

@@ -85,7 +85,6 @@ public class OrderDetailServlet extends HttpServlet {
             ord.setIsSelect(false);
             orddao.addorderdetail(ord);
             cddao.Remove(cd);
-            //ldao.updateLaptopStock(Integer.parseInt(id), cd.getLaptop().getStock()-cd.getQuantity());
         }
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         List<CartDetail> listcard = cddao.ListCart(cart.getCartID());

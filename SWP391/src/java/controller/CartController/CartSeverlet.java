@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.List;
 import model.Cart;
 import model.CartDetail;
@@ -41,8 +42,10 @@ public class CartSeverlet extends HttpServlet {
         CartDAO cdao = new CartDAO();
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         CartDetailDAO cartdetialdao=new CartDetailDAO();
+        BigDecimal total = cart.getTotal();
         List<CartDetail> listcartdetail=cartdetialdao.ListCart(cart.getCartID());
-        session.setAttribute("listcartdetail", listcartdetail);
+        request.setAttribute("total", total);
+        request.setAttribute("listcartdetail", listcartdetail);
         request.getRequestDispatcher("user/Cart.jsp").forward(request, response);
     }
 
