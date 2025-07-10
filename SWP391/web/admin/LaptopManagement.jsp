@@ -141,23 +141,23 @@
         %>
         <div class="d-flex">
             <jsp:include page="/components/AdminSidebar.jsp"></jsp:include>
-            <div class="container">
-                <div class="d-flex justify-content-between align-items-center">
-                    <p style="color: #dd3726; font-size: 40px; font-weight: 700">Quản lý sản phẩm</p>
-                    <button type="button" class="btn btn-outline-primary" onclick="handleRedirect()">
-                        <i class="fa-solid fa-plus"></i> Thêm sản phẩm
-                    </button>
-                </div>
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <select name="brandId" id="brandId" onchange="handleFilter('brandId', this.value)">
-                            <option value="0" <%="0".equals(request.getParameter("brandId")) ? "selected" : "" %>>Nhãn hiệu</option>
+                <div class="container">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p style="color: #dd3726; font-size: 40px; font-weight: 700">Quản lý sản phẩm</p>
+                        <button type="button" class="btn btn-outline-primary" onclick="handleRedirect()">
+                            <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+                        </button>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <select name="brandId" id="brandId" onchange="handleFilter('brandId', this.value)">
+                                <option value="0" <%="0".equals(request.getParameter("brandId")) ? "selected" : "" %>>Nhãn hiệu</option>
                             <%while(rsBrand.next()) {%>
-                                <option 
-                                    value="<%=rsBrand.getInt("BrandID")%>"
-                                    <%=(request.getParameter("brandId") != null && request.getParameter("brandId").equals(String.valueOf(rsBrand.getInt("BrandID")))) ? "selected" : "" %>>
-                                    <%=rsBrand.getString("BrandName")%>
-                                </option>
+                            <option 
+                                value="<%=rsBrand.getInt("BrandID")%>"
+                                <%=(request.getParameter("brandId") != null && request.getParameter("brandId").equals(String.valueOf(rsBrand.getInt("BrandID")))) ? "selected" : "" %>>
+                                <%=rsBrand.getString("BrandName")%>
+                            </option>
                             <%}%>
                         </select>
                     </div>
@@ -165,11 +165,11 @@
                         <select name="categoryId" id="categoryId" onchange="handleFilter('categoryId', this.value)">
                             <option value="0" <%="0".equals(request.getParameter("categoryId")) ? "selected" : "" %>>Loại laptop</option>
                             <%while(rsCategory.next()) {%>
-                                <option
-                                    value="<%=rsCategory.getInt("CategoryID")%>"
-                                    <%=(request.getParameter("categoryId") != null && request.getParameter("categoryId").equals(String.valueOf(rsCategory.getInt("CategoryID")))) ? "selected" : "" %>>
-                                    <%=rsCategory.getString("CategoryName")%>
-                                </option>
+                            <option
+                                value="<%=rsCategory.getInt("CategoryID")%>"
+                                <%=(request.getParameter("categoryId") != null && request.getParameter("categoryId").equals(String.valueOf(rsCategory.getInt("CategoryID")))) ? "selected" : "" %>>
+                                <%=rsCategory.getString("CategoryName")%>
+                            </option>
                             <%}%>
                         </select>
                     </div>
@@ -177,11 +177,11 @@
                         <select name="cpuId" id="cpuId" onchange="handleFilter('cpuId', this.value)">
                             <option value="0" <%="0".equals(request.getParameter("cpuId")) ? "selected" : "" %>>CPU</option>
                             <%while(rsCPU.next()) {%>
-                                <option 
-                                    value="<%=rsCPU.getInt("CPUID")%>"
-                                    <%=(request.getParameter("cpuId") != null && request.getParameter("cpuId").equals(String.valueOf(rsCPU.getInt("CPUID")))) ? "selected" : "" %>>
-                                    <%=rsCPU.getString("CPUInfo")%>
-                                </option>
+                            <option 
+                                value="<%=rsCPU.getInt("CPUID")%>"
+                                <%=(request.getParameter("cpuId") != null && request.getParameter("cpuId").equals(String.valueOf(rsCPU.getInt("CPUID")))) ? "selected" : "" %>>
+                                <%=rsCPU.getString("CPUInfo")%>
+                            </option>
                             <%}%>
                         </select>
                     </div>
@@ -189,11 +189,11 @@
                         <select name="screenId" id="screenId" onchange="handleFilter('screenId', this.value)">
                             <option value="0" <%="0".equals(request.getParameter("screenId")) ? "selected" : "" %>>Màn hình</option>
                             <%while(rsScreen.next()) {%>
-                                <option 
-                                    value="<%=rsScreen.getInt("ScreenID")%>"
-                                    <%=(request.getParameter("screenId") != null && request.getParameter("screenId").equals(String.valueOf(rsScreen.getInt("ScreenID")))) ? "selected" : "" %>>
-                                    <%=rsScreen.getString("Size")%>
-                                </option>
+                            <option 
+                                value="<%=rsScreen.getInt("ScreenID")%>"
+                                <%=(request.getParameter("screenId") != null && request.getParameter("screenId").equals(String.valueOf(rsScreen.getInt("ScreenID")))) ? "selected" : "" %>>
+                                <%=rsScreen.getString("Size")%>
+                            </option>
                             <%}%>
                         </select>
                     </div>
@@ -225,8 +225,7 @@
                                 <tr>
                                     <th><%=index%></th>
                                     <td>
-                                     <img src="images/<%=rsLaptop.getString("ImageURL")%>" alt="<%=rsLaptop.getString("LaptopName")%>" style="width: 40px; height: 40px"/>
-
+                                        <img src="images/<%=rsLaptop.getString("ImageURL")%>" alt="<%=rsLaptop.getString("LaptopName")%>" style="width: 40px; height: 40px"/>
                                     </td>
                                     <td><%=rsLaptop.getString("LaptopName")%></td>
                                     <td><%=rsLaptop.getString("Price")%></td>
@@ -236,14 +235,14 @@
                                     <td><%=rsLaptop.getString("Size")%></td>
                                     <td><%=rsLaptop.getString("RAM")%></td>
                                     <td><%=rsLaptop.getInt("Stock")%></td>
-<td>
-    <a href="updateLaptop?laptopId=<%=rsLaptop.getInt("LaptopID")%>" class="btn btn-sm btn-warning me-1">
-        <i class="fa-solid fa-pen-to-square"></i> Sửa
-    </a>
-    <a href="deleteLaptop?laptopId=<%=rsLaptop.getInt("LaptopID")%>" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?');">
-        <i class="fa-solid fa-trash"></i> Xóa
-    </a>
-</td>
+                                    <td>
+                                        <a href="updateLaptop?laptopId=<%=rsLaptop.getInt("LaptopID")%>" class="btn btn-sm btn-warning me-1">
+                                            <i class="fa-solid fa-pen-to-square"></i> Sửa
+                                        </a>
+                                        <a href="deleteLaptop?laptopId=<%=rsLaptop.getInt("LaptopID")%>" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?');">
+                                            <i class="fa-solid fa-trash"></i> Xóa
+                                        </a>
+                                    </td>
 
                                 </tr>
                                 <%}
@@ -286,7 +285,8 @@
             function handleFilter(key, value) {
                 var intValue = +value;
                 if (key === 'currentPage') {
-                    if (intValue < 1 || intValue > totalPage) return;
+                    if (intValue < 1 || intValue > totalPage)
+                        return;
                 }
                 if (intValue === 0) {
                     params.delete(key);

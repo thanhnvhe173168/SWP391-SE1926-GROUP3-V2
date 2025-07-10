@@ -17,7 +17,7 @@ import model.Laptop;
  * @author Window 11
  */
 public class LaptopDAO extends ConnectDB {
-    
+
     public Laptop getLaptopById(int LaptopID) {
         Laptop laptop = new Laptop();
         String sql = "select * from Laptop where LaptopID = ?";
@@ -46,7 +46,7 @@ public class LaptopDAO extends ConnectDB {
         }
         return laptop;
     }
-    
+
     public ResultSet getListLaptop(int currentPage, int pageSize, String laptopName, int brandId, int categoryId, int cpuId, int screenId, int statusId) {
         ResultSet rs = null;
         StringBuilder sql = new StringBuilder(
@@ -98,7 +98,7 @@ public class LaptopDAO extends ConnectDB {
         }
         return rs;
     }
-    
+
     public int getTotalRecord(String laptopName, int brandId, int categoryId, int cpuId, int screenId, int statusId) {
         int n = 0;
         StringBuilder sql = new StringBuilder(
@@ -148,7 +148,7 @@ public class LaptopDAO extends ConnectDB {
         }
         return n;
     }
-    
+
     public boolean checkExistLaptopName(String laptopName, int laptopId) {
         boolean check = false;
         ResultSet rs = null;
@@ -170,7 +170,7 @@ public class LaptopDAO extends ConnectDB {
         }
         return check;
     }
-    
+
     public int createLaptop(Laptop laptop) {
         int n = 0;
         String sql = "Insert into Laptop(LaptopName, Price, Stock, Description, ImageURL, HardDrive, StatusID, WarrantyPeriod, CPUID, "
@@ -196,7 +196,7 @@ public class LaptopDAO extends ConnectDB {
         }
         return n;
     }
-    
+
     public void updateLaptopStock(int id, int quantity) {
         String sql = "UPDATE Laptop SET stock = ? WHERE LaptopID = ?";
         try {
@@ -208,7 +208,7 @@ public class LaptopDAO extends ConnectDB {
             e.printStackTrace();
         }
     }
-    
+
     public int updateLaptop(Laptop laptop) {
         int n = 0;
         String sql = "Update Laptop set LaptopName = ?, Price = ?, Stock = ?, Description = ?, ImageURL = ?, "
@@ -236,7 +236,7 @@ public class LaptopDAO extends ConnectDB {
         }
         return n;
     }
-    
+
     public void deleteLaptop(int id) {
         String sql = "Delete from Laptop where LaptopID = ?";
         try {
@@ -247,7 +247,7 @@ public class LaptopDAO extends ConnectDB {
             e.printStackTrace();
         }
     }
-    
+
     public ResultSet getDetailLaptop(int id) {
         ResultSet rs = null;
         String sql = "select l.LaptopID, l.LaptopName, l.Price, l.ImageURL, l.HardDrive, l.WarrantyPeriod, c.CPUInfo, s.Size, l.RAM, l.Stock from Laptop l "
@@ -262,5 +262,23 @@ public class LaptopDAO extends ConnectDB {
             e.printStackTrace();
         }
         return rs;
+    }
+
+    public ArrayList<Laptop> getAllLaptop() {
+        ArrayList<Laptop> list = new ArrayList<>();
+        try {
+            PreparedStatement pre = connect.prepareStatement("Select * from Laptop");
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                list.add(new Laptop(
+                        rs.getInt("LaptopID"),
+                        rs.getString("LaptopName"),
+                        rs.getBigDecimal("Price"))
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }
