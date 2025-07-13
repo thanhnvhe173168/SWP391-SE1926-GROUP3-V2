@@ -54,7 +54,7 @@
             margin-bottom: 30px;
         }
 
-        th, td {
+         table th, td {
             padding: 15px;
             text-align: center;
             border-bottom: 1px solid #eee;
@@ -96,6 +96,7 @@
             margin: -20px -20px 20px -20px;
             border-radius: 8px 8px 0 0;
             font-size: 18px;
+            text-align: center;
         }
 
         .order-info table {
@@ -104,7 +105,7 @@
         }
 
         .order-info tr td:first-child {
-            text-align: right;
+            text-align: center;
             font-weight: bold;
             color: #555;
             width: 40%;
@@ -113,7 +114,7 @@
         }
 
         .order-info tr td:last-child {
-            text-align: left;
+            text-align: center;
             padding-left: 10px;
             color: #333;
             padding: 12px 10px;

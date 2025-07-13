@@ -22,7 +22,6 @@
             body {
                 font-family: 'Segoe UI', sans-serif;
                 background-color: #f0f2f5;
-                padding: 20px;
                 color: #2c3e50;
             }
 

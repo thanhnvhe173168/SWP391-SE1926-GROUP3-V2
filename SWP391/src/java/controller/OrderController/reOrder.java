@@ -90,24 +90,19 @@ public class reOrder extends HttpServlet {
                 cd.setQuantity(odd.getQuantity());
                 cd.setUnitPrice(odd.getUnitPrice());
                 cd.setIsSelect(true);
+                total=total.add(odd.getUnitPrice().multiply(BigDecimal.valueOf(odd.getQuantity())));
                 lists.add(cd);
                 
             }
-            Order order = odao.GetOrderByID(id);
-            total = order.getTotalAmount();
             session.setAttribute("listReOrder", lists);
-            request.setAttribute("totalPrice", formatCurrency(total));
+            request.setAttribute("totalPrice", total);
             request.getRequestDispatcher("user/reOrder.jsp").forward(request, response);
         }
         catch(IOException e){
             e.printStackTrace();
         }
     }
-    
-    private String formatCurrency(BigDecimal value) {
-        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
-        return formatter.format(value) + " VNĐ";
-    }
+   
 
     /**
      * Handles the HTTP <code>POST</code> method.

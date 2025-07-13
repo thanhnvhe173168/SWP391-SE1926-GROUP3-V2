@@ -60,7 +60,16 @@ public class CancelOrder extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String id_req = request.getParameter("orderID");
+        String reason = request.getParameter("reason");
+        int id = Integer.parseInt(id_req);
+        OrderDAO odao = new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        odao.upDateOrderStatus(6, id);
+        oddao.upDateOrderDetailStatuswhencancel(6, id);
+        odao.updateReasonCancel(reason, id);
+        request.setAttribute("mess", "Gửi yêu cầu thành công!");
+        request.getRequestDispatcher("user/ReasonCancel.jsp").forward(request, response);
     }
 
     /**
@@ -74,17 +83,11 @@ public class CancelOrder extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id_raw = request.getParameter("id");
-        OrderDAO odao =new OrderDAO();
-        OrderDetailDAO oddao = new OrderDetailDAO();
-        
+        String id_raw = request.getParameter("id");        
         try{
             int id = Integer.parseInt(id_raw);
-            odao.upDateOrderStatus(6, id);
-            oddao.upDateOrderDetailStatuswhencancel(6, id);
-            String mess= "Hủy đơn thành công";
-            request.setAttribute("mess", mess);
-            request.getRequestDispatcher("OrderList").forward(request, response);
+            request.setAttribute("id", id);
+            request.getRequestDispatcher("user/ReasonCancel.jsp").forward(request, response);
         }catch(NumberFormatException e){
             e.printStackTrace();
         }

@@ -97,7 +97,7 @@ public class OrderSuccess extends HttpServlet {
             int voucherid = voudao.GetIDbyCode(voucher);
             int payid = paydao.GetPaymentIDbyMethod(paymentmethod);
             double total = Double.parseDouble(total_raw);
-            Order od = new Order(user.getUserID(), LocalDate.now(), fsdao.getFeeShipByID(shipid), voudao.GetVoucherByID(voucherid), paydao.GetPaymentMethodByID(payid), phoneNumber, BigDecimal.valueOf(total), address, note, sdao.GetStatus(5),sdao.GetStatus(23));
+            Order od = new Order(user.getUserID(), LocalDate.now(), fsdao.getFeeShipByID(shipid), voudao.GetVoucherByID(voucherid), paydao.GetPaymentMethodByID(payid), phoneNumber, BigDecimal.valueOf(total), address, note, sdao.GetStatus(5),sdao.GetStatus(26));
             oddao.uppdateorder(od);
             request.setAttribute("paymentmethodid", payid);
             request.setAttribute("total", total);

@@ -25,8 +25,8 @@ public class OrderDetailDAO extends ConnectDB {
     StatusDAO sdao = new StatusDAO();
 
     public void addorderdetail(OrderDetail ord) {
-        String sql = "INSERT INTO OrderDetail (OrderID, LaptopID, Quantity, UnitPrice, ReviewID, OrderDetailStatusID, ReasonReturn, ReturnDate, is_select) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO OrderDetail (OrderID, LaptopID, Quantity, UnitPrice, ReviewID, OrderDetailStatusID, ReasonReturn, ReturnDate, is_select, ImageReturn) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try {
             PreparedStatement st = connect.prepareStatement(sql);
             st.setInt(1, ord.getOrderID());
@@ -54,6 +54,12 @@ public class OrderDetailDAO extends ConnectDB {
                 st.setDate(8, java.sql.Date.valueOf(ord.getReturnDate()));
             }
             st.setBoolean(9, ord.isIsSelect());
+
+            if (ord.getImageReturn() == null) {
+                st.setNull(10, java.sql.Types.NVARCHAR);
+            } else {
+                st.setNString(10, ord.getImageReturn());
+            }
             st.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,7 +106,11 @@ public class OrderDetailDAO extends ConnectDB {
                 // ReasonReturn - có thể null
                 String reasonReturn = rs.getNString("ReasonReturn");
                 od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+
                 od.setIsSelect(rs.getBoolean("is_select"));
+
+                String imageReturn = rs.getNString("ImageReturn");
+                od.setImageReturn(imageReturn != null ? imageReturn : null);
                 list.add(od);
             }
         } catch (SQLException e) {
@@ -139,7 +149,7 @@ public class OrderDetailDAO extends ConnectDB {
         }
     }
 
-     public void upDateOrderDetailStatusByAdmin(int statusid, int orderid) {
+    public void upDateOrderDetailStatusByAdmin(int statusid, int orderid) {
         String sql = "update OrderDetail\n"
                 + "set OrderDetailStatusID=?\n"
                 + "where OrderID=?";
@@ -153,14 +163,15 @@ public class OrderDetailDAO extends ConnectDB {
         }
     }
 
-    
-    public OrderDetail getOrderDetailByLapID(int id) {
+    public OrderDetail getOrderDetailByLapID(int id, int orderid) {
         String sql = "select * from OrderDetail\n"
-                + "where LaptopID=?";
+                + "where LaptopID=?\n"
+                + "and OrderID=?";
         OrderDetail od = new OrderDetail();
         try {
             PreparedStatement st = connect.prepareStatement(sql);
             st.setInt(1, id);
+            st.setInt(2, orderid);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 od.setOrderID(id);
@@ -195,6 +206,9 @@ public class OrderDetailDAO extends ConnectDB {
                 String reasonReturn = rs.getNString("ReasonReturn");
                 od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
                 od.setIsSelect(rs.getBoolean("is_select"));
+
+                String imageReturn = rs.getNString("ImageReturn");
+                od.setImageReturn(imageReturn != null ? imageReturn : null);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -219,4 +233,79 @@ public class OrderDetailDAO extends ConnectDB {
             e.printStackTrace();
         }
     }
+
+    public void updateImageReturn(int orderid, int lapid, String image) {
+        String sql = "update OrderDetail\n"
+                + "set ImageReturn=?\n"
+                + "where LaptopID=?\n"
+                + "and OrderID=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setNString(1, image);
+            st.setInt(2, lapid);
+            st.setInt(3, orderid);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public List<OrderDetail> getOrderDetailByStatus(int id, int statusid) {
+        String sql = "select * from OrderDetail\n"
+                + "where OrderID=?\n"
+                + "and OrderDetailStatusID=?";
+        List<OrderDetail> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, id);
+            st.setInt(2, statusid);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                OrderDetail od = new OrderDetail();
+                od.setOrderID(id);
+
+                // LaptopID - không null
+                od.setLaptop(ldao.getLaptopById(rs.getInt("LaptopID")));
+
+                // Quantity, UnitPrice - không null
+                od.setQuantity(rs.getInt("Quantity"));
+                od.setUnitPrice(rs.getBigDecimal("UnitPrice"));
+
+                // ReviewID - có thể null
+                int reviewId = rs.getInt("ReviewID");
+                if (!rs.wasNull()) {
+                    od.setReview(rdao.getReviewByID(reviewId));
+                } else {
+                    od.setReview(null);
+                }
+
+                // OrderDetailStatusID - không null
+                od.setOrderDetailStatus(sdao.GetStatus(rs.getInt("OrderDetailStatusID")));
+
+                // ReturnDate - có thể null
+                Date returnDate = rs.getDate("ReturnDate");
+                if (returnDate != null) {
+                    od.setReturnDate(returnDate.toLocalDate());
+                } else {
+                    od.setReturnDate(null);
+                }
+
+                // ReasonReturn - có thể null
+                String reasonReturn = rs.getNString("ReasonReturn");
+                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+
+                od.setIsSelect(rs.getBoolean("is_select"));
+
+                String imageReturn = rs.getNString("ImageReturn");
+                od.setImageReturn(imageReturn != null ? imageReturn : null);
+
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
 }

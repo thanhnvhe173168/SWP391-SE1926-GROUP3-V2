@@ -58,8 +58,8 @@ public class unpaid extends HttpServlet {
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "unpaid");
-                request.setAttribute("orderlist", orderlist);
-                request.getRequestDispatcher("admin/manageunpaid.jsp").forward(request, response);
+                request.setAttribute("list", orderlist);
+                request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
 
             }
         } catch (NumberFormatException e) {

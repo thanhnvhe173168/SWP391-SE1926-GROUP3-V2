@@ -13,6 +13,7 @@
         <title>Quản lý đơn hàng</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             body {
                 background-color: #f8f9fa;
@@ -109,6 +110,19 @@
         </style>
     </head>
     <body>
+        <%
+            String mess = (String) request.getAttribute("mess");
+            if (mess != null) {
+        %>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '<%= mess %>',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        </script>
+        <% } %>
         <div class="d-flex">
             <!-- Sidebar -->
             <jsp:include page="/components/AdminSidebar.jsp"></jsp:include>
@@ -126,6 +140,7 @@
                 <div class="order-tabs">
                     <div class="tab ${currentStatus == 'OrderList' ? 'active' : ''}" onclick="window.location.href = 'OrderManager'">Tất cả đơn</div>
                     <div class="tab ${currentStatus == 'waitconfirmed' ? 'active' : ''}" onclick="window.location.href = 'waitconfirmed?id=2'">Chờ xác nhận</div>
+                    <div class="tab ${currentStatus == 'wantcancel' ? 'active' : ''}" onclick="window.location.href = 'wantcancel?id=2'">Yêu cầu hủy</div>
                     <div class="tab ${currentStatus == 'confirmed' ? 'active' : ''}" onclick="window.location.href = 'confirmed?id=2'">Đã xác nhận</div>
                     <div class="tab ${currentStatus == 'delivering' ? 'active' : ''}" onclick="window.location.href = 'delivering?id=2'">Đang giao</div>
                     <div class="tab ${currentStatus == 'delivered' ? 'active' : ''}" onclick="window.location.href = 'delivered?id=2'">Đã giao</div>
@@ -165,7 +180,7 @@
                                         <td><fmt:formatNumber value="${order.totalAmount}" type="number" groupingUsed="true"/> VNĐ</td>
                                         <td>
                                             <c:choose>
-                                                <c:when test="${order.orderstatus.statusID == 5 || order.orderstatus.statusID == 7 || order.orderstatus.statusID == 8 || order.orderstatus.statusID == 17 ||order.orderstatus.statusID == 18 || order.orderstatus.statusID == 19}">
+                                                <c:when test="${order.orderstatus.statusID == 5 || order.orderstatus.statusID == 6 || order.orderstatus.statusID == 8 || order.orderstatus.statusID == 16 ||order.orderstatus.statusID == 17 || order.orderstatus.statusID == 25 || order.orderstatus.statusID == 12}">
                                                     <form>
                                                         <input type="hidden" name="orderid" id="orderid" value="${order.orderID}"/>
                                                         <select name="OrderStatus" onchange="updateStatus(this)" id="orderstatus">
@@ -183,15 +198,36 @@
                                                 </c:otherwise>
                                             </c:choose>
                                         </td>
-                                        <td>${order.paymentstatus.statusName}</td>
+                                        <td>
+                                            <form>
+                                                <input type="hidden" name="orderid" value="${order.orderID}" />
+                                                <select name="PaymentStatus" onchange="updatePaymentStatus(this)">
+                                                    <option value="${order.paymentstatus.statusID}">${order.paymentstatus.statusName}</option>
+                                                    <c:forEach items="${listPaymentStatus}" var="pstatus">
+                                                        <c:if test="${pstatus.statusID != order.paymentstatus.statusID}">
+                                                            <option value="${pstatus.statusID}">${pstatus.statusName}</option>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                </select>
+                                            </form>
+                                        </td>
+
                                         <td>
                                             <a href="OrderDetailScreen?id=${order.orderID}&ids=1" class="btn btn-outline-primary btn-sm">View Order</a>
-                                            <c:if test="${order.orderstatus.statusName eq 'Đã hủy'}">
+                                            <c:if test="${(order.orderstatus.statusName eq 'Đã hủy' && order.paymentstatus.statusName eq 'Đã thanh toán')||order.orderstatus.statusName eq 'Đã hoàn' || order.orderstatus.statusName eq 'Đã hoàn 1 phần'}">
                                                 <a href="vnpayRefundInput?id=${order.orderID}" class="btn btn-outline-primary btn-sm">Refund</a>
                                             </c:if>
-                                            <c:if test="${order.orderstatus.statusID == 15 || order.orderstatus.statusID == 16}">
-                                                <a href="ViewReturnReason?id=${order.orderID}" class="btn btn-outline-primary btn-sm">Reason for return</a>
+                                            <c:if test="${order.orderstatus.statusName eq 'Yêu cầu hủy'}">
+                                                <a href="${pageContext.request.contextPath}/ViewReasonCancel?id=${order.orderID}" class="btn btn-outline-primary btn-sm">View Reason Cancel</a>
                                             </c:if>
+                                            <c:if test="${order.orderstatus.statusID == 17 || order.orderstatus.statusID == 16}">
+                                                <a href="${pageContext.request.contextPath}/ViewReasonReturn?id=${order.orderID}" class="btn btn-outline-primary btn-sm"> View Reason Return</a>
+                                            </c:if>
+                                            <c:forEach items="${listOrderIdHaveReview}" var="orderidhave">
+                                                <c:if test="${orderidhave==order.orderID}">
+                                                    <a href="${pageContext.request.contextPath}/ViewReview?id=${order.orderID}" class="btn btn-outline-primary btn-sm"> View Review</a>
+                                                </c:if>
+                                            </c:forEach>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -222,6 +258,27 @@
                             console.log(data); // "success"
                         });
             }
+
+            function updatePaymentStatus(selectElement) {
+                const newPaymentStatusID = selectElement.value;
+                const orderID = selectElement.closest('form').querySelector('[name="orderid"]').value;
+
+                fetch('UpdatePaymentStatusByAdmin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        orderId: orderID,
+                        newPaymentStatusID: newPaymentStatusID
+                    })
+                })
+                        .then(res => res.text())
+                        .then(data => {
+                            console.log(data);
+                        });
+            }
+
         </script>
 
     </body>

@@ -98,15 +98,35 @@ public class UpdateStatusByAdmin extends HttpServlet {
             int statusid = Integer.parseInt(statusId);
             int orderid = Integer.parseInt(orderId);
             Order order = odao.GetOrderByID(orderid);
-            if(order.getOrderstatus().getStatusID()==5 && statusid==7){
+            if (order.getOrderstatus().getStatusID() == 5 && statusid == 8) {
                 List<OrderDetail> listorderdetail = oddao.GetListOrderDetailByID(orderid);
-                for(OrderDetail od : listorderdetail){
-                    ldao.updateLaptopStock(od.getLaptop().getLaptopID(), od.getLaptop().getStock()-od.getQuantity());
+                for (OrderDetail od : listorderdetail) {
+                    ldao.updateLaptopStock(od.getLaptop().getLaptopID(), od.getLaptop().getStock() - od.getQuantity());
                 }
+                odao.upDateOrderStatus(statusid, orderid);
+                oddao.upDateOrderDetailStatusByAdmin(statusid, orderid);
+            } else if (statusid == 20) {
+                odao.upDateOrderStatus(statusid, orderid);
+                List<OrderDetail> listreturnall = oddao.GetListOrderDetailByID(orderid);
+                for (OrderDetail orderdetail : listreturnall) {
+                    if (orderdetail.getOrderDetailStatus().getStatusID() == 25) {
+                        oddao.upDateOrderDetailStatuswhenreturn(20, orderid, orderdetail.getLaptop().getLaptopID());
+                        ldao.updateLaptopStock(orderdetail.getLaptop().getLaptopID(), orderdetail.getLaptop().getStock() + orderdetail.getQuantity());
+                    }
+                }
+            } else if (statusid == 21) {
+                odao.upDateOrderStatus(statusid, orderid);
+                List<OrderDetail> listreturnpart = oddao.GetListOrderDetailByID(orderid);
+                for (OrderDetail orderdetail : listreturnpart) {
+                    if (orderdetail.getOrderDetailStatus().getStatusID() == 25) {
+                        oddao.upDateOrderDetailStatuswhenreturn(20, orderid, orderdetail.getLaptop().getLaptopID());
+                        ldao.updateLaptopStock(orderdetail.getLaptop().getLaptopID(), orderdetail.getLaptop().getStock() + orderdetail.getQuantity());
+                    }
+                }
+            } else {
+                odao.upDateOrderStatus(statusid, orderid);
+                oddao.upDateOrderDetailStatusByAdmin(statusid, orderid);
             }
-            odao.upDateOrderStatus(statusid, orderid);
-            oddao.upDateOrderDetailStatusByAdmin(statusid, orderid);
-
             response.setContentType("text/plain");
             response.getWriter().write("success");
         } catch (NumberFormatException e) {

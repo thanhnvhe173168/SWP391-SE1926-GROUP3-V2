@@ -17,7 +17,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Giỏ hàng</title>
-        <link rel="stylesheet" href="styles.css" />\
+        <link rel="stylesheet" href="styles.css" />
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             body {
@@ -33,7 +33,6 @@
 
             table {
                 width: 100%;
-                border-collapse: separate;
                 border-spacing: 0;
                 background: #fff;
                 border-radius: 8px;
@@ -41,13 +40,15 @@
                 overflow: hidden;
             }
 
-            th {
+            table th {
+                text-align: center;
                 background: #007bff;  /* Cam Shopee nổi bật */
                 color: #fff;          /* Chữ trắng dễ đọc */
                 font-weight: bold;
                 text-transform: uppercase; /* Viết hoa tất cả tiêu đề */
                 letter-spacing: 0.5px;
-                padding: 18px;
+                padding: 15px;
+                vertical-align: middle;
             }
 
             td {
@@ -135,6 +136,22 @@
             .main{
                 padding: 30px;
             }
+            .qty-control {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .qty-control button {
+                width: 32px;
+                height: 32px;
+            }
+
+            .qty-control input {
+                width: 50px;
+                text-align: center;
+            }
+
         </style>
         <%  
             User user = (User)session.getAttribute("user");
@@ -170,7 +187,7 @@
             }
         </script>
         <jsp:include page="/components/Header.jsp"></jsp:include>
-            <h2>Giỏ hàng</h2>
+            <h2>Shopping Cart</h2>
             <div class="main">
             <c:set var="listcartdetails" value="${listcartdetail}" />
 
@@ -180,52 +197,54 @@
                 </c:when>
 
                 <c:otherwise>
-                        <table>
-                            <tr>
-                                <th>Chọn</th>
-                                <th>Hình ảnh</th>
-                                <th>Tên Laptop</th>
-                                <th>Giá</th>
-                                <th>Số lượng</th>
-                                <th>Thành tiền</th>
-                                <th>Mua</th>
-                                <th>Xóa</th>
-                            </tr>
+                    <table>
+                        <tr>
+                            <th>Select</th>
+                            <th>Product Image</th>
+                            <th>Laptop Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Order</th>
+                            <th>Remove</th>
+                        </tr>
 
-                            <c:forEach var="item" items="${listcartdetails}">
-                                <tr>
-                                    <td>
-                                        <input type="checkbox"
-                                               class="items-checkbox"
-                                               data-productid="${item.laptop.laptopID}"
-                                               checked
-                                               onchange="itemSelectReOrder(this)">
-                                    </td>
-                                    <td><button type="button" onclick="window.location.href = 'LaptopInfo?id=${item.getLaptop().getLaptopID()}'"><img src="images/${item.laptop.imageURL}" width="100" alt="${item.laptop.laptopName}" /></button></td>
-                                    <td>${item.laptop.laptopName}</td>
-                                    <td class="price"><fmt:formatNumber value="${item.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
-                                    <td>
+                        <c:forEach var="item" items="${listcartdetails}">
+                            <tr>
+                                <td>
+                                    <input type="checkbox"
+                                           class="items-checkbox"
+                                           data-productid="${item.laptop.laptopID}"
+                                           ${item.isSelect ? 'checked' : ''}
+                                           onchange="itemSelectReOrder(this)">
+                                </td>
+                                <td><button type="button" onclick="window.location.href = 'LaptopInfo?id=${item.getLaptop().getLaptopID()}'"><img src="images/${item.laptop.imageURL}" width="100" alt="${item.laptop.laptopName}" /></button></td>
+                                <td>${item.laptop.laptopName}</td>
+                                <td class="price"><fmt:formatNumber value="${item.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
+                                <td>
+                                    <div class="qty-control">
                                         <button onclick="updateQuantity(${item.laptop.laptopID}, -1, ${item.laptop.stock})">-</button>
-                                        <input type="number" id="qty-${item.laptop.laptopID}" value="${item.quantity}"
+                                        <input type="text" id="qty-${item.laptop.laptopID}" value="${item.quantity}"
                                                onchange="manualUpdate(${item.laptop.laptopID}, ${item.laptop.stock})">
                                         <button onclick="updateQuantity(${item.laptop.laptopID}, 1, ${item.laptop.stock})">+</button>
-                                    </td>                                    
-                                    <td id="price-${item.laptop.laptopID}">
-                                        ${item.unitPrice * item.quantity}
-                                    </td>
-                                    <td><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?id=${item.getLaptop().getLaptopID()}'">Mua</button></td>
-                                    <td>
-                                        <button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'RemoveFromCart?id=${item.getLaptop().getLaptopID()}'">Xóa</button>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-
-                            <tr class="total-row">
-                                <td colspan="1"><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'OrderItemSelect?'">Mua nhiều</button></td>
-                                <td colspan="4"><strong>Tổng cộng:</strong></td>
-                                <td id="total-price" colspan="1"><strong>${total}</strong></td>
+                                    </div>
+                                </td>                                    
+                                <td id="price-${item.laptop.laptopID}">
+                                    <fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ
+                                </td>
+                                <td><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?id=${item.getLaptop().getLaptopID()}'">Order</button></td>
+                                <td>
+                                    <button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'RemoveFromCart?id=${item.getLaptop().getLaptopID()}'">Remove</button>
+                                </td>
                             </tr>
-                        </table>
+                        </c:forEach>
+
+                        <tr class="total-row">
+                            <td colspan="1"><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'OrderItemSelect?'">Buy more</button></td>
+                            <td colspan="4"><strong>Total amount:</strong></td>
+                            <td id="total-price" colspan="1"><strong><fmt:formatNumber value="${total}" type="number" groupingUsed="true"/> VNĐ</strong></td>
+                        </tr>
+                    </table>
                 </c:otherwise>
             </c:choose>
         </div>

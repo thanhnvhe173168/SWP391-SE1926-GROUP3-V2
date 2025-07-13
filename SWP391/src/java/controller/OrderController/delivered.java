@@ -8,6 +8,7 @@ import dao.CartDAO;
 import dao.CategoryDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
+import dao.StatusDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,9 +16,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import model.Cart;
 import model.Order;
+import model.Status;
 import model.User;
 
 /**
@@ -40,6 +43,7 @@ public class delivered extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         OrderDAO odao = new OrderDAO();
+        StatusDAO sdao = new StatusDAO();
         OrderDetailDAO oddao = new OrderDetailDAO();
         CategoryDAO cdao = new CategoryDAO();
         String id_raw = request.getParameter("id");
@@ -50,7 +54,13 @@ public class delivered extends HttpServlet {
             if (id == 1) {
                 List<Order> list = odao.getListUserOrderByStatusName("Đã giao", user.getUserID());
                 List<Order> orderneedreview = odao.getListUserOrderNeedEvaluate(user.getUserID());
-                request.setAttribute("orderneedreview", orderneedreview);
+                List<Integer> orderidneedreview = new ArrayList<>();
+                for (Order order : orderneedreview) {
+                    if (!orderidneedreview.contains(order.getOrderID())) {
+                        orderidneedreview.add(order.getOrderID());
+                    }
+                }
+                request.setAttribute("orderidneedreview", orderidneedreview);
                 request.setAttribute("title", "Order Delivered");
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
@@ -58,12 +68,22 @@ public class delivered extends HttpServlet {
                 request.setAttribute("list", list);
                 request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
+                List<Order> listOrderHaveReview = odao.getListOrderHaveEvaluate();
+                List<Integer> listOrderIdHaveReview = new ArrayList<>();
+                for (Order order : listOrderHaveReview) {
+                    if (!listOrderIdHaveReview.contains(order.getOrderID())) {
+                        listOrderIdHaveReview.add(order.getOrderID());
+                    }
+                }
+                List<Status> liststatus = sdao.getListStatusSelect();
                 List<Order> orderlist = odao.getListOrderByStatusName("Đã giao");
+                request.setAttribute("liststatus", liststatus);
+                request.setAttribute("listorderidhavereview", listOrderIdHaveReview);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "delivered");
-                request.setAttribute("orderlist", orderlist);
-                request.getRequestDispatcher("admin/managedelivered.jsp").forward(request, response);
+                request.setAttribute("list", orderlist);
+                request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();

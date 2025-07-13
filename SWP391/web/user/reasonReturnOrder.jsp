@@ -95,7 +95,7 @@
       <textarea name="reason" id="reason" required placeholder="Ví dụ: Sản phẩm bị lỗi, giao nhầm, không đúng mô tả..."></textarea>
       
       <label for="imageUpload">Đính kèm hình ảnh (nếu có):</label>
-      <input type="file" id="imageUpload" name="imageUpload" multiple accept="image/*">
+      <input type="file" id="imageUpload" name="image" multiple accept="image/*">
       <div class="file-note">Hỗ trợ định dạng: JPG, PNG, JPEG (nhiều ảnh)</div>
       
       <button type="submit">Gửi yêu cầu hoàn hàng</button>

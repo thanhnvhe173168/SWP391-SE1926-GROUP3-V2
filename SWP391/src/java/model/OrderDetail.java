@@ -21,6 +21,7 @@ public class OrderDetail {
     private String reasonReturn;
     private LocalDate returnDate;
     private boolean isSelect;
+    private String imageReturn;
 
     public OrderDetail() {
     }
@@ -55,6 +56,19 @@ public class OrderDetail {
         this.reasonReturn = reasonReturn;
         this.returnDate = returnDate;
         this.isSelect = isSelect;
+    }
+
+    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Review review, Status orderDetailStatus, String reasonReturn, LocalDate returnDate, boolean isSelect, String imageReturn) {
+        this.orderID = orderID;
+        this.laptop = laptop;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.review = review;
+        this.orderDetailStatus = orderDetailStatus;
+        this.reasonReturn = reasonReturn;
+        this.returnDate = returnDate;
+        this.isSelect = isSelect;
+        this.imageReturn = imageReturn;
     }
     
     
@@ -129,6 +143,14 @@ public class OrderDetail {
 
     public void setIsSelect(boolean isSelect) {
         this.isSelect = isSelect;
+    }
+
+    public String getImageReturn() {
+        return imageReturn;
+    }
+
+    public void setImageReturn(String imageReturn) {
+        this.imageReturn = imageReturn;
     }
 
     

@@ -25,8 +25,8 @@ import model.User;
  *
  * @author Window 11
  */
-@WebServlet(name = "confirmed", urlPatterns = {"/confirmed"})
-public class confirmed extends HttpServlet {
+@WebServlet(name = "wantcancel", urlPatterns = {"/wantcancel"})
+public class wantcancel extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +45,10 @@ public class confirmed extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet confirmed</title>");
+            out.println("<title>Servlet wantcancel</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet confirmed at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet wantcancel at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,34 +66,35 @@ public class confirmed extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
+        response.setContentType("text/html;charset=UTF-8");
         StatusDAO sdao = new StatusDAO();
         OrderDAO odao = new OrderDAO();
         OrderDetailDAO oddao = new OrderDetailDAO();
         CategoryDAO cdao = new CategoryDAO();
-        User user = (User) session.getAttribute("user");
         String id_raw = request.getParameter("id");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
-                List<Order> orderlist = odao.getListUserOrderByStatusName("Đã xác nhận", user.getUserID());
-                request.setAttribute("title", "Order confirmed");
+                List<Order> list = odao.getListUserOrderByStatusName("Yêu cầu hủy", user.getUserID());
+                request.setAttribute("title", "Want Cancel Order");
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
-                request.setAttribute("OrderStatus", "confirmed");
-                request.setAttribute("list", orderlist);
+                request.setAttribute("OrderStatus", "wantcancel");
+                request.setAttribute("list", list);
                 request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
-                List<Order> orderlist = odao.getListOrderByStatusName("Đã xác nhận");
+                List<Order> orderlist = odao.getListOrderByStatusName("Yêu cầu hủy");
                 List<Status> liststatus = sdao.getListStatusSelect();
                 request.setAttribute("liststatus", liststatus);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
-                request.setAttribute("OrderStatus", "confirmed");
+                request.setAttribute("OrderStatus", "wantcancel");
                 request.setAttribute("list", orderlist);
                 request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
             }
-        } catch (IOException e) {
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
     }

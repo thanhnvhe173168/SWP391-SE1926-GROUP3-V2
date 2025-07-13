@@ -158,7 +158,7 @@ public class AddToCart extends HttpServlet {
             cartdetail.setUnitPrice(lap.getPrice());
             cartdetail.setIsSelect(true);
             cddao.AddCart(cartdetail);
-            total = total.add(cartdetail.getUnitPrice());
+            total = total.add(cartdetail.getUnitPrice().multiply(BigDecimal.valueOf(quantity)));
             cdao.uppdateTotal(cart.getCartID(), total);
             mess = "Thêm vào giỏ hàng thành công !";
             request.setAttribute("mess", mess);

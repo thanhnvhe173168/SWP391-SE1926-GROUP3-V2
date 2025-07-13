@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import model.Order;
+import model.OrderDetail;
 import model.Status;
 
 /**
@@ -66,16 +67,29 @@ public class OrderManager extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        OrderDAO odao =new OrderDAO();
-        List<Order> list =new ArrayList<>();
-        list = odao.getListOrder();
+        String mess = (String) request.getAttribute("mess");
+        OrderDAO odao = new OrderDAO();
+        List<Order> list = odao.getListOrder();
         UserDAO udao = new UserDAO();
         StatusDAO sdao = new StatusDAO();
-        List<Status> liststatus=sdao.getListStatusSelect();
+        List<Order> listOrderHaveReview = odao.getListOrderHaveEvaluate();
+        List<Integer> listOrderIdHaveReview = new ArrayList<>();
+        for (Order order : listOrderHaveReview) {
+            if (!listOrderIdHaveReview.contains(order.getOrderID())) {
+                listOrderIdHaveReview.add(order.getOrderID());
+            }
+        }
+        List<Status> liststatus = sdao.getListStatusSelect();
+        List<Status> listpaymentstatus = sdao.getListPaymentStatusSelect();
+        if (mess != null) {
+            request.setAttribute("mess", mess);
+        }
+        request.setAttribute("listPaymentStatus", listpaymentstatus);
+        request.setAttribute("listorderidhavereview", listOrderIdHaveReview);
         request.setAttribute("liststatus", liststatus);
         request.setAttribute("udao", udao);
         request.setAttribute("list", list);
-        request.setAttribute("OrderStatus","OrderList" );
+        request.setAttribute("OrderStatus", "OrderList");
         request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
     }
 

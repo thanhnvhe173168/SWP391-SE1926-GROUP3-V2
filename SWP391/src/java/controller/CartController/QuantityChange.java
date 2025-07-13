@@ -96,6 +96,7 @@ public class QuantityChange extends HttpServlet {
             // Cập nhật số lượng sản phẩm được chỉnh
             CartDetail cd = cddao.GetCartDetail(productId);
             cd.setQuantity(quantity);
+            cddao.updateQuantity(cart.getCartID(), productId, quantity);
             itemTotal = cd.getUnitPrice().multiply(BigDecimal.valueOf(quantity));
             // Tính lại tổng tiền các sản phẩm được chọn
             List<CartDetail> listcartdetail = cddao.ListCart(cart.getCartID());

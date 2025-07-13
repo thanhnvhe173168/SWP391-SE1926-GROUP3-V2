@@ -4,10 +4,8 @@
  */
 package controller.OrderController;
 
-import dao.CategoryDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
-import dao.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,18 +13,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Order;
-import model.Status;
-import model.User;
+import model.OrderDetail;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "confirmed", urlPatterns = {"/confirmed"})
-public class confirmed extends HttpServlet {
+@WebServlet(name = "AcceptReturnOrder", urlPatterns = {"/AcceptReturnOrder"})
+public class AcceptReturnOrder extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +41,10 @@ public class confirmed extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet confirmed</title>");
+            out.println("<title>Servlet AcceptReturnOrder</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet confirmed at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AcceptReturnOrder at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,36 +62,7 @@ public class confirmed extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        StatusDAO sdao = new StatusDAO();
-        OrderDAO odao = new OrderDAO();
-        OrderDetailDAO oddao = new OrderDetailDAO();
-        CategoryDAO cdao = new CategoryDAO();
-        User user = (User) session.getAttribute("user");
-        String id_raw = request.getParameter("id");
-        try {
-            int id = Integer.parseInt(id_raw);
-            if (id == 1) {
-                List<Order> orderlist = odao.getListUserOrderByStatusName("Đã xác nhận", user.getUserID());
-                request.setAttribute("title", "Order confirmed");
-                request.setAttribute("cdao", cdao);
-                request.setAttribute("oddao", oddao);
-                request.setAttribute("OrderStatus", "confirmed");
-                request.setAttribute("list", orderlist);
-                request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
-            } else if (id == 2) {
-                List<Order> orderlist = odao.getListOrderByStatusName("Đã xác nhận");
-                List<Status> liststatus = sdao.getListStatusSelect();
-                request.setAttribute("liststatus", liststatus);
-                request.setAttribute("cdao", cdao);
-                request.setAttribute("oddao", oddao);
-                request.setAttribute("OrderStatus", "confirmed");
-                request.setAttribute("list", orderlist);
-                request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -109,7 +76,43 @@ public class confirmed extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        OrderDAO odao = new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        String id_req = request.getParameter("orderID");
+        String[] listlaptopid = request.getParameterValues("selectedItems");
+        int count = 0;
+        try {
+            int id = Integer.parseInt(id_req);
+            if (listlaptopid != null) {
+                for (String laptopid : listlaptopid) {
+                    int laptopID = Integer.parseInt(laptopid);
+                    oddao.upDateOrderDetailStatuswhenreturn(18, id, laptopID);
+                    count += 1;
+                }
+            }
+            List<OrderDetail> listorderdetaill = oddao.GetListOrderDetailByID(id);
+            int quantity = 0;
+            for (OrderDetail orderdetail : listorderdetaill) {
+                quantity += 1;
+                if (orderdetail.getOrderDetailStatus().getStatusID() == 16) {
+                    oddao.upDateOrderDetailStatuswhenreturn(22, id, orderdetail.getLaptop().getLaptopID());
+                }
+            }
+            if(quantity==count){
+                odao.upDateOrderStatus(18, id);
+            }
+            else if(count>0){
+                odao.upDateOrderStatus(19, id);
+            }
+            else{
+                odao.upDateOrderStatus(22, id);
+            }
+            request.setAttribute("mess", "Xác nhận thành công!");
+            request.getRequestDispatcher("OrderManger").forward(request, response);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**

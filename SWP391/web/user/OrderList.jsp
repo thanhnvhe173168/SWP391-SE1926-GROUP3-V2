@@ -228,8 +228,8 @@
                                 <div style="display: inline">
                                     <button type="button" onclick="window.location.href = 'detailReturnOrder?id=${order.orderID}'">Return Order</button>
                                 </div>
-                                <c:forEach items="${orderneedreview}" var="orderneed">
-                                    <c:if test="${orderneed.orderID==order.orderID}">
+                                <c:forEach items="${orderidneedreview}" var="orderidneed">
+                                    <c:if test="${orderidneed==order.orderID}">
                                         <div style="display: inline">
                                             <button type="button" onclick="window.location.href = 'Review?id=${order.orderID}'">Review Order</button>
                                         </div>

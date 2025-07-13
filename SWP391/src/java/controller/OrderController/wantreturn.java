@@ -7,6 +7,7 @@ package controller.OrderController;
 import dao.CategoryDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
+import dao.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Order;
+import model.Status;
 import model.User;
 
 /**
@@ -65,6 +67,7 @@ public class wantreturn extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        StatusDAO sdao = new StatusDAO();
         OrderDAO odao = new OrderDAO();
         OrderDetailDAO oddao = new OrderDetailDAO();
         CategoryDAO cdao = new CategoryDAO();
@@ -83,11 +86,13 @@ public class wantreturn extends HttpServlet {
                 request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
                 List<Order> orderlist = odao.getListReturnOrderByStatusName("Yêu cầu hoàn", "Yêu cầu hoàn 1 phần");
+                List<Status> liststatus = sdao.getListStatusSelect();
+                request.setAttribute("liststatus", liststatus);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "wantreturn");
-                request.setAttribute("orderlist", orderlist);
-                request.getRequestDispatcher("admin/managewantreturned.jsp").forward(request, response);
+                request.setAttribute("list", orderlist);
+                request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();

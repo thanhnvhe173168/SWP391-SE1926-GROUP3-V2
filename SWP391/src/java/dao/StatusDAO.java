@@ -41,24 +41,47 @@ public class StatusDAO extends ConnectDB {
     public List<Status> getListStatusSelect() {
         List<Status> list = new ArrayList<>();
         String sql = "select * from Statuses\n"
-                + "where StatusID=5\n"
-                + "or StatusID=7\n"
+                + "where StatusID=7\n"
                 + "or StatusID=8\n"
-                + "or StatusID=17\n"
+                + "or StatusID=9\n"
                 + "or StatusID=18\n"
-                + "or StatusID=19";
-        try{
+                + "or StatusID=19\n"
+                + "or StatusID=20\n"
+                + "or StatusID=21\n"
+                + "or StatusID=22";
+        try {
             PreparedStatement st = connect.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 Status status = new Status();
                 status.setStatusID(rs.getInt("StatusID"));
                 status.setStatusName(rs.getNString("statusName"));
                 status.setStatusType(rs.getNString("statustype"));
                 list.add(status);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        catch(SQLException e){
+        return list;
+    }
+
+    public List<Status> getListPaymentStatusSelect() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=26\n"
+                + "or StatusID=27\n"
+                + "or StatusID=28";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return list;

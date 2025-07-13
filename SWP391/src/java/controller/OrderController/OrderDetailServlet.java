@@ -81,7 +81,7 @@ public class OrderDetailServlet extends HttpServlet {
             ord.setLaptop(ldao.getLaptopById(Integer.parseInt(id)));
             ord.setUnitPrice(cd.getUnitPrice());
             ord.setQuantity(cd.getQuantity());
-            ord.setOrderDetailStatus(sdao.GetStatus(16));
+            ord.setOrderDetailStatus(sdao.GetStatus(5));
             ord.setIsSelect(false);
             orddao.addorderdetail(ord);
             cddao.Remove(cd);

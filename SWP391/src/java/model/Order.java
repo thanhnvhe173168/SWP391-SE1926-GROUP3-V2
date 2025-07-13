@@ -24,8 +24,8 @@ public class Order {
     private String note;
     private Status orderstatus;
     private Status paymentstatus;
-    private LocalDate returnDate;
-    private String reasonReturn;
+    private String reasonCancel;
+
 
     public Order() {
     }
@@ -60,7 +60,7 @@ public class Order {
 
     }
 
-    public Order(int orderID, int userID, LocalDate orderDate, FeeShip shipfee, Voucher voucher, PaymentMethod paymentmethod, String phoneNumber, BigDecimal totalAmount, String address, String note, Status orderstatus, Status paymentstatus, LocalDate returnDate, String reasonReturn) {
+    public Order(int orderID, int userID, LocalDate orderDate, FeeShip shipfee, Voucher voucher, PaymentMethod paymentmethod, String phoneNumber, BigDecimal totalAmount, String address, String note, Status orderstatus, Status paymentstatus, String reasonCancel) {
         this.orderID = orderID;
         this.userID = userID;
         this.orderDate = orderDate;
@@ -73,11 +73,9 @@ public class Order {
         this.note = note;
         this.orderstatus = orderstatus;
         this.paymentstatus = paymentstatus;
-        this.returnDate = returnDate;
-        this.reasonReturn = reasonReturn;
-    }
+        this.reasonCancel = reasonCancel;
 
-   
+    }
 
     public int getOrderID() {
         return orderID;
@@ -175,22 +173,13 @@ public class Order {
         this.paymentstatus = paymentstatus;
     }
 
-    public LocalDate getReturnDate() {
-        return returnDate;
+    public String getReasonCancel() {
+        return reasonCancel;
     }
 
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
+    public void setReasonCancel(String reasonCancel) {
+        this.reasonCancel = reasonCancel;
     }
-
-    public String getReasonReturn() {
-        return reasonReturn;
-    }
-
-    public void setReasonReturn(String reasonReturn) {
-        this.reasonReturn = reasonReturn;
-    }
-
     
     }
 

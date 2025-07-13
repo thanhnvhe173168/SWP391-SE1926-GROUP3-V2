@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import model.Order;
 import model.User;
@@ -70,9 +71,15 @@ public class completed extends HttpServlet {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
                 List<Order> orderlist = odao.getListUserOrderByStatusName("Hoàn tất", user.getUserID());
-                List<Order> orderneedreviews = odao.getListUserOrderNeedEvaluate(user.getUserID());
+                List<Order> orderneedreview = odao.getListUserOrderNeedEvaluate(user.getUserID());
+                List<Integer> orderidneedreview = new ArrayList<>();
+                for (Order order : orderneedreview) {
+                    if (!orderidneedreview.contains(order.getOrderID())) {
+                        orderidneedreview.add(order.getOrderID());
+                    }
+                }
                 request.setAttribute("title", "Order Completed");
-                request.setAttribute("orderneedreviews", orderneedreviews);
+                request.setAttribute("orderidneedreview", orderidneedreview);
                 request.setAttribute("OrderStatus", "completed");
                 request.setAttribute("orderlist", orderlist);
                 request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
