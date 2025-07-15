@@ -12,8 +12,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import model.Laptop;
+import model.User;
 import org.json.JSONObject;
 
 /**
@@ -35,7 +37,9 @@ public class GetAllLaptop extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         LaptopDAO laptopDao = new LaptopDAO();
-        ArrayList<Laptop> products = laptopDao.getAllLaptop();
+         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        ArrayList<Laptop> products = laptopDao.getAllLaptop(user.getUserID());
         JSONObject json = new JSONObject();
         json.put("products", products);
         response.setContentType("application/json");
