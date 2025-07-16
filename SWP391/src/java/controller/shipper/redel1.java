@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.Guest;
+package controller.shipper;
 
-import dao.UserDAO;
-import enums.RoleEnum;
+import dao.OrderDAO;
+import dao.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,16 +13,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import model.User;
-import org.mindrot.jbcrypt.BCrypt;
+import java.util.List;
+import model.Order;
+import model.Status;
 
 /**
  *
- * @author Admin
+ * @author Window 11
  */
-@WebServlet(name = "Login", urlPatterns = {"/login"})
-public class Login extends HttpServlet {
+@WebServlet(name = "redel1", urlPatterns = {"/redel1"})
+public class redel1 extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,7 +35,19 @@ public class Login extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet redel1</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet redel1 at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -50,7 +62,25 @@ public class Login extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/guest/Login.jsp").forward(request, response);
+        int page = 1;
+        int pageSize = 5;
+        StatusDAO sdao = new StatusDAO();
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+        int offset = (page - 1) * pageSize;
+        OrderDAO orderdao = new OrderDAO();
+        List<Status> liststatus = sdao.getListStatusSelectWhenShip();
+        int totalShipOrders = orderdao.countOrdersByStatusID(14);
+        int totalPages = (int) Math.ceil((double) totalShipOrders / pageSize);
+        List<Order> shipperorderlist = orderdao.getOrdersByPageandStatus(offset, pageSize, 14);
+        request.setAttribute("OrderStatus", "redel1");
+        request.setAttribute("liststatus", liststatus);
+        request.setAttribute("shipperorderlist", shipperorderlist);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.getRequestDispatcher("shipper/shipperOrderList.jsp").forward(request, response);
     }
 
     /**
@@ -64,33 +94,7 @@ public class Login extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UserDAO userDao = new UserDAO();
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        User user = userDao.checkExistUser(email);
-        if (user == null || !BCrypt.checkpw(password, user.getPassword())) {
-            request.setAttribute("message", "Tài khoản không chính xác");
-            request.getRequestDispatcher("/guest/Login.jsp").forward(request, response);
-            return;
-        }
-        HttpSession session = request.getSession();
-        session.setAttribute("user", user);
-        switch (user.getRoleID()) {
-            case 1: // Admin
-                response.sendRedirect("dashboard");
-                break;
-            case 2: // Staff
-                response.sendRedirect("dashboard");
-                break;
-            case 3: // Customer
-                response.sendRedirect("home");
-                break;
-            case 4: // Shipper   
-                response.sendRedirect("shipper/shipperDashBoard.jsp");
-                break;
-            default:
-                throw new AssertionError();
-        }
+        processRequest(request, response);
     }
 
     /**

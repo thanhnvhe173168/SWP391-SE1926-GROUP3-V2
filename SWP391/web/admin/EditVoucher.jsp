@@ -1,195 +1,156 @@
-<%-- 
-    Document   : EditVoucher
-    Created on : Jun 14, 2025, 1:51:49 PM
-    Author     : Window 11
---%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.*" %>
 <%@page import="dao.*" %>
-<%@page import="java.util.List" %>
-<%@page import="java.util.ArrayList" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Edit Voucher Page</title>
-        <style>
-            body {
-                font-family: 'Segoe UI', Tahoma, sans-serif;
-                background-color: #f4f6f9;
-                margin: 0;
-                padding: 0;
-            }
+<head>
+    <meta charset="UTF-8">
+    <title>Sửa voucher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-            h1 {
-                text-align: center;
-                margin-top: 40px;
-                font-size: 28px;
-                color: #2c3e50;
-            }
+        .container {
+            padding: 30px 20px;
+        }
 
-            form {
-                max-width: 600px;
-                margin: 40px auto;
-                background-color: #fff;
-                padding: 30px 40px;
-                border-radius: 12px;
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            }
+        .form-card {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
 
-            table {
-                width: 100%;
-                border-collapse: separate;
-                border-spacing: 0 12px;
-            }
+        .form-label {
+            font-weight: 600;
+            color: #34495e;
+        }
 
-            td {
-                padding: 8px 10px;
-                vertical-align: middle;
-            }
+        .form-control:focus {
+            border-color: #dd3726;
+            box-shadow: 0 0 6px rgba(221, 55, 38, 0.3);
+        }
 
-            td:first-child {
-                width: 35%;
-                text-align: right;
-                font-weight: 600;
-                color: #34495e;
-            }
+        .submit-btn {
+            background-color: #dd3726;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
 
-            input[type="text"] {
-                width: 100%;
-                padding: 10px 12px;
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                font-size: 15px;
-                transition: 0.3s ease;
-            }
+        .submit-btn:hover {
+            background-color: #bb2d20;
+        }
 
-            input[type="text"]:focus {
-                border-color: #3498db;
-                box-shadow: 0 0 6px rgba(52, 152, 219, 0.5);
-                outline: none;
-            }
+        .back-link {
+            text-decoration: none;
+            color: #dd3726;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
 
-            input[type="number"] {
-                width: 100%;
-                padding: 10px 12px;
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                font-size: 15px;
-                transition: 0.3s ease;
-            }
-
-            input[type="number"]:focus {
-                border-color: #3498db;
-                box-shadow: 0 0 6px rgba(52, 152, 219, 0.5);
-                outline: none;
-            }
-
-            .form-actions {
-                text-align: center;
-                margin-top: 30px;
-            }
-
-            .submit-btn {
-                background: #3498db;
-                color: #fff;
-                border: none;
-                padding: 12px 28px;
-                font-size: 16px;
-                border-radius: 8px;
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        window.alert = function (message, timeout = null) {
+            const alert = document.createElement('div');
+            const alertButton = document.createElement('button');
+            alertButton.innerHTML = 'OK';
+            alert.classList.add('alert');
+            alert.setAttribute('style', `
+                position: fixed;
+                top: 50px;
+                left: 50%;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 5px 0 #00000022;
+                display: flex;
+                flex-direction: column;
+                transform: translateX(-50%);
+                background-color: #5ced73;
+                z-index: 9999;
+            `);
+            alertButton.setAttribute('style', `
+                border: 1px solid #333;
+                background: white;
+                border-radius: 5px;
+                padding: 5px;
+                margin-top: 10px;
                 cursor: pointer;
-                transition: background 0.3s, transform 0.2s;
-            }
-
-            .submit-btn:hover {
-                background: #2980b9;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3);
-            }
-
-            .submit-btn:active {
-                transform: scale(0.96);
-            }
-        </style>
-        <script>
-            window.alert = function (message, timeout = null) {
-                const alert = document.createElement('div');
-                const alertButton = document.createElement('button');
-                alertButton.innerHTML = 'OK';
-                alert.classList.add('alert');
-                alert.setAttribute('style', `
-            position: fixed;
-            top: 50px;
-            left: 50%;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 5px 0 #00000022;
-            display: flex;
-            flex-direction: column;
-            transform: translateX(-50%);
-            background-color: #5ced73;
-            z-index: 9999;
-        `);
-                alertButton.setAttribute('style', `
-            border: 1px solid #333;
-            background: white;
-            border-radius: 5px;
-            padding: 5px;
-            margin-top: 10px;
-            cursor: pointer;
-        `);
-                alert.innerHTML = `<span style="padding: 10px">${mess}</span>`;
-                alert.appendChild(alertButton);
-                alertButton.addEventListener('click', (e) => {
+            `);
+            alert.innerHTML = `<span style="padding: 10px">${mess}</span>`;
+            alert.appendChild(alertButton);
+            alertButton.addEventListener('click', (e) => {
+                alert.remove();
+            });
+            if (timeout !== null) {
+                setTimeout(() => {
                     alert.remove();
-                });
-                if (timeout !== null) {
-                    setTimeout(() => {
-                        alert.remove();
-                    }, Number(timeout));
-                }
-                document.body.appendChild(alert);
-            };
-        </script>
-    </head>
-    <body>
-        <% String mess = (String) request.getAttribute("mess"); %>
-        <% if (mess != null) { %>
-        <script>
-        window.alert("<%= mess %>", 3000);
-        </script>
-        <% } %>
-        <a href="${pageContext.request.contextPath}/VoucherList">Trở về</a>
-        <h1>Sửa thông tin voucher</h1>
-        <form method="post" action="${pageContext.request.contextPath}/EditVoucher">
-            <c:set value="${v1}" var="voucher"/>
-            <table>
-                <tr>
-                    <td>VoucherID:</td>
-                    <td><input type="number" name="voucherid" value="${voucher.voucherID}" readonly=""/></td>
-                </tr>
-                <tr>
-                    <td>VoucherCode:</td>
-                    <td><input type="text" name="vouchercode" value="${voucher.vouchercode}" readonly=""/></td>
-                </tr>
-                <tr>
-                    <td>VoucherType:</td>
-                    <td><input type="text" name="vouchertype" value="${voucher.vouchertype}" readonly=""/></td>
-                </tr>
-                <tr>
-                    <td>Discount:</td>
-                    <td><input type="number" name="discount" value="${voucher.discount}" readonly=""/></td>
-                </tr>
-                <tr>
-                    <td>Quantity:</td>
-                    <td><input type="number" name="quantity" value="${voucher.quantity}" required=""/></td>
-                </tr>
-            </table>
-            <div class="form-actions">
-                <input type="submit" value="Sửa" class="submit-btn"/>
-            </div>
-        </form>
-    </body>
+                }, Number(timeout));
+            }
+            document.body.appendChild(alert);
+        };
+    </script>
+</head>
+<body>
+<%
+    String mess = (String) request.getAttribute("mess");
+%>
+<% if (mess != null) { %>
+<script>
+    window.alert("<%= mess %>", 3000);
+</script>
+<% } %>
+
+<div class="d-flex">
+    <jsp:include page="/components/AdminSidebar.jsp"></jsp:include>
+
+    <div style="width: 100%; height: calc(100vh - 118px); overflow-y: auto" class="container">
+        <div class="form-card">
+            <h3 class="text-center mb-4" style="color: #dd3726; font-weight: 700;">Sửa thông tin Voucher</h3>
+            <form method="post" action="${pageContext.request.contextPath}/EditVoucher">
+                <c:set value="${v1}" var="voucher"/>
+                <div class="mb-3">
+                    <label class="form-label">Voucher ID</label>
+                    <input type="number" class="form-control" name="voucherid" value="${voucher.voucherID}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Mã voucher</label>
+                    <input type="text" class="form-control" name="vouchercode" value="${voucher.vouchercode}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Loại voucher</label>
+                    <input type="text" class="form-control" name="vouchertype" value="${voucher.vouchertype}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Giảm giá (%)</label>
+                    <input type="number" class="form-control" name="discount" value="${voucher.discount}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Số lượng</label>
+                    <input type="number" class="form-control" name="quantity" value="${voucher.quantity}" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="submit-btn">Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
 </html>

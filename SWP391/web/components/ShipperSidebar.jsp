@@ -69,8 +69,8 @@
   <h4>🚚 Shipper Panel</h4>
   <ul class="nav flex-column">
     <li class="nav-item">
-      <a class="nav-link <%= currentPage.contains("shipperDashboard") ? "active" : "" %>"
-         href="${pageContext.request.contextPath}/shipperDashboard">
+      <a class="nav-link <%= currentPage.contains("shipperDashBoard.jsp") ? "active" : "" %>"
+         href="shipper/shipperDashBoard.jsp">
          🏠 Dashboard
       </a>
     </li>
@@ -78,12 +78,6 @@
       <a class="nav-link <%= currentPage.contains("shipperOrderList") ? "active" : "" %>"
          href="${pageContext.request.contextPath}/ShipperOrderList">
          📦 Danh sách đơn giao
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link <%= currentPage.contains("updateOrderStatus") ? "active" : "" %>"
-         href="${pageContext.request.contextPath}/updateOrderStatus">
-         🔄 Cập nhật trạng thái đơn
       </a>
     </li>
     <li class="nav-item">

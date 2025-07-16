@@ -6,6 +6,7 @@ package controller.shipper;
 
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
+import dao.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import model.Order;
+import model.Status;
 
 /**
  *
@@ -64,17 +66,19 @@ public class ShipperOrderList extends HttpServlet {
             throws ServletException, IOException {
         int page = 1;
         int pageSize = 5;
-
+        StatusDAO sdao = new StatusDAO();
         String pageParam = request.getParameter("page");
         if (pageParam != null && !pageParam.isEmpty()) {
             page = Integer.parseInt(pageParam);
         }
         int offset = (page - 1) * pageSize;
         OrderDAO orderdao = new OrderDAO();
-
+        List<Status> liststatus = sdao.getListStatusSelectWhenShip();
         int totalShipOrders = orderdao.countShipOrders();
         int totalPages = (int) Math.ceil((double) totalShipOrders / pageSize);
         List<Order> shipperorderlist = orderdao.getShipOrdersByPage(offset, pageSize);
+        request.setAttribute("OrderStatus", "shipperList");
+        request.setAttribute("liststatus", liststatus);
         request.setAttribute("shipperorderlist", shipperorderlist);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);

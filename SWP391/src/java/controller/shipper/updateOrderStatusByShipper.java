@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.OrderController;
+package controller.shipper;
 
 import dao.LaptopDAO;
 import dao.OrderDAO;
@@ -16,8 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.util.List;
-import model.Laptop;
-import model.Order;
 import model.OrderDetail;
 import org.json.JSONObject;
 
@@ -25,8 +23,8 @@ import org.json.JSONObject;
  *
  * @author Window 11
  */
-@WebServlet(name = "UpdateStatusByAdmin", urlPatterns = {"/UpdateStatusByAdmin"})
-public class UpdateStatusByAdmin extends HttpServlet {
+@WebServlet(name = "updateOrderStatusByShipper", urlPatterns = {"/updateOrderStatusByShipper"})
+public class updateOrderStatusByShipper extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +43,10 @@ public class UpdateStatusByAdmin extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UpdateStatusByAdmin</title>");
+            out.println("<title>Servlet updateOrderStatusByShipper</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UpdateStatusByAdmin at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet updateOrderStatusByShipper at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -94,44 +92,17 @@ public class UpdateStatusByAdmin extends HttpServlet {
             JSONObject json = new JSONObject(sb.toString());
             String orderId = json.getString("orderId");
             String statusId = json.getString("newStatusID");
-
             int statusid = Integer.parseInt(statusId);
             int orderid = Integer.parseInt(orderId);
-            Order order = odao.GetOrderByID(orderid);
-            if (order.getOrderstatus().getStatusID() == 5 && statusid == 8) {
-                List<OrderDetail> listorderdetail = oddao.GetListOrderDetailByID(orderid);
-                for (OrderDetail od : listorderdetail) {
-                    ldao.updateLaptopStock(od.getLaptop().getLaptopID(), od.getLaptop().getStock() - od.getQuantity());
-                }
-                odao.upDateOrderStatus(statusid, orderid);
-                oddao.upDateOrderDetailStatusByAdmin(statusid, orderid);
-            } else if (statusid == 20) {
-                odao.upDateOrderStatus(statusid, orderid);
-                List<OrderDetail> listreturnall = oddao.GetListOrderDetailByID(orderid);
-                for (OrderDetail orderdetail : listreturnall) {
-                    if (orderdetail.getOrderDetailStatus().getStatusID() == 25) {
-                        oddao.upDateOrderDetailStatuswhenreturn(20, orderid, orderdetail.getLaptop().getLaptopID());
-                        ldao.updateLaptopStock(orderdetail.getLaptop().getLaptopID(), orderdetail.getLaptop().getStock() + orderdetail.getQuantity());
+            List<OrderDetail> listod = oddao.GetListOrderDetailByID(orderid);
+            if (statusid == 23 || statusid == 24 || statusid == 25) {
+                for (OrderDetail odd : listod) {
+                    if (odd.getOrderDetailStatus().getStatusID() == 18) {
+                        oddao.upDateOrderDetailStatuswhenreturn(statusid, orderid, odd.getLaptop().getLaptopID());
                     }
                 }
-            } else if (statusid == 21) {
                 odao.upDateOrderStatus(statusid, orderid);
-                List<OrderDetail> listreturnpart = oddao.GetListOrderDetailByID(orderid);
-                for (OrderDetail orderdetail : listreturnpart) {
-                    if (orderdetail.getOrderDetailStatus().getStatusID() == 25) {
-                        oddao.upDateOrderDetailStatuswhenreturn(20, orderid, orderdetail.getLaptop().getLaptopID());
-                        ldao.updateLaptopStock(orderdetail.getLaptop().getLaptopID(), orderdetail.getLaptop().getStock() + orderdetail.getQuantity());
-                    }
-                }
-            } 
-            else if(statusid==18 || statusid==19){
-                odao.upDateOrderStatus(statusid, orderid);
-                List<OrderDetail> listretrun = oddao.getOrderDetailByStatus(orderid, 16);
-                for(OrderDetail odd : listretrun){
-                    oddao.upDateOrderDetailStatuswhenreturn(18, orderid, odd.getLaptop().getLaptopID());
-                }
-            }
-            else {
+            } else {
                 odao.upDateOrderStatus(statusid, orderid);
                 oddao.upDateOrderDetailStatusByAdmin(statusid, orderid);
             }

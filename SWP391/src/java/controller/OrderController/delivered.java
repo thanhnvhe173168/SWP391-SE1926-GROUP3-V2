@@ -84,6 +84,25 @@ public class delivered extends HttpServlet {
                 request.setAttribute("OrderStatus", "delivered");
                 request.setAttribute("list", orderlist);
                 request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
+            }else if(id == 3){
+                int page = 1;
+        int pageSize = 5;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+        int offset = (page - 1) * pageSize;
+        OrderDAO orderdao = new OrderDAO();
+        List<Status> liststatus = sdao.getListStatusSelectWhenShip();
+        int totalShipOrders = orderdao.countOrdersByStatusID(12);
+        int totalPages = (int) Math.ceil((double) totalShipOrders / pageSize);
+        List<Order> shipperorderlist = orderdao.getOrdersByPageandStatus(offset, pageSize, 12);
+        request.setAttribute("OrderStatus", "delivered");
+        request.setAttribute("liststatus", liststatus);
+        request.setAttribute("shipperorderlist", shipperorderlist);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.getRequestDispatcher("shipper/shipperOrderList.jsp").forward(request, response);
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();

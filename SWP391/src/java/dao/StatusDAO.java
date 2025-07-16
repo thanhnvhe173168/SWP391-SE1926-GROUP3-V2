@@ -86,4 +86,33 @@ public class StatusDAO extends ConnectDB {
         }
         return list;
     }
+
+    public List<Status> getListStatusSelectWhenShip() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=10\n"
+                + "or StatusID=11\n"
+                + "or StatusID=12\n"
+                + "or StatusID=13\n"
+                + "or StatusID=14\n"
+                + "or StatusID=15\n"
+                + "or StatusID=23\n"
+                + "or StatusID=24\n"
+                + "or StatusID=25";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }
