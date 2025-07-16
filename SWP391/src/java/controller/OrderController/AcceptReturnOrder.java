@@ -108,7 +108,7 @@ public class AcceptReturnOrder extends HttpServlet {
                 odao.upDateOrderStatus(22, id);
             }
             request.setAttribute("mess", "Xác nhận thành công!");
-            request.getRequestDispatcher("OrderManger").forward(request, response);
+            request.getRequestDispatcher("OrderManager").forward(request, response);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
