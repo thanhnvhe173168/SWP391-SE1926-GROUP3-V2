@@ -12,9 +12,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import model.Laptop;
+import model.User;
 import org.json.JSONObject;
 
 /**
@@ -75,6 +77,8 @@ public class CreateLaptop extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         LaptopDAO laptopDao = new LaptopDAO();
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         String laptopName = request.getParameter("laptopName");
         int stock = Integer.parseInt(request.getParameter("stock"));
         BigDecimal price = BigDecimal.valueOf(Double.parseDouble(request.getParameter("price")));
@@ -97,7 +101,7 @@ public class CreateLaptop extends HttpServlet {
             return;
         }
         Laptop newLaptop = new Laptop(laptopName, price, stock, description, imageUrl, hardDrive, 3, warrantyPeriod, cpuId, screenId, ram, brandId, categoryId);
-        int checck = laptopDao.createLaptop(newLaptop);
+        int checck = laptopDao.createLaptop(newLaptop, user.getUserID());
         if (checck <= 0) {
             json.put("message", "Có lỗi xảy ra");
             response.setContentType("application/json");

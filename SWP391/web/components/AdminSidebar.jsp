@@ -38,8 +38,13 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white <%= currentPage.contains("VoucherList") ? "active" : "" %>" href="VoucherList">
+            <a class="nav-link text-white <%= currentPage.contains("VoucherList") ? "active" : "" %>" href="${pageContext.request.contextPath}/VoucherList">
                 <i class="fas fa-box me-2"></i> Quản lý Voucher
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= currentPage.contains("getListPromotion") ? "active" : "" %>" href="getListPromotion">
+                <i class="fas fa-tags me-2"></i> Quản lý khuyến mãi
             </a>
         </li>
         <li class="nav-item">
