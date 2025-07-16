@@ -49,6 +49,7 @@ public class OrderDetailScreen extends HttpServlet {
                     request.setAttribute("od", od);
                     request.setAttribute("list", list);
                     request.getRequestDispatcher("admin/OrderdetailAdmin.jsp").forward(request, response);
+                    return;
                 }
             }
             request.setAttribute("od", od);
