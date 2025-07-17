@@ -105,7 +105,7 @@ public class itemSelectInCart extends HttpServlet {
             int id = Integer.parseInt(productid);
 
             // Cập nhật lại trạng thái chọn
-            CartDetail cartdetail = cddao.GetCartDetail(id);
+            CartDetail cartdetail = cddao.GetCartDetail(id,cart.getCartID());
             cartdetail.setIsSelect(isselect);
             cddao.updateBoolean(cart.getCartID(), id, isselect);
             // Tính lại tổng

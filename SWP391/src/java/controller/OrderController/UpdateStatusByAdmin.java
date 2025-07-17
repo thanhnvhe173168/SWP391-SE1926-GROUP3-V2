@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
+import java.util.ArrayList;
 import java.util.List;
 import model.Laptop;
 import model.Order;
@@ -123,20 +124,29 @@ public class UpdateStatusByAdmin extends HttpServlet {
                         ldao.updateLaptopStock(orderdetail.getLaptop().getLaptopID(), orderdetail.getLaptop().getStock() + orderdetail.getQuantity());
                     }
                 }
-            } 
-            else if(statusid==18 || statusid==19){
+            } else if (statusid == 18 || statusid == 19) {
                 odao.upDateOrderStatus(statusid, orderid);
                 List<OrderDetail> listretrun = oddao.getOrderDetailByStatus(orderid, 16);
-                for(OrderDetail odd : listretrun){
+                for (OrderDetail odd : listretrun) {
                     oddao.upDateOrderDetailStatuswhenreturn(18, orderid, odd.getLaptop().getLaptopID());
                 }
-            }
-            else {
+            } else {
                 odao.upDateOrderStatus(statusid, orderid);
                 oddao.upDateOrderDetailStatusByAdmin(statusid, orderid);
             }
-            response.setContentType("text/plain");
-            response.getWriter().write("success");
+            List<Order> listOrderHaveReview = odao.getListOrderHaveEvaluate();
+            List<Integer> listOrderIdHaveReview = new ArrayList<>();
+            for (Order od : listOrderHaveReview) {
+                if (!listOrderIdHaveReview.contains(od.getOrderID())) {
+                    listOrderIdHaveReview.add(od.getOrderID());
+                }
+            }
+            Order neworder = odao.GetOrderByID(orderid);
+            response.setContentType("text/html;charset=UTF-8");
+            request.setAttribute("order", neworder);
+            request.setAttribute("listOrderIdHaveReview", listOrderIdHaveReview);
+            request.getRequestDispatcher("admin/OrderActionAdmin.jsp").include(request, response);
+
         } catch (NumberFormatException e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request");

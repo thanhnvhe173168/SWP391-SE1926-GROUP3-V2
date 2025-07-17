@@ -241,7 +241,8 @@
 
             function updateStatus(selectElement) {
                 const newStatusID = selectElement.value;
-                const orderID = selectElement.closest('form').querySelector('[name="orderid"]').value;
+                const form = selectElement.closest('form');
+                const orderID = form.querySelector('[name="orderid"]').value;
 
                 fetch('UpdateStatusByAdmin', {
                     method: 'POST',
@@ -254,8 +255,11 @@
                     })
                 })
                         .then(res => res.text())
-                        .then(data => {
-                            console.log(data); // "success"
+                        .then(html => {
+                            // Cập nhật nội dung cột Action bằng HTML trả về
+                            const row = form.closest('tr');
+                            const actionCell = row.querySelector('td:last-child');
+                            actionCell.innerHTML = html;
                         });
             }
 

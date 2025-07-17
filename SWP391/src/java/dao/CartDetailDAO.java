@@ -43,17 +43,18 @@ public class CartDetailDAO extends ConnectDB {
         return list;
     }
 
-    public CartDetail GetCartDetail(int id){
-        String sql="select * from CartDetail where laptopID=?";
+    public CartDetail GetCartDetail(int lapid, int cartid){
+        String sql="select * from CartDetail where laptopID=? and cartid=?";
         CartDetail cd =new CartDetail();
         try{
             PreparedStatement st=connect.prepareStatement(sql);
-            st.setInt(1, id);
+            st.setInt(1, lapid);
+            st.setInt(2, cartid);
             ResultSet rs=st.executeQuery();
             while(rs.next()){
                 cd.setCart(cartdao.GetCart(rs.getInt("cartID")));
                 cd.setIsSelect(rs.getBoolean("is_selected"));
-                cd.setLaptop(laptopdao.getLaptopById(id));
+                cd.setLaptop(laptopdao.getLaptopById(lapid));
                 cd.setQuantity(rs.getInt("quantity"));
                 cd.setUnitPrice(rs.getBigDecimal("unitprice"));
             }

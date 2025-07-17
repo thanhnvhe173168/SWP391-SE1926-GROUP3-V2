@@ -161,7 +161,7 @@
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <h1>Đặt hàng</h1>
             <form method="post" action="OrderSuccess">
-            <c:set var="listorderings" value="${listordering}" />
+            <c:set var="listorderings" value="${sessionScope.listordering}" />
             <input type="hidden" id="totalProductPrice" value="${total}" />
             <table>
                 <tr>

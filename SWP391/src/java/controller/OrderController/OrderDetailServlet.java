@@ -14,6 +14,7 @@ import model.*;
 import dao.*;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -34,8 +35,8 @@ public class OrderDetailServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       doPost(request, response);
-        
+        doPost(request, response);
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -50,7 +51,7 @@ public class OrderDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
     /**
@@ -65,27 +66,40 @@ public class OrderDetailServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String[] list_id = (String[]) request.getAttribute("list_id");
-        OrderDetail ord =new OrderDetail();
+        //String[] list_id = (String[]) request.getAttribute("list_id");
+        OrderDetail ord = new OrderDetail();
         CartDetailDAO cddao = new CartDetailDAO();
         OrderDAO odao = new OrderDAO();
         OrderDetailDAO orddao = new OrderDetailDAO();
-        HttpSession session = request.getSession(); 
-        User user = (User)session.getAttribute("user");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        List<CartDetail> listordering = (List<CartDetail>) session.getAttribute("listordering");
         CartDAO cdao = new CartDAO();
-        LaptopDAO ldao =new LaptopDAO();
-        StatusDAO sdao =new StatusDAO();
-        for (String id : list_id) {
-            CartDetail cd = cddao.GetCartDetail(Integer.parseInt(id));
+        LaptopDAO ldao = new LaptopDAO();
+        StatusDAO sdao = new StatusDAO();
+        //for (String id : list_id) {
+        List<CartDetail> listcartdetail = cddao.ListCart(cdao.GetCartByUserID(user.getUserID()).getCartID());
+        Iterator<CartDetail> iterator = listordering.iterator();
+        while (iterator.hasNext()) {
+            CartDetail cd = iterator.next();
+
+            for (CartDetail cartdetail : listcartdetail) {
+                if (cartdetail.getLaptop().getLaptopID() == cd.getLaptop().getLaptopID()) {
+                    cddao.Remove(cddao.GetCartDetail(cd.getLaptop().getLaptopID(), cd.getCart().getCartID()));
+                }
+            }
+
             ord.setOrderID(odao.GetLastOrderID(user.getUserID()));
-            ord.setLaptop(ldao.getLaptopById(Integer.parseInt(id)));
+            ord.setLaptop(ldao.getLaptopById(cd.getLaptop().getLaptopID()));
             ord.setUnitPrice(cd.getUnitPrice());
             ord.setQuantity(cd.getQuantity());
             ord.setOrderDetailStatus(sdao.GetStatus(5));
             ord.setIsSelect(false);
             orddao.addorderdetail(ord);
-            cddao.Remove(cd);
+
+            iterator.remove();
         }
+        session.setAttribute("listordering", listordering);
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         List<CartDetail> listcard = cddao.ListCart(cart.getCartID());
         BigDecimal totalcart = new BigDecimal(0);
@@ -95,14 +109,13 @@ public class OrderDetailServlet extends HttpServlet {
             }
         }
         cdao.uppdateTotal(cart.getCartID(), totalcart);
-        int paymentmethodid = (int)request.getAttribute("paymentmethodid");
-        double total = (double)request.getAttribute("total");
-        if(paymentmethodid==1){
+        int paymentmethodid = (int) request.getAttribute("paymentmethodid");
+        double total = (double) request.getAttribute("total");
+        if (paymentmethodid == 1) {
             request.setAttribute("orderId", odao.GetLastOrderID(user.getUserID()));
             request.setAttribute("totalamount", total);
             request.getRequestDispatcher("payment").forward(request, response);
-        }
-        else{
+        } else {
             request.getRequestDispatcher("OrderList").forward(request, response);
         }
     }

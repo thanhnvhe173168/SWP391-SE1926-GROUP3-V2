@@ -91,7 +91,7 @@ public class OrderSuccess extends HttpServlet {
         String phoneNumber = request.getParameter("PhoneNumber");
         String paymentmethod = request.getParameter("payment");
         String total_raw = request.getParameter("totalprice");
-        String[] list_id=request.getParameterValues("id");
+        //String[] list_id=request.getParameterValues("id");
         try {
             int shipid = Integer.parseInt(shipid_raw);
             int voucherid = voudao.GetIDbyCode(voucher);
@@ -101,7 +101,7 @@ public class OrderSuccess extends HttpServlet {
             oddao.uppdateorder(od);
             request.setAttribute("paymentmethodid", payid);
             request.setAttribute("total", total);
-            request.setAttribute("list_id", list_id);
+            //request.setAttribute("list_id", list_id);
             request.getRequestDispatcher("OrderDetailServlet").forward(request, response);
             
         } catch (NumberFormatException e) {

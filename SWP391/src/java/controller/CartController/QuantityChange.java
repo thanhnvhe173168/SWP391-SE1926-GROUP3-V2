@@ -94,7 +94,7 @@ public class QuantityChange extends HttpServlet {
             BigDecimal itemTotal = BigDecimal.ZERO;
 
             // Cập nhật số lượng sản phẩm được chỉnh
-            CartDetail cd = cddao.GetCartDetail(productId);
+            CartDetail cd = cddao.GetCartDetail(productId,cart.getCartID());
             cd.setQuantity(quantity);
             cddao.updateQuantity(cart.getCartID(), productId, quantity);
             itemTotal = cd.getUnitPrice().multiply(BigDecimal.valueOf(quantity));
