@@ -15,12 +15,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.math.BigDecimal;
 import java.util.List;
 import model.Cart;
 import model.CartDetail;
 import model.Laptop;
 import model.User;
+import org.json.JSONObject;
 
 /**
  *
@@ -46,7 +48,7 @@ public class AddToCart extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AddToCart</title>");            
+            out.println("<title>Servlet AddToCart</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet AddToCart at " + request.getContextPath() + "</h1>");
@@ -68,24 +70,27 @@ public class AddToCart extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        User user =(User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         LaptopDAO ldao = new LaptopDAO();
         CartDAO cdao = new CartDAO();
         CartDetailDAO cddao = new CartDetailDAO();
-        String id_raw = request.getParameter("id");
-        String mess="";
+        String mess = "";
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         BigDecimal total = cart.getTotal();
-        try{
+        try {
+            String id_raw = request.getParameter("id");
             int id = Integer.parseInt(id_raw);
             Laptop lap = ldao.getLaptopById(id);
             List<CartDetail> listcartdetail = cddao.ListCart(cart.getCartID());
-            for(CartDetail cd : listcartdetail){
-                if(cd.getLaptop().getLaptopID()==id){
-                    mess="Sản phẩm đã có trong giỏ hàng.";
-                    request.setAttribute("mess", mess);
-                    request.setAttribute("icon", "warning");
-                    request.getRequestDispatcher("home").forward(request, response);
+            for (CartDetail cd : listcartdetail) {
+                if (cd.getLaptop().getLaptopID() == id) {
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    PrintWriter out = response.getWriter();
+                    mess = "Sản phẩm đã có trong giỏ hàng.";
+                    String icon = "warning";
+                    out.print("{\"mess\":\"" + mess + "\", \"icon\":\"" + icon + "\"}");
+                    out.flush();
                     return;
                 }
             }
@@ -98,15 +103,17 @@ public class AddToCart extends HttpServlet {
             cddao.AddCart(cartdetail);
             total = total.add(cartdetail.getUnitPrice());
             cdao.uppdateTotal(cart.getCartID(), total);
-            mess="Thêm vào giỏ hàng thành công !";
-            request.setAttribute("mess", mess);
-            request.setAttribute("icon", "success");
-            request.getRequestDispatcher("home").forward(request, response);
-        }
-        catch(NumberFormatException e){
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
+            mess = "Thêm vào giỏ hàng thành công !";
+            String icon = "success";
+            out.print("{\"mess\":\"" + mess + "\", \"icon\":\"" + icon + "\"}");
+            out.flush();
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        
+
     }
 
     /**
@@ -121,23 +128,23 @@ public class AddToCart extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        User user =(User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         LaptopDAO ldao = new LaptopDAO();
         CartDAO cdao = new CartDAO();
         CartDetailDAO cddao = new CartDetailDAO();
         String id_raw = request.getParameter("productId");
         String quantity_raw = request.getParameter("quantity");
-        String mess="";
+        String mess = "";
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         BigDecimal total = cart.getTotal();
-        try{
+        try {
             int quantity = Integer.parseInt(quantity_raw);
             int id = Integer.parseInt(id_raw);
             Laptop lap = ldao.getLaptopById(id);
             List<CartDetail> listcartdetail = cddao.ListCart(cart.getCartID());
-            for(CartDetail cd : listcartdetail){
-                if(cd.getLaptop().getLaptopID()==id){
-                    mess="Sản phẩm đã có trong giỏ hàng.";
+            for (CartDetail cd : listcartdetail) {
+                if (cd.getLaptop().getLaptopID() == id) {
+                    mess = "Sản phẩm đã có trong giỏ hàng.";
                     request.setAttribute("mess", mess);
                     request.setAttribute("icon", "warning");
                     request.getRequestDispatcher("productDetail").forward(request, response);
@@ -151,14 +158,13 @@ public class AddToCart extends HttpServlet {
             cartdetail.setUnitPrice(lap.getPrice());
             cartdetail.setIsSelect(true);
             cddao.AddCart(cartdetail);
-            total = total.add(cartdetail.getUnitPrice());
+            total = total.add(cartdetail.getUnitPrice().multiply(BigDecimal.valueOf(quantity)));
             cdao.uppdateTotal(cart.getCartID(), total);
-            mess="Thêm vào giỏ hàng thành công !";
+            mess = "Thêm vào giỏ hàng thành công !";
             request.setAttribute("mess", mess);
             request.setAttribute("icon", "success");
             request.getRequestDispatcher("productDetail").forward(request, response);
-        }
-        catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
     }

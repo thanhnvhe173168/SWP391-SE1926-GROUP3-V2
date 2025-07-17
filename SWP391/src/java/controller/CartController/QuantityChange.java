@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package controller.CartController;
+
 import dao.CartDAO;
 import model.*;
 import dao.CartDetailDAO;
@@ -16,8 +17,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.BufferedReader;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import org.json.JSONObject;
 
 /**
  *
@@ -52,51 +58,7 @@ public class QuantityChange extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CartDetailDAO cartdetaildao = new CartDetailDAO();
-        HttpSession session = request.getSession();
-        User user = (User)session.getAttribute("user");
-        CartDAO cdao = new CartDAO();
-        Cart cart = cdao.GetCartByUserID(user.getUserID());
-        String action = request.getParameter("action");
-        String id_raw = request.getParameter("id");
-        List<CartDetail> listcartdetail = new ArrayList<>();
-        listcartdetail = cartdetaildao.ListCart(cart.getCartID());
-        try {
-            int id = Integer.parseInt(id_raw);
-            if (action != null && id >= 1) {
-                for (CartDetail cd : listcartdetail) {
-                    if (cd.getLaptop().getLaptopID() == id) {
-                        int quantity = cd.getQuantity();
-                        if (action.equals("dec")) {
-                            cd.setQuantity(quantity - 1);
-                            cartdetaildao.updateQuantity(cd.getCart().getCartID(), id, cd.getQuantity());
-                            if (cd.getQuantity() == 0) {
-                                listcartdetail.remove(cd);
-                                cartdetaildao.Remove(cd);
-                            }
-                            request.getRequestDispatcher("UppdateTotalwhenchange").forward(request, response);
-                            return;
-                        }
-                        if (action.equals("inc")) {
-                            if (quantity < cd.getLaptop().getStock()) {
-                                cd.setQuantity(quantity + 1);
-                                cartdetaildao.updateQuantity(cd.getCart().getCartID(), id, cd.getQuantity());
-                                request.getRequestDispatcher("UppdateTotalwhenchange").forward(request, response);
-                                return;
-                            } else {
-                                String mess = "Vượt quá lượng hàng trong kho";
-                                request.setAttribute("mess", mess);
-                                request.getRequestDispatcher("CartSeverlet").forward(request, response);
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
+        doGet(request, response);
     }
 
     /**
@@ -110,7 +72,61 @@ public class QuantityChange extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        CartDAO cdao = new CartDAO();
+        Cart cart = cdao.GetCartByUserID(user.getUserID());
+        StringBuilder sb = new StringBuilder();
+        CartDetailDAO cddao = new CartDetailDAO();
+        String mess = "";
+        try (BufferedReader reader = request.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+
+        try {
+            JSONObject json = new JSONObject(sb.toString());
+            int productId = json.getInt("productId");
+            int quantity = json.getInt("quantity");
+            BigDecimal total = BigDecimal.ZERO;
+            BigDecimal itemTotal = BigDecimal.ZERO;
+
+            // Cập nhật số lượng sản phẩm được chỉnh
+            CartDetail cd = cddao.GetCartDetail(productId);
+            cd.setQuantity(quantity);
+            cddao.updateQuantity(cart.getCartID(), productId, quantity);
+            itemTotal = cd.getUnitPrice().multiply(BigDecimal.valueOf(quantity));
+            // Tính lại tổng tiền các sản phẩm được chọn
+            List<CartDetail> listcartdetail = cddao.ListCart(cart.getCartID());
+            for (CartDetail cd1 : listcartdetail) {
+                if (cd1.isIsSelect()) {
+                    total = total.add(cd1.getUnitPrice().multiply(BigDecimal.valueOf(cd1.getQuantity())));
+                }
+            }
+            cdao.uppdateTotal(cart.getCartID(), total);
+            // Trả JSON phản hồi
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            JSONObject responseJson = new JSONObject();
+            responseJson.put("itemTotal", formatCurrency(itemTotal));
+            responseJson.put("totalPrice", formatCurrency(total));
+
+            PrintWriter out = response.getWriter();
+            out.print(responseJson.toString());
+            out.flush();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON or server error");
+        }
+    }
+
+    private String formatCurrency(BigDecimal value) {
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+        return formatter.format(value) + " VNĐ";
     }
 
     /**

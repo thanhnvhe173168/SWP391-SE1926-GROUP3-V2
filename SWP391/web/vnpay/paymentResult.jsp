@@ -10,9 +10,10 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
               integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
               crossorigin="anonymous" referrerpolicy="no-referrer" />
+        
     </head>
 
-    <body style="background-color: #f4f4f4; font-family: Arial, sans-serif; margin: 0; padding: 20px;">
+    <body style="background-color: #f4f4f4; font-family: Arial, sans-serif; margin: 0">
 
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <section style="margin-top: 50px; text-align: center;">

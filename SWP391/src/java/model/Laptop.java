@@ -64,6 +64,12 @@ public class Laptop {
         this.category = category;
     }
 
+    public Laptop(int laptopID, String laptopName, BigDecimal price) {
+        this.laptopID = laptopID;
+        this.laptopName = laptopName;
+        this.price = price;
+    }
+
     public int getLaptopID() {
         return laptopID;
     }

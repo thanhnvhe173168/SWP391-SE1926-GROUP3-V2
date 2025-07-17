@@ -35,21 +35,30 @@ public class OrderDetailScreen extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String id_raw=request.getParameter("id");    
-        OrderDetailDAO oddao =new OrderDetailDAO();
+        String id_raw = request.getParameter("id");
+        String ids_req = request.getParameter("ids");
+        OrderDetailDAO oddao = new OrderDetailDAO();
         OrderDAO odao = new OrderDAO();
-        try{
-            int id=Integer.parseInt(id_raw);
+        try {
+            int id = Integer.parseInt(id_raw);
             List<OrderDetail> list = oddao.GetListOrderDetailByID(id);
             Order od = odao.GetOrderByID(id);
+            if (ids_req != null) {
+                int ids = Integer.parseInt(ids_req);
+                if (ids == 1) {
+                    request.setAttribute("od", od);
+                    request.setAttribute("list", list);
+                    request.getRequestDispatcher("admin/OrderdetailAdmin.jsp").forward(request, response);
+                    return;
+                }
+            }
             request.setAttribute("od", od);
             request.setAttribute("list", list);
             request.getRequestDispatcher("user/Orderdetail.jsp").forward(request, response);
-        }
-        catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

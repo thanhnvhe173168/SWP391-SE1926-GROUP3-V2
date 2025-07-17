@@ -31,8 +31,9 @@
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container-fluid">
                 <!-- Logo -->
-                <a class="navbar-brand" href="index.jsp">
+                <a class="navbar-brand" href="home">
                     <img src="https://via.placeholder.com/150x40?text=Laptop+Store" alt="Laptop Store Logo">
+
                 </a>
                 <!-- Toggle button for mobile -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +46,7 @@
                             <a class="nav-link" href="home">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="products.jsp">Products</a>
+                            <a class="nav-link" href="productList">Products</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="contact.jsp">Contact</a>

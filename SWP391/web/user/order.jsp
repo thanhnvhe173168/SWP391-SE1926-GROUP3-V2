@@ -22,7 +22,6 @@
             body {
                 font-family: 'Segoe UI', sans-serif;
                 background-color: #f0f2f5;
-                padding: 20px;
                 color: #2c3e50;
             }
 
@@ -130,6 +129,17 @@
                 outline: none;
                 box-shadow: none;
             }
+            .payment-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                min-height: 40px; /* Đảm bảo chiều cao tối thiểu */
+            }
+
+            .payment-option {
+                min-width: 120px; /* hoặc tuỳ theo bạn muốn chia đều bao nhiêu cột */
+                flex: 1;           /* để các option chia đều khoảng trống */
+            }
         </style>
 
 
@@ -222,14 +232,15 @@
                 <tr>
                     <td>Hình thức thanh toán: </td>
                     <td>
-                        <c:forEach var="meth" items="${listPayment}">
-                            <label style="display: inline-flex; align-items: center; margin-right: 20px; cursor: pointer;">
-                                <input type="radio" name="payment" value="${meth.paymentMethodID}" style="margin-right: 6px;" />
-                                ${meth.methodName}
-                            </label>
-                        </c:forEach>
+                        <div class="payment-container">
+                            <c:forEach var="meth" items="${listPayment}">
+                                <label class="payment-option payment-${meth.paymentMethodID}" style="display: inline-flex; align-items: center; margin-right: 20px; cursor: pointer;">
+                                    <input type="radio" name="payment" value="${meth.paymentMethodID}" style="margin-right: 6px;" />
+                                    ${meth.methodName}
+                                </label>
+                            </c:forEach>
+                        </div>
                     </td>
-
                 </tr>
                 <tr>
                     <td>Phí ship:</td>
@@ -297,6 +308,23 @@
 
             function showShipFee() {
                 updateTotal();
+
+                const selectedWay = document.getElementById("choosewaySelect").value;
+
+                if (selectedWay === '1') {
+                    // Nhận tại shop => hiện tất cả
+                    document.querySelectorAll('.payment-option').forEach(el => {
+                        el.style.visibility = 'visible';
+                    });
+                } else {
+                    // Các cách khác => chỉ hiện Tiền mặt
+                    document.querySelectorAll('.payment-option').forEach(el => {
+                        el.style.visibility = 'hidden';
+                    });
+                    document.querySelectorAll('.payment-1').forEach(el => {
+                        el.style.visibility = 'visible';
+                    });
+                }
             }
 
             function showdiscount() {

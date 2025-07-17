@@ -5,6 +5,7 @@
 package controller.OrderController;
 
 import dao.CartDAO;
+import dao.CategoryDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import model.Cart;
 import model.Order;
@@ -66,19 +68,29 @@ public class OrderList extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         OrderDAO odao=new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        CategoryDAO cdao = new CategoryDAO();
         HttpSession session = request.getSession(); 
         User user = (User)session.getAttribute("user");
         List<Order> orderlist =odao.getListUserOrder(user.getUserID());
         List<Order> orderneedreview = odao.getListUserOrderNeedEvaluate(user.getUserID());
+        List<Integer> orderidneedreview = new ArrayList<>();
+        for(Order order : orderneedreview){
+            if(!orderidneedreview.contains(order.getOrderID())){
+                orderidneedreview.add(order.getOrderID());
+            }
+        }
         String mess=(String)request.getAttribute("mess");
         if(mess != null){
             request.setAttribute("mess", mess);
         }
-        request.setAttribute("orderlist", orderlist);
+        request.setAttribute("title", "Order History");
+        request.setAttribute("cdao", cdao);
+        request.setAttribute("oddao", oddao);
+        request.setAttribute("list", orderlist);
         request.setAttribute("OrderStatus","OrderList" );
-        request.setAttribute("orderneedreview", orderneedreview);
+        request.setAttribute("orderidneedreview", orderidneedreview);
         request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
-
     }
 
     /**

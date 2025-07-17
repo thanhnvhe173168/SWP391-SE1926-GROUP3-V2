@@ -18,52 +18,99 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Giỏ hàng</title>
         <link rel="stylesheet" href="styles.css" />
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             body {
                 font-family: 'Segoe UI', Tahoma, sans-serif;
-                background-color: #f9f9f9;
+                background-color: #f5f5f5;
             }
 
             h2 {
                 text-align: center;
-                color: #2c3e50;
-                margin-bottom: 20px;
+                margin-bottom: 30px;
+                color: #ee4d2d; /* Shopee cam */
             }
 
             table {
                 width: 100%;
-                border-collapse: collapse;
-                background-color: white;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                border-radius: 10px;
+                border-spacing: 0;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.1);
                 overflow: hidden;
             }
 
-            th, td {
-                padding: 14px;
+            table th {
                 text-align: center;
-                border-bottom: 1px solid #ddd;
+                background: #007bff;  /* Cam Shopee nổi bật */
+                color: #fff;          /* Chữ trắng dễ đọc */
+                font-weight: bold;
+                text-transform: uppercase; /* Viết hoa tất cả tiêu đề */
+                letter-spacing: 0.5px;
+                padding: 15px;
+                vertical-align: middle;
             }
 
-            th {
-                background-color: #f1f1f1;
-                color: #333;
+            td {
+                text-align: center;
+                padding: 20px 15px;
+                border-bottom: 1px solid #f2f2f2;
+                vertical-align: middle;
             }
 
             tr:hover {
-                background-color: #f5f5f5;
+                background: #fffdfa;
             }
 
             img {
                 border-radius: 8px;
+                object-fit: cover;
+                box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+            }
+            input[type="checkbox"] {
+                transform: scale(1.2);
+                cursor: pointer;
             }
 
-            button {
+            .price {
+                color: #ee4d2d;
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+            .qty-control {
+                display: inline-flex;
+                align-items: center;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                overflow: hidden;
+            }
+
+            .qty-control button {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .qty-control span {
+                width: 40px;
+                line-height: 36px;
+            }
+
+            button[onclick*='Order'] {
+                background: #27ae60;
+                color: #fff;
                 padding: 6px 12px;
-                border-radius: 6px;
+                border-radius: 4px;
                 border: none;
-                cursor: pointer;
-                font-size: 14px;
+            }
+
+            button[onclick*='RemoveFromCart'] {
+                background: #e74c3c;
+                color: #fff;
+                padding: 6px 12px;
+                border-radius: 4px;
+                border: none;
             }
 
             button:hover {
@@ -71,119 +118,219 @@
             }
 
             .total-row {
-                background-color: #f1f1f1;
+                background: #fafafa;
                 font-weight: bold;
-                font-size: 1.1em;
+                color: #555;
             }
 
-            button[onclick*="QuantityChange"][onclick*='dec'],
-            button[onclick*="QuantityChange"][onclick*='inc'] {
-                background-color: #ecf0f1;
-                color: #333;
-            }
-
-            button[onclick*='Order'] {
-                background-color: #2ecc71 !important;
-                color: white;
-            }
-
-            button[onclick*='RemoveFromCart'] {
-                background-color: #e74c3c !important;
-                color: white;
+            .total-row td {
+                font-size: 18px;
             }
 
             .empty-cart {
                 text-align: center;
-                font-size: 18px;
                 color: #888;
-                margin-top: 40px;
+                font-size: 20px;
+                margin: 50px auto;
+            }
+            .main{
+                padding: 30px;
+            }
+            .qty-control {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
             }
 
-            button[onclick*='home'] {
-                background-color: #3498db;
-                color: white;
-                margin-bottom: 20px;
+            .qty-control button {
+                width: 32px;
+                height: 32px;
             }
+
+            .qty-control input {
+                width: 50px;
+                text-align: center;
+            }
+
         </style>
         <%  
             User user = (User)session.getAttribute("user");
-            CartDAO cdao = new CartDAO();
-            Cart cart = cdao.GetCartByUserID(user.getUserID());
+            
         %>
     </head>
     <body>
+        <script>
+            function confirmRemoveFromCart(productId) {
+                Swal.fire({
+                    title: "Bạn chắc chắn muốn xoá sản phẩm này?",
+                    text: "Sau khi xoá sẽ không thể hoàn tác!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Vâng, xoá",
+                    cancelButtonText: "Không"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'RemoveFromCart?id=' + productId;
+                    }
+                });
+            }
+
+            function showToast(icon, message, timer = 2000) {
+                Swal.fire({
+                    icon: icon, // 'success', 'warning', 'error'
+                    title: message,
+                    showConfirmButton: false,
+                    timer: timer
+                });
+            }
+        </script>
         <jsp:include page="/components/Header.jsp"></jsp:include>
-            <h2>Giỏ hàng</h2>
+            <h2>Shopping Cart</h2>
+            <div class="main">
+            <c:set var="listcartdetails" value="${listcartdetail}" />
 
-        <c:set var="listcartdetails" value="${sessionScope.listcartdetail}" />
+            <c:choose>
+                <c:when test="${empty listcartdetails}">
+                    <p>Giỏ hàng của bạn đang trống.</p>
+                </c:when>
 
-        <c:choose>
-            <c:when test="${empty listcartdetails}">
-                <p>Giỏ hàng của bạn đang trống.</p>
-            </c:when>
-
-            <c:otherwise>
-                <form action="UppdateTotal" method="post" id="cartForm">
+                <c:otherwise>
                     <table>
                         <tr>
-                            <th>Chọn</th>
-                            <th>Hình ảnh</th>
-                            <th>Tên Laptop</th>
-                            <th>Giá</th>
-                            <th>Số lượng</th>
-                            <th>Thành tiền</th>
-                            <th>Mua</th>
-                            <th>Xóa</th>
+                            <th>Select</th>
+                            <th>Product Image</th>
+                            <th>Laptop Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Order</th>
+                            <th>Remove</th>
                         </tr>
 
                         <c:forEach var="item" items="${listcartdetails}">
                             <tr>
                                 <td>
-                                    <input type="checkbox" name="selectedItem"
-                                           value="${item.laptop.laptopID}"
-                                           ${item.isIsSelect() ? "checked" : ""}
-                                           onchange="document.getElementById('cartForm').submit();" />
+                                    <input type="checkbox"
+                                           class="items-checkbox"
+                                           data-productid="${item.laptop.laptopID}"
+                                           ${item.isSelect ? 'checked' : ''}
+                                           onchange="itemSelectReOrder(this)">
                                 </td>
                                 <td><button type="button" onclick="window.location.href = 'LaptopInfo?id=${item.getLaptop().getLaptopID()}'"><img src="images/${item.laptop.imageURL}" width="100" alt="${item.laptop.laptopName}" /></button></td>
                                 <td>${item.laptop.laptopName}</td>
-                                <td><fmt:formatNumber value="${item.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
+                                <td class="price"><fmt:formatNumber value="${item.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
                                 <td>
-                                    <button type="button" onclick="window.location.href = 'QuantityChange?action=dec&id=${item.getLaptop().getLaptopID()}'">-</button>
-
-                                    ${item.quantity}
-                                    <button type="button" onclick="window.location.href = 'QuantityChange?action=inc&id=${item.getLaptop().getLaptopID()}'">+</button>
-
+                                    <div class="qty-control">
+                                        <button onclick="updateQuantity(${item.laptop.laptopID}, -1, ${item.laptop.stock})">-</button>
+                                        <input type="text" id="qty-${item.laptop.laptopID}" value="${item.quantity}"
+                                               onchange="manualUpdate(${item.laptop.laptopID}, ${item.laptop.stock})">
+                                        <button onclick="updateQuantity(${item.laptop.laptopID}, 1, ${item.laptop.stock})">+</button>
+                                    </div>
+                                </td>                                    
+                                <td id="price-${item.laptop.laptopID}">
+                                    <fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ
                                 </td>
-                                <td><fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ</td>
-                                <td><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?id=${item.getLaptop().getLaptopID()}'">Mua</button></td>
+                                <td><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?id=${item.getLaptop().getLaptopID()}'">Order</button></td>
                                 <td>
-                                    <button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'RemoveFromCart?id=${item.getLaptop().getLaptopID()}'">Xóa</button>
+                                    <button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'RemoveFromCart?id=${item.getLaptop().getLaptopID()}'">Remove</button>
                                 </td>
                             </tr>
                         </c:forEach>
 
                         <tr class="total-row">
-                            <td colspan="1"><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'OrderItemSelect?'">Mua nhiều</button></td>
-                            <td colspan="4"><strong>Tổng cộng:</strong></td>
-                            <td colspan="1"><strong><fmt:formatNumber value="<%= cart.getTotal()%>" type="number" groupingUsed="true"/> VNĐ</strong></td>
-
-
+                            <td colspan="1"><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'OrderItemSelect?'">Buy more</button></td>
+                            <td colspan="4"><strong>Total amount:</strong></td>
+                            <td id="total-price" colspan="1"><strong><fmt:formatNumber value="${total}" type="number" groupingUsed="true"/> VNĐ</strong></td>
                         </tr>
                     </table>
-                </form>
-            </c:otherwise>
-        </c:choose>
+                </c:otherwise>
+            </c:choose>
+        </div>
         <jsp:include page="/components/Footer.jsp"></jsp:include>
-        <%
-                     String mess = (String) request.getAttribute("mess");
-                    if (mess != null) {
-        %>
         <script>
-            alert("<%= mess %>");
-        </script>
-        <%
+            function updateQuantity(productId, delta, stock) {
+                let input = document.getElementById('qty-' + productId);
+                let newQty = parseInt(input.value) + delta;
+
+                if (newQty <= 0) {
+                    confirmRemoveFromCart(productId);
+                    return;
+                }
+
+                if (newQty > stock) {
+                    showToast('warning', 'Số lượng bạn chọn vượt quá tồn kho!');
+                    return;
+                }
+
+                input.value = newQty;
+                sendUpdate(productId, newQty);
             }
-        %>
+
+            function manualUpdate(productId, stock) {
+                let input = document.getElementById('qty-' + productId);
+                let qty = parseInt(input.value);
+
+                if (qty <= 0) {
+                    confirmRemoveFromCart(productId);
+                    return;
+                }
+
+                if (qty > stock) {
+                    showToast('warning', 'Số lượng bạn chọn vượt quá tồn kho!');
+                    input.value = stock;
+                    qty = stock;
+                }
+
+                sendUpdate(productId, qty);
+            }
+
+
+            function sendUpdate(productId, quantity) {
+                fetch('QuantityChange', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                        quantity: quantity
+                    })
+                })
+                        .then(res => res.json())
+                        .then(data => {
+                            document.getElementById('price-' + productId).innerText = data.itemTotal;
+                            document.getElementById('total-price').innerText = data.totalPrice;
+                        })
+                        .catch(error => {
+                            console.error('Lỗi:', error);
+                            showToast('error', 'Có lỗi xảy ra!');
+                        });
+            }
+
+
+            function itemSelectReOrder(checkbox) {
+                const productId = checkbox.dataset.productid;
+                const isChecked = checkbox.checked;
+
+                fetch('itemSelectInCart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                        selected: isChecked
+                    })
+                })
+                        .then(res => res.json())
+                        .then(data => {
+                            document.getElementById('total-price').innerText = data.totalPrice;
+                        });
+            }
+
+        </script>
 
     </body>
 </html>

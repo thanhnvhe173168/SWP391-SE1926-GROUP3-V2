@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.CartController;
+package controller.shipper;
 
-import dao.CartDAO;
-import dao.CartDetailDAO;
+import dao.OrderDAO;
+import dao.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,20 +13,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import model.CartDetail;
-import model.Cart;
-import model.User;
+import model.Order;
+import model.Status;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "UppdateTotal", urlPatterns = {"/UppdateTotal"})
-public class UppdateTotal extends HttpServlet {
+@WebServlet(name = "returning", urlPatterns = {"/returning"})
+public class returning extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +41,10 @@ public class UppdateTotal extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UppdateTotal</title>");            
+            out.println("<title>Servlet returning</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UppdateTotal at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet returning at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,7 +62,29 @@ public class UppdateTotal extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doPost(request, response);
+        String id_req = request.getParameter("id");
+        int id=Integer.parseInt(id_req);
+        if(id==3){
+        int page = 1;
+        int pageSize = 5;
+        StatusDAO sdao = new StatusDAO();
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+        int offset = (page - 1) * pageSize;
+        OrderDAO orderdao = new OrderDAO();
+        List<Status> liststatus = sdao.getListStatusSelectWhenShip();
+        int totalShipOrders = orderdao.countOrdersByStatusID(24);
+        int totalPages = (int) Math.ceil((double) totalShipOrders / pageSize);
+        List<Order> shipperorderlist = orderdao.getOrdersByPageandStatus(offset, pageSize, 24);
+        request.setAttribute("OrderStatus", "returning");
+        request.setAttribute("liststatus", liststatus);
+        request.setAttribute("shipperorderlist", shipperorderlist);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.getRequestDispatcher("shipper/shipperOrderList.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -80,46 +98,8 @@ public class UppdateTotal extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        CartDetailDAO cartdetaildao = new CartDetailDAO();
-        String[] selectedIds = request.getParameterValues("selectedItem"); // các laptop được tick
-        HttpSession session = request.getSession(); 
-        User user = (User)session.getAttribute("user");
-        CartDAO cdao = new CartDAO();
-        Cart cart = cdao.GetCartByUserID(user.getUserID());
-        List<CartDetail> items = cartdetaildao.ListCart(cart.getCartID());
-        BigDecimal total = new BigDecimal("0");
-        
-
-        for (CartDetail item : items) {
-            boolean selected = false;
-
-            if (selectedIds != null) {
-                for (String id : selectedIds) {
-                    int ids = Integer.parseInt(id);
-                    if (item.getLaptop().getLaptopID()==ids) {
-                        selected = true;
-                        break;
-                    }
-                }
-            }
-
-            item.setIsSelect(selected); // lưu trạng thái tick
-            if (selected) {
-                total = total.add(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
-
-            }
-
-           cartdetaildao.updateBoolean(item.getCart().getCartID(), item.getLaptop().getLaptopID(), selected);
-        }
-
-        cart.setTotal(total);
-        cdao.uppdateTotal(cart.getCartID(), total);
-        
-
-        request.getRequestDispatcher("CartSeverlet").forward(request, response);
+        processRequest(request, response);
     }
-    
 
     /**
      * Returns a short description of the servlet.

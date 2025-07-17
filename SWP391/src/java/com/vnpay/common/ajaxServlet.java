@@ -48,11 +48,11 @@ public class ajaxServlet extends HttpServlet {
 
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
-        String orderType = "other";
+        String orderType = "other";// mã danh mục hàng hóa
         long amount = (long) (amountDouble * 100);
 
-        String vnp_TxnRef = orderId+"";
-        String vnp_IpAddr = Config.getIpAddress(req);
+        String vnp_TxnRef = orderId+"";//Mã tham chiếu của giao dịch tại hệ thống của merchant.
+        String vnp_IpAddr = Config.getIpAddress(req);//Địa chỉ IP của khách hàng thực hiện giao dịch
 
         String vnp_TmnCode = Config.vnp_TmnCode;
 
@@ -76,7 +76,7 @@ public class ajaxServlet extends HttpServlet {
         } else {
             vnp_Params.put("vnp_Locale", "vn");
         }
-        vnp_Params.put("vnp_ReturnUrl", Config.vnp_ReturnUrl);
+        vnp_Params.put("vnp_ReturnUrl", Config.vnp_ReturnUrl);//URL thông báo kết quả giao dịch khi Khách hàng kết thúc thanh toán.
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -114,6 +114,7 @@ public class ajaxServlet extends HttpServlet {
         String queryUrl = query.toString();
         String vnp_SecureHash = Config.hmacSHA512(Config.secretKey, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
+        System.out.println(queryUrl);
         String paymentUrl = Config.vnp_PayUrl + "?" + queryUrl;
         resp.sendRedirect(paymentUrl);
     }

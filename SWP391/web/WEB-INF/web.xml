@@ -22,4 +22,7 @@
     <artifactId>json</artifactId>
     <version>20210307</version>
 </dependency>
+<session-config>
+  <session-timeout>30</session-timeout> <!-- 30 phút -->
+</session-config>
 </web-app>

@@ -5,6 +5,8 @@
 package controller.OrderController;
 
 import dao.OrderDAO;
+import dao.StatusDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +16,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import model.Order;
+import model.OrderDetail;
+import model.Status;
 
 /**
  *
@@ -33,13 +37,7 @@ public class OrderManager extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        OrderDAO odao =new OrderDAO();
-        List<Order> list =new ArrayList<>();
-        list = odao.getListOrder();
-        request.setAttribute("list", list);
-        request.setAttribute("OrderStatus","OrderList" );
-        request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
+        doPost(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -68,7 +66,31 @@ public class OrderManager extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        String mess = (String) request.getAttribute("mess");
+        OrderDAO odao = new OrderDAO();
+        List<Order> list = odao.getListOrder();
+        UserDAO udao = new UserDAO();
+        StatusDAO sdao = new StatusDAO();
+        List<Order> listOrderHaveReview = odao.getListOrderHaveEvaluate();
+        List<Integer> listOrderIdHaveReview = new ArrayList<>();
+        for (Order order : listOrderHaveReview) {
+            if (!listOrderIdHaveReview.contains(order.getOrderID())) {
+                listOrderIdHaveReview.add(order.getOrderID());
+            }
+        }
+        List<Status> liststatus = sdao.getListStatusSelect();
+        List<Status> listpaymentstatus = sdao.getListPaymentStatusSelect();
+        if (mess != null) {
+            request.setAttribute("mess", mess);
+        }
+        request.setAttribute("listPaymentStatus", listpaymentstatus);
+        request.setAttribute("listorderidhavereview", listOrderIdHaveReview);
+        request.setAttribute("liststatus", liststatus);
+        request.setAttribute("udao", udao);
+        request.setAttribute("list", list);
+        request.setAttribute("OrderStatus", "OrderList");
+        request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
     }
 
     /**

@@ -17,8 +17,7 @@
                 margin: auto;
                 border-collapse: collapse;
             }
-            th, td {
-                border: 1px solid #ccc;
+            table th, td {
                 padding: 10px;
                 text-align: center;
             }
@@ -68,7 +67,7 @@
                                 <button onclick="updateQuantity(${item.laptop.laptopID}, 1)">+</button>
                             </td>
                             <td id="price-${item.laptop.laptopID}">
-                                ${item.unitPrice * item.quantity}
+                                <fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ
                             </td>
                             <td><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?id=${item.getLaptop().getLaptopID()}&ids=1'">Mua</button></td>
                         </tr>
@@ -76,9 +75,12 @@
                 </tbody>
                 <tfoot>
                     <tr>
+                        <td>
+                            <button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?ids=2'">Mua</button>
+                        </td>
                         <td colspan="3"><strong>Tổng tiền:</strong></td>
                         <td id="total-price">
-                            ${totalPrice}
+                            <fmt:formatNumber value="${totalPrice}" type="number" groupingUsed="true"/> VNĐ
                         </td>
                     </tr>
                 </tfoot>

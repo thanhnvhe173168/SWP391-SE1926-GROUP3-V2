@@ -9,15 +9,19 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Laptop;
+import model.Stock;
 
 /**
  *
  * @author Window 11
  */
 public class LaptopDAO extends ConnectDB {
-    
+
     public Laptop getLaptopById(int LaptopID) {
         Laptop laptop = new Laptop();
         String sql = "select * from Laptop where LaptopID = ?";
@@ -46,7 +50,7 @@ public class LaptopDAO extends ConnectDB {
         }
         return laptop;
     }
-    
+
     public ResultSet getListLaptop(int currentPage, int pageSize, String laptopName, int brandId, int categoryId, int cpuId, int screenId, int statusId) {
         ResultSet rs = null;
         StringBuilder sql = new StringBuilder(
@@ -98,7 +102,7 @@ public class LaptopDAO extends ConnectDB {
         }
         return rs;
     }
-    
+
     public int getTotalRecord(String laptopName, int brandId, int categoryId, int cpuId, int screenId, int statusId) {
         int n = 0;
         StringBuilder sql = new StringBuilder(
@@ -148,7 +152,7 @@ public class LaptopDAO extends ConnectDB {
         }
         return n;
     }
-    
+
     public boolean checkExistLaptopName(String laptopName, int laptopId) {
         boolean check = false;
         ResultSet rs = null;
@@ -170,13 +174,14 @@ public class LaptopDAO extends ConnectDB {
         }
         return check;
     }
-    
-    public int createLaptop(Laptop laptop) {
+
+    public int createLaptop(Laptop laptop, int userId) {
         int n = 0;
         String sql = "Insert into Laptop(LaptopName, Price, Stock, Description, ImageURL, HardDrive, StatusID, WarrantyPeriod, CPUID, "
                 + "ScreenID, RAM, BrandID, CategoryID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
-            PreparedStatement pre = connect.prepareStatement(sql);
+            connect.setAutoCommit(false);
+            PreparedStatement pre = connect.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pre.setString(1, laptop.getLaptopName());
             pre.setBigDecimal(2, laptop.getPrice());
             pre.setInt(3, laptop.getStock());
@@ -191,12 +196,26 @@ public class LaptopDAO extends ConnectDB {
             pre.setInt(12, laptop.getBrand());
             pre.setInt(13, laptop.getCategory());
             n = pre.executeUpdate();
+            if (n > 0) {
+                ResultSet rs = pre.getGeneratedKeys();
+                if (rs.next()) {
+                    int laptopId = rs.getInt(1);
+                    StockDAO stockDao = new StockDAO();
+                    stockDao.createStock(new Stock(laptopId, userId, laptop.getStock(), "set"));
+                }
+            }
+            connect.commit();
         } catch (SQLException e) {
+            try {
+                connect.rollback();
+            } catch (SQLException ex) {
+                Logger.getLogger(PromotionDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
             e.printStackTrace();
         }
         return n;
     }
-    
+
     public void updateLaptopStock(int id, int quantity) {
         String sql = "UPDATE Laptop SET stock = ? WHERE LaptopID = ?";
         try {
@@ -208,13 +227,14 @@ public class LaptopDAO extends ConnectDB {
             e.printStackTrace();
         }
     }
-    
-    public int updateLaptop(Laptop laptop) {
+
+    public int updateLaptop(Laptop laptop, int userId, int quantityGap) {
         int n = 0;
         String sql = "Update Laptop set LaptopName = ?, Price = ?, Stock = ?, Description = ?, ImageURL = ?, "
                 + "HardDrive = ?, StatusID = ?, WarrantyPeriod = ?, CPUID = ?, "
                 + "ScreenID = ?, RAM = ?, BrandID = ?, CategoryID = ? where LaptopID = ?";
         try {
+            connect.setAutoCommit(false);
             PreparedStatement pre = connect.prepareStatement(sql);
             pre.setString(1, laptop.getLaptopName());
             pre.setBigDecimal(2, laptop.getPrice());
@@ -231,12 +251,22 @@ public class LaptopDAO extends ConnectDB {
             pre.setInt(13, laptop.getCategory());
             pre.setInt(14, laptop.getLaptopID());
             n = pre.executeUpdate();
+            if (n > 0 && quantityGap > 0) {
+                StockDAO stockDao = new StockDAO();
+                stockDao.createStock(new Stock(laptop.getLaptopID(), userId, quantityGap, "add"));
+            }
+            connect.commit();
         } catch (SQLException e) {
+            try {
+                connect.rollback();
+            } catch (SQLException ex) {
+                Logger.getLogger(PromotionDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
             e.printStackTrace();
         }
         return n;
     }
-    
+
     public void deleteLaptop(int id) {
         String sql = "Delete from Laptop where LaptopID = ?";
         try {
@@ -247,7 +277,7 @@ public class LaptopDAO extends ConnectDB {
             e.printStackTrace();
         }
     }
-    
+
     public ResultSet getDetailLaptop(int id) {
         ResultSet rs = null;
         String sql = "select l.LaptopID, l.LaptopName, l.Price, l.ImageURL, l.HardDrive, l.WarrantyPeriod, c.CPUInfo, s.Size, l.RAM, l.Stock from Laptop l "
@@ -262,5 +292,25 @@ public class LaptopDAO extends ConnectDB {
             e.printStackTrace();
         }
         return rs;
+    }
+
+    public ArrayList<Laptop> getAllLaptop(int userId) {
+        ArrayList<Laptop> list = new ArrayList<>();
+        StockDAO stockDao = new StockDAO();
+        try {
+            PreparedStatement pre = connect.prepareStatement("Select * from Laptop");
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                stockDao.createStock(new Stock(rs.getInt("LaptopID"), userId, rs.getInt("Stock"), "set"));
+                list.add(new Laptop(
+                        rs.getInt("LaptopID"),
+                        rs.getString("LaptopName"),
+                        rs.getBigDecimal("Price"))
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

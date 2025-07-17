@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.OrderController;
+package controller.shipper;
 
 import dao.OrderDAO;
-import dao.OrderDetailDAO;
+import dao.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,16 +13,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
 import java.util.List;
-import model.OrderDetail;
+import model.Order;
+import model.Status;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "returnOrder", urlPatterns = {"/returnOrder"})
-public class returnOrder extends HttpServlet {
+@WebServlet(name = "waittoget", urlPatterns = {"/waittoget"})
+public class waittoget extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +41,10 @@ public class returnOrder extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet returnOrder</title>");            
+            out.println("<title>Servlet waittoget</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet returnOrder at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet waittoget at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,7 +62,25 @@ public class returnOrder extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        int page = 1;
+        int pageSize = 5;
+        StatusDAO sdao = new StatusDAO();
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+        int offset = (page - 1) * pageSize;
+        OrderDAO orderdao = new OrderDAO();
+        List<Status> liststatus = sdao.getListStatusSelectWhenShip();
+        int totalShipOrders = orderdao.countOrdersByStatusID(9);
+        int totalPages = (int) Math.ceil((double) totalShipOrders / pageSize);
+        List<Order> shipperorderlist = orderdao.getOrdersByPageandStatus(offset, pageSize, 9);
+        request.setAttribute("OrderStatus", "waittoget");
+        request.setAttribute("liststatus", liststatus);
+        request.setAttribute("shipperorderlist", shipperorderlist);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.getRequestDispatcher("shipper/shipperOrderList.jsp").forward(request, response);
     }
 
     /**
@@ -76,27 +94,7 @@ public class returnOrder extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id = request.getParameter("orderID");
-        String reason = request.getParameter("reason");
-        OrderDetailDAO oddao = new OrderDetailDAO();
-        OrderDAO odao = new OrderDAO();
-        LocalDate returndate = LocalDate.now();
-        try{
-            int orderid = Integer.parseInt(id);
-            odao.upDateOrderStatus(12, orderid);
-            odao.updateReasonReturn(orderid, reason, returndate);
-            List<OrderDetail> list = oddao.GetListOrderDetailByID(orderid);
-            for(OrderDetail od : list){
-                oddao.upDateOrderDetailStatuswhenreturn(21, orderid, od.getLaptop().getLaptopID());
-                oddao.updateReasonReturn(orderid, od.getLaptop().getLaptopID(), reason, returndate);
-            }
-            request.setAttribute("mess", "Gửi yêu cầu thành công");
-            request.getRequestDispatcher("OrderList").forward(request, response);
-            
-        }
-        catch(NumberFormatException e){
-            e.printStackTrace();
-        }
+        
     }
 
     /**

@@ -1,215 +1,151 @@
-<%-- 
-    Document   : VoucherManagement
-    Created on : Jun 5, 2025, 5:17:32 PM
-    Author     : Window 11
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.*" %>
 <%@page import="dao.*" %>
 <%@page import="java.util.List" %>
 <%@page import="java.util.ArrayList" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-        <style>
-            body {
-                font-family: 'Segoe UI', sans-serif;
-                background-color: #f0f2f5;
-                padding: 20px;
-                color: #2c3e50;
-            }
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Voucher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-            h1 {
-                text-align: center;
-                color: #1e272e;
-                margin-bottom: 30px;
-            }
+        .container {
+            padding: 30px 20px;
+        }
 
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                background: #ffffff;
-                margin-bottom: 25px;
-                border-radius: 10px;
-                overflow: hidden;
-                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            }
-
-            table:first-of-type th, table:first-of-type td {
-                padding: 14px;
-                border-bottom: 1px solid #ddd;
-                text-align: center;
-            }
-
-            table:first-of-type th {
-                background-color: #dfe6e9;
-                color: #2c3e50;
-                font-weight: bold;
-            }
-
-            /* Table chi tiết đơn hàng */
-            .order-details {
-                width: 65%;
-                margin: auto;
-                background: #ffffff;
-                border: 1px solid #b2bec3;
-                font-size: 15px;
-            }
-
-            .order-details td {
-                padding: 12px;
-                border-bottom: 1px solid #dcdde1;
-                vertical-align: top;
-                font-weight: 500;
-            }
-
-            .order-details input,
-            .order-details select,
-            .order-details textarea {
-                width: 100%;
-                padding: 8px;
-                font-size: 14px;
-                border: 1px solid #636e72;
-                border-radius: 5px;
-                box-sizing: border-box;
-            }
-
-            .order-details input[type="radio"] {
-                margin-right: 8px;
-                transform: scale(1.1);
-                cursor: pointer;
-            }
-
-            .order-details label {
-                display: block;
-                margin-bottom: 6px;
-                cursor: pointer;
-                color: #2c3e50;
-            }
-
-            button {
-                background-color: #0984e3;
-                color: white;
-                border: none;
-                padding: 9px 16px;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-                font-weight: 600;
-            }
-
-            button:hover {
-                background-color: #0652dd;
-            }
-
-            #shipFeeDisplay {
-                font-weight: bold;
-                color: #e17055;
-            }
-
-            .total-row td {
-                font-weight: bold;
-                font-size: 16px;
-                background-color: #dff9fb;
-                color: #130f40;
-            }
-
-            input:focus, select:focus, textarea:focus {
-                border-color: #00a8ff;
-                outline: none;
-                box-shadow: 0 0 6px rgba(0, 168, 255, 0.5);
-            }
-            input[type="radio"]:focus {
-                outline: none;
-                box-shadow: none;
-            }
-        </style>
-        <script>
-            window.alert = function (message, timeout = null) {
-                const alert = document.createElement('div');
-                const alertButton = document.createElement('button');
-                alertButton.innerHTML = 'OK';
-                alert.classList.add('alert');
-                alert.setAttribute('style', `
-            position: fixed;
-            top: 50px;
-            left: 50%;
-            padding: 20px;
+        .table {
+            background-color: #ffffff;
             border-radius: 10px;
-            box-shadow: 0 10px 5px 0 #00000022;
-            display: flex;
-            flex-direction: column;
-            transform: translateX(-50%);
-            background-color: #5ced73;
-            z-index: 9999;
-        `);
-                alertButton.setAttribute('style', `
-            border: 1px solid #333;
-            background: black;
-            border-radius: 5px;
-            padding: 5px;
-            margin-top: 10px;
-            cursor: pointer;
-        `);
-                alert.innerHTML = `<span style="padding: 10px">${mess}</span>`;
-                alert.appendChild(alertButton);
-                alertButton.addEventListener('click', (e) => {
-                    alert.remove();
-                });
-                if (timeout !== null) {
-                    setTimeout(() => {
-                        alert.remove();
-                    }, Number(timeout));
-                }
-                document.body.appendChild(alert);
-            };
-        </script>
-    </head>
-    <body>
-        <% String mess = (String) request.getAttribute("mess"); %>
-        <% if (mess != null) { %>
-        <script>
-            window.alert("<%= mess %>", 3000);
-        </script>
-        <% } %>
-        <h1>Quản lý voucher</h1>
-        <c:set value="${voucherlist}" var="voulist"/>
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        thead th {
+            background-color: #dd3726;
+            color: white;
+            font-weight: bold;
+        }
+
+        tbody tr:hover {
+            background-color: #ffeae8;
+        }
+
+        .btn-outline-primary {
+            font-weight: 600;
+            border-radius: 8px;
+            border-color: #dd3726;
+            color: #dd3726;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #dd3726;
+            color: white;
+        }
+
+        .btn-icon {
+            border-radius: 50px;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .btn-update {
+            color: #ffc107;
+            border: 1px solid #ffc107;
+        }
+
+        .btn-update:hover {
+            background-color: #ffc107;
+            color: white;
+        }
+
+        .btn-delete {
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .btn-delete:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<%
+    String mess = (String) request.getAttribute("mess");
+%>
+<% if (mess != null) { %>
+<script>
+    alert("<%= mess %>");
+</script>
+<% } %>
+
+<div class="d-flex">
+    <jsp:include page="/components/AdminSidebar.jsp"></jsp:include>
+
+    <div style="width: 100%; height: calc(100vh - 118px); overflow-y: auto" class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 style="color: #dd3726; font-weight: 700;">Quản lý Voucher</h2>
+            <button class="btn btn-outline-primary" onclick="window.location.href = 'admin/AddVoucher.jsp'">
+                <i class="fa-solid fa-plus"></i> Thêm Voucher
+            </button>
+        </div>
+
+        <c:set var="voulist" value="${voucherlist}" />
         <c:choose>
             <c:when test="${empty voulist}">
-                <p>Danh sách voucher trống</p>
+                <div class="alert alert-warning">Danh sách voucher trống.</div>
             </c:when>
             <c:otherwise>
-                <table border="1">
-                    <tr>
-                        <th>Voucher ID</th>
-                        <th>Voucher Code</th>
-                        <th>Voucher Type</th>
-                        <th>Discount</th>
-                        <th>Quantity</th>
-                        <th colspan="2">Action</th>
-                    </tr>
-                    <c:forEach items="${voulist}" var="voucher">
-                        <tr>
-                            <td>${voucher.voucherID}</td>
-                            <td>${voucher.vouchercode}</td>
-                            <td>${voucher.vouchertype}</td>
-                            <td>${voucher.discount}</td>
-                            <td>${voucher.quantity}</td>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Mã Voucher</th>
+                                <th>Loại</th>
+                                <th>Giảm giá</th>
+                                <th>Số lượng</th>
+                                <th colspan="2">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${voulist}" var="voucher">
+                                <tr>
+                                    <td>${voucher.voucherID}</td>
+                                    <td>${voucher.vouchercode}</td>
+                                    <td>${voucher.vouchertype}</td>
+                                    <td>${voucher.discount}</td>
+                                    <td>${voucher.quantity}</td>
+                                    <td>
+                                        <a href="EditVoucher?id=${voucher.voucherID}" class="btn btn-update btn-icon">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="DeleteVoucher?id=${voucher.voucherID}" class="btn btn-delete btn-icon"
+                                           onclick="return confirm('Bạn có chắc chắn muốn xóa voucher này?');">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </div>
+</div>
 
-                            <td colspan="1"><button onclick="window.location.href = 'EditVoucher?id=${voucher.voucherID}'">Sửa</button></td>
-                            <td colspan="1"><button onclick="window.location.href = 'DeleteVoucher?id=${voucher.voucherID}'">Xóa</button></td>
-
-                        </tr>
-                    </c:forEach>
-                </c:otherwise>
-            </c:choose>
-        </table>
-        <button onclick="window.location.href = 'admin/AddVoucher.jsp'">Thêm voucher</button>
-
-    </body>
+</body>
 </html>

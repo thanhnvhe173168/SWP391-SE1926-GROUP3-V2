@@ -29,9 +29,9 @@ public class OrderDAO extends ConnectDB {
         String sql = "INSERT INTO Orders (\n"
                 + "    UserID, OrderDate, ShipFeeID, TotalAmount, Address,\n"
                 + "    Note, PhoneNumber, StatusID, VoucherID,\n"
-                + "    PaymentMethodID, PaymentDate, PaymentStatusID,\n"
-                + "    ReturnDate, ReasonReturn\n"
-                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                + "    PaymentMethodID, PaymentStatusID,\n"
+                + "    ReasonCancel\n"
+                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try {
             PreparedStatement st = connect.prepareStatement(sql);
@@ -59,29 +59,13 @@ public class OrderDAO extends ConnectDB {
 
             st.setInt(10, od.getPaymentmethod().getPaymentMethodID());
 
-            // PaymentDate (nullable, override default if present)
-            if (od.getPaymentdate() != null) {
-                st.setDate(11, java.sql.Date.valueOf(od.getPaymentdate()));
+            st.setInt(11, od.getPaymentstatus().getStatusID());
+
+            if (od.getReasonCancel() != null) {
+                st.setNString(12, od.getReasonCancel());
             } else {
-                st.setNull(11, java.sql.Types.DATE);
+                st.setNull(12, java.sql.Types.NVARCHAR);
             }
-
-            st.setInt(12, od.getPaymentstatus().getStatusID());
-
-            // ReturnDate (nullable)
-            if (od.getReturnDate() != null) {
-                st.setDate(13, java.sql.Date.valueOf(od.getReturnDate()));
-            } else {
-                st.setNull(13, java.sql.Types.DATE);
-            }
-
-            // ReasonReturn (nullable)
-            if (od.getReasonReturn() != null) {
-                st.setNString(14, od.getReasonReturn());
-            } else {
-                st.setNull(14, java.sql.Types.NVARCHAR);
-            }
-
             st.executeUpdate();
 
         } catch (SQLException e) {
@@ -135,20 +119,9 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
-                Date returnDate = rs.getDate("ReturnDate");
-                if (returnDate != null) {
-                    od.setReturnDate(returnDate.toLocalDate());
-                } else {
-                    od.setReturnDate(null);
-                }
-                String reasonReturn = rs.getNString("ReasonReturn");
-                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
             }
 
         } catch (SQLException e) {
@@ -187,28 +160,9 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
-                Date returnDate = rs.getDate("ReturnDate");
-                if (returnDate != null) {
-                    od.setReturnDate(returnDate.toLocalDate());
-                } else {
-                    od.setReturnDate(null);
-                }
-                String reasonReturn = rs.getNString("ReasonReturn");
-                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
-
-                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-
-                if (rs.getDate("paymentDate") != null) {
-                    od.setPaymentdate(rs.getDate("paymentDate").toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
+                
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 orderlist.add(od);
             }
         } catch (SQLException e) {
@@ -248,20 +202,9 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
-                Date returnDate = rs.getDate("ReturnDate");
-                if (returnDate != null) {
-                    od.setReturnDate(returnDate.toLocalDate());
-                } else {
-                    od.setReturnDate(null);
-                }
-                String reasonReturn = rs.getNString("ReasonReturn");
-                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+                
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
             }
         } catch (SQLException e) {
@@ -301,20 +244,9 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
-                Date returnDate = rs.getDate("ReturnDate");
-                if (returnDate != null) {
-                    od.setReturnDate(returnDate.toLocalDate());
-                } else {
-                    od.setReturnDate(null);
-                }
-                String reasonReturn = rs.getNString("ReasonReturn");
-                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+                
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
             }
         } catch (SQLException e) {
@@ -355,20 +287,9 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
-                Date returnDate = rs.getDate("ReturnDate");
-                if (returnDate != null) {
-                    od.setReturnDate(returnDate.toLocalDate());
-                } else {
-                    od.setReturnDate(null);
-                }
-                String reasonReturn = rs.getNString("ReasonReturn");
-                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+                
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
             }
         } catch (SQLException e) {
@@ -381,7 +302,7 @@ public class OrderDAO extends ConnectDB {
         String sql = "select * from Orders o \n"
                 + "join OrderDetail od on o.OrderID=od.OrderID\n"
                 + "where od.ReviewID is null \n"
-                + "and (o.StatusID = 7 or o.StatusID = 14)";
+                + "and (o.StatusID = 12 or o.StatusID = 22)";
         List<Order> list = new ArrayList<>();
         try {
             PreparedStatement st = connect.prepareStatement(sql);
@@ -408,20 +329,9 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
-                Date returnDate = rs.getDate("ReturnDate");
-                if (returnDate != null) {
-                    od.setReturnDate(returnDate.toLocalDate());
-                } else {
-                    od.setReturnDate(null);
-                }
-                String reasonReturn = rs.getNString("ReasonReturn");
-                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
             }
         } catch (SQLException e) {
@@ -460,20 +370,9 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
-                Date returnDate = rs.getDate("ReturnDate");
-                if (returnDate != null) {
-                    od.setReturnDate(returnDate.toLocalDate());
-                } else {
-                    od.setReturnDate(null);
-                }
-                String reasonReturn = rs.getNString("ReasonReturn");
-                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 orderlist.add(od);
             }
         } catch (SQLException e) {
@@ -514,20 +413,9 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
-                Date returnDate = rs.getDate("ReturnDate");
-                if (returnDate != null) {
-                    od.setReturnDate(returnDate.toLocalDate());
-                } else {
-                    od.setReturnDate(null);
-                }
-                String reasonReturn = rs.getNString("ReasonReturn");
-                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+                
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
             }
         } catch (SQLException e) {
@@ -568,20 +456,9 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
-                Date returnDate = rs.getDate("ReturnDate");
-                if (returnDate != null) {
-                    od.setReturnDate(returnDate.toLocalDate());
-                } else {
-                    od.setReturnDate(null);
-                }
-                String reasonReturn = rs.getNString("ReasonReturn");
-                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
             }
         } catch (SQLException e) {
@@ -623,20 +500,9 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
-                Date returnDate = rs.getDate("ReturnDate");
-                if (returnDate != null) {
-                    od.setReturnDate(returnDate.toLocalDate());
-                } else {
-                    od.setReturnDate(null);
-                }
-                String reasonReturn = rs.getNString("ReasonReturn");
-                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+               
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
             }
         } catch (SQLException e) {
@@ -649,7 +515,7 @@ public class OrderDAO extends ConnectDB {
         String sql = "select * from Orders o \n"
                 + "join OrderDetail od on o.OrderID=od.OrderID\n"
                 + "where od.ReviewID is null \n"
-                + "and (o.StatusID = 7 or o.StatusID = 14)and userid=?";
+                + "and (o.StatusID = 12 or o.StatusID = 22)and userid=?";
         List<Order> list = new ArrayList<>();
         try {
             PreparedStatement st = connect.prepareStatement(sql);
@@ -677,20 +543,9 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                Date paymentDate = rs.getDate("PaymentDate");
-                if (paymentDate != null) {
-                    od.setPaymentdate(paymentDate.toLocalDate());
-                } else {
-                    od.setPaymentdate(null);
-                }
-                Date returnDate = rs.getDate("ReturnDate");
-                if (returnDate != null) {
-                    od.setReturnDate(returnDate.toLocalDate());
-                } else {
-                    od.setReturnDate(null);
-                }
-                String reasonReturn = rs.getNString("ReasonReturn");
-                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+                
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
             }
         } catch (SQLException e) {
@@ -713,22 +568,6 @@ public class OrderDAO extends ConnectDB {
         }
     }
 
-    public void updateReasonReturn(int orderid, String reason, LocalDate returndate) {
-        String sql = "UPDATE Orders\n"
-                + "set ReasonReturn=?,\n"
-                + "ReturnDate=?\n"
-                + "where OrderID=?";
-        try {
-            PreparedStatement st = connect.prepareStatement(sql);
-            st.setNString(1, reason);
-            st.setDate(2, java.sql.Date.valueOf(returndate));
-            st.setInt(3, orderid);
-            st.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void updateOrderPaymentStatus(Order order) {
         String sql = "update Orders\n"
                 + "set PaymentStatusID=?\n"
@@ -742,4 +581,386 @@ public class OrderDAO extends ConnectDB {
             e.printStackTrace();
         }
     }
+
+    public List<Order> getShipperOrderList() {
+        String sql = "select * from Orders \n"
+                + "where StatusID=15 or StatusID=10 or StatusID=11 or StatusID=12 or StatusID=13 or StatusID=14 or StatusID=23 or StatusID=24 or StatusID=25 or StatusID=18 or StatusID=19";
+        List<Order> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Order> getOrdersByPage(int offset, int pageSize) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from Orders\n"
+                + "order by OrderID desc\n"
+                + "offset ? rows fetch next ? rows only";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, offset);
+            st.setInt(2, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+               
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Order> getUserOrdersByPage(int offset, int pageSize, int userId) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from Orders\n"
+                + "where UserID=?\n"
+                + "order by OrderID desc\n"
+                + "offset ? rows fetch next ? rows only";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, userId);
+            st.setInt(2, offset);
+            st.setInt(3, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+                
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Order> getShipOrdersByPage(int offset, int pageSize) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from Orders\n"
+                + "where StatusID=15 or StatusID=10 or StatusID=11 or StatusID=12 or StatusID=13 or StatusID=14 or StatusID=23 or StatusID=24 or StatusID=25 or StatusID=18 or StatusID=19\n"
+                + "order by OrderID desc\n"
+                + "offset ? rows fetch next ? rows only";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, offset);
+            st.setInt(2, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+                
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int countOrders() {
+        int count = 0;
+        String sql = "select COUNT(*) as count from Orders";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            count = rs.getInt("count");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public int countOrdersByStatusID(int statusid) {
+        int count = 0;
+        String sql = "select COUNT(*) from Orders where StatusID=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, statusid);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+    
+    public int countReturnOrdersByStatusID(int statusid1, int statusid2) {
+        int count = 0;
+        String sql = "select COUNT(*) from Orders where StatusID=? or StatusID=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, statusid1);
+            st.setInt(2, statusid2);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+    
+    public int countShipOrders() {
+        int count = 0;
+        String sql = "select COUNT(*) from Orders where StatusID=15 or StatusID=10 or StatusID=11 or StatusID=12 or StatusID=13 or StatusID=14 or StatusID=23 or StatusID=24 or StatusID=25";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public void updateReasonCancel(String reason, int id) {
+        String sql = "update Orders\n"
+                + "set ReasonCancel=?\n"
+                + "where OrderID=?";
+        try{
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setNString(1, reason);
+            st.setInt(2, id);
+            st.executeUpdate();
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+    
+    public List<Order> getListOrderHaveEvaluate() {
+        String sql = "select * from Orders o \n"
+                + "join OrderDetail od on o.OrderID=od.OrderID\n"
+                + "where od.ReviewID is not null \n"
+                + "and (o.StatusID = 12 or o.StatusID = 22)";
+        List<Order> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<Order> getOrdersByPageandStatus(int offset, int pageSize, int statusid) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from Orders\n"
+                + "where StatusID= ?\n"
+                + "order by OrderID desc\n"
+                + "offset ? rows fetch next ? rows only";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, statusid);
+            st.setInt(2, offset);
+            st.setInt(3, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+                
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<Order> getReturnOrdersByPageandStatus(int offset, int pageSize, int statusid1, int statusid2) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from Orders\n"
+                + "where StatusID= ? or statusid = ?\n"
+                + "order by OrderID desc\n"
+                + "offset ? rows fetch next ? rows only";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, statusid1);
+            st.setInt(2, statusid2);
+            st.setInt(3, offset);
+            st.setInt(4, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+                
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

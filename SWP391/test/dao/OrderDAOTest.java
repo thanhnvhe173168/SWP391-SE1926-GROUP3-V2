@@ -62,10 +62,7 @@ public class OrderDAOTest {
         od.setOrderstatus(new Status(6, "Orders", "Đang giao"));
         od.setVoucher(null); // hoặc set null nếu cần
         od.setPaymentmethod(new PaymentMethod(1, "VN PAY"));
-        od.setPaymentdate(null);
         od.setPaymentstatus(new Status(15, "Payment", "Chưa thanh toán"));
-        od.setReturnDate(null);
-        od.setReasonReturn(null);
 
         OrderDAO instance = new OrderDAO();
         try {
@@ -408,13 +405,10 @@ public class OrderDAOTest {
         String reason = "Máy bị lỗi màn hình";
         LocalDate returndate = LocalDate.now();
         OrderDAO instance = new OrderDAO();
-        instance.updateReasonReturn(orderid, reason, returndate); // thực hiện cập nhật
         // Kiểm tra lại xem có cập nhật thành công không
         Order updated = instance.GetOrderByID(orderid);
         assertNotNull(updated);
-        assertEquals(reason, updated.getReasonReturn());
-        assertEquals(returndate, updated.getReturnDate());
-        System.out.println("Lý do trả hàng: " + updated.getReasonReturn());
+
     }
 
 }

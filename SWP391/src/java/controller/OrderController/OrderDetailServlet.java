@@ -81,11 +81,10 @@ public class OrderDetailServlet extends HttpServlet {
             ord.setLaptop(ldao.getLaptopById(Integer.parseInt(id)));
             ord.setUnitPrice(cd.getUnitPrice());
             ord.setQuantity(cd.getQuantity());
-            ord.setOrderDetailStatus(sdao.GetStatus(16));
+            ord.setOrderDetailStatus(sdao.GetStatus(5));
             ord.setIsSelect(false);
             orddao.addorderdetail(ord);
             cddao.Remove(cd);
-            //ldao.updateLaptopStock(Integer.parseInt(id), cd.getLaptop().getStock()-cd.getQuantity());
         }
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         List<CartDetail> listcard = cddao.ListCart(cart.getCartID());

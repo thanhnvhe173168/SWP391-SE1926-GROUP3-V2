@@ -5,7 +5,10 @@
 package controller.OrderController;
 
 import dao.CartDAO;
+import dao.CategoryDAO;
 import dao.OrderDAO;
+import dao.OrderDetailDAO;
+import dao.StatusDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Cart;
 import model.Order;
+import model.Status;
 import model.User;
 
 /**
@@ -37,22 +41,32 @@ public class canceled extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        StatusDAO sdao = new StatusDAO();
         String id_raw = request.getParameter("id");
-        HttpSession session = request.getSession(); 
-        User user = (User)session.getAttribute("user");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         OrderDAO odao = new OrderDAO();
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        CategoryDAO cdao = new CategoryDAO();
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
                 List<Order> list = odao.getListUserOrderByStatusName("Đã hủy", user.getUserID());
+                request.setAttribute("title", "Order Cancelled");
+                request.setAttribute("cdao", cdao);
+                request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "canceled");
                 request.setAttribute("list", list);
-                request.getRequestDispatcher("user/canceled.jsp").forward(request, response);
+                request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
                 List<Order> orderlist = odao.getListOrderByStatusName("Đã hủy");
+                List<Status> liststatus = sdao.getListStatusSelect();
+                request.setAttribute("liststatus", liststatus);
+                request.setAttribute("cdao", cdao);
+                request.setAttribute("oddao", oddao);
                 request.setAttribute("OrderStatus", "canceled");
-                request.setAttribute("orderlist", orderlist);
-                request.getRequestDispatcher("admin/managecanceled.jsp").forward(request, response);
+                request.setAttribute("list", orderlist);
+                request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
