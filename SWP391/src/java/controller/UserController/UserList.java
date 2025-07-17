@@ -21,16 +21,14 @@ public class UserList extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String search = request.getParameter("search");
-        String statusParam = request.getParameter("statusId"); 
-        String reset = request.getParameter("reset"); 
+        String statusParam = request.getParameter("statusId");
+        String reset = request.getParameter("reset");
 
-        // Reset về danh sách gốc nếu nhấn nút "Trở về"
         if ("true".equals(reset)) {
             search = null;
             statusParam = null;
         }
 
-        // Xử lý chuyển đổi statusParam sang Integer
         Integer statusID = null;
         if (statusParam != null && !statusParam.trim().isEmpty()) {
             try {
@@ -40,14 +38,26 @@ public class UserList extends HttpServlet {
             }
         }
 
+        int pageSize = 5;
+        int currentPage = 1;
+
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            currentPage = Integer.parseInt(pageParam);
+        }
+        int offset = (currentPage - 1) * pageSize;
+
         UserDAO dao = new UserDAO();
+        int totalRecords = dao.getTotalUserCount();
+        int totalPages = (totalRecords + pageSize - 1) / pageSize;
         List<User> list;
         if (search != null && !search.trim().isEmpty() || statusID != null) {
-            list = dao.searchUser(search, statusID); // Sử dụng phương thức searchUser
+            list = dao.searchCustomer(search, statusID);
         } else {
-            list = dao.getAllUser(); // Lấy tất cả nếu không có điều kiện tìm kiếm
+            list = dao.getListUserWithPaging(offset, pageSize);
         }
-
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("totalPages", totalPages);
         request.setAttribute("listU", list);
         request.getRequestDispatcher("/admin/UserList.jsp").forward(request, response);
     }

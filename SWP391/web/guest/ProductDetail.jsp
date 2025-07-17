@@ -158,6 +158,35 @@
                     </button>
                 </div>
             </div>
+           <h3>Đánh giá của khách hàng</h3>
+<c:choose>
+    <c:when test="${empty feedbackList}">
+        <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+    </c:when>
+    <c:otherwise>
+        <div class="feedback-list">
+            <c:forEach var="fb" items="${feedbackList}">
+                <div class="feedback-item mb-3 p-3 border rounded">
+                    <div class="d-flex align-items-center mb-2">
+                        <strong class="me-2">${fb.userName}</strong>
+                        <span class="text-warning">
+                            <c:forEach begin="1" end="${fb.rating}">
+                                ★
+                            </c:forEach>
+                            <c:forEach begin="1" end="${5 - fb.rating}">
+                                ☆
+                            </c:forEach>
+                        </span>
+                        <span class="ms-2">(${fb.rating}/5)</span>
+                    </div>
+                    <h5 class="fw-bold">${fb.title}</h5>
+                    <p class="mb-0">${fb.content}</p>
+                </div>
+            </c:forEach>
+        </div>
+    </c:otherwise>
+</c:choose>
+
             <%}%>
         </div>
         <jsp:include page="/components/Footer.jsp"></jsp:include>
@@ -165,25 +194,25 @@
         <script>
 
 
-                    function updateQuantity(change) {
-                        let quantity = parseInt(document.getElementById('quantity').value);
-                        quantity += change;
-                        if (quantity < 1)
-                            quantity = 1;
-                        document.getElementById('quantity').value = quantity;
-                    }
+                        function updateQuantity(change) {
+                            let quantity = parseInt(document.getElementById('quantity').value);
+                            quantity += change;
+                            if (quantity < 1)
+                                quantity = 1;
+                            document.getElementById('quantity').value = quantity;
+                        }
 
-                    function addToCart() {
-                        let quantity = document.getElementById('quantity').value;
-                        document.getElementById('quantityhidden').value = quantity;
-                        document.getElementById('addToCartForm').submit();
-                    }
+                        function addToCart() {
+                            let quantity = document.getElementById('quantity').value;
+                            document.getElementById('quantityhidden').value = quantity;
+                            document.getElementById('addToCartForm').submit();
+                        }
 
-                    function buyNow() {
-                        let quantity = document.getElementById('quantity').value;
-                        alert('Mua ngay ' + quantity + ' sản phẩm!');
-                        // Thêm logic thực tế tại đây (chuyển đến trang thanh toán, v.v.)
-                    }
+                        function buyNow() {
+                            let quantity = document.getElementById('quantity').value;
+                            alert('Mua ngay ' + quantity + ' sản phẩm!');
+                            // Thêm logic thực tế tại đây (chuyển đến trang thanh toán, v.v.)
+                        }
         </script>
     </body>
 </html>

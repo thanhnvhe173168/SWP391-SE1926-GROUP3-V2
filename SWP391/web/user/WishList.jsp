@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.sql.ResultSet"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -8,6 +9,7 @@
         <title>Laptop Store - Wishlist</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
         <style>
             body {
                 font-family: 'Arial', sans-serif;
@@ -104,48 +106,81 @@
             </div>
             <% session.removeAttribute("mess"); } %>
 
-            <%
-                ResultSet rsWishlist = (ResultSet) request.getAttribute("rsWishlist");
-                boolean hasData = false;
-                if (rsWishlist != null && rsWishlist.next()) {
-                    hasData = true;
-            %>
-            <table class="table wishlist-table">
-                <thead>
-                    <tr>
-                        <th>Hình ảnh</th>
-                        <th>Tên sản phẩm</th>
-                        <th>Giá</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <%
-                        do {
-                    %>
-                    <tr>
-                        <td><img src="images/<%= rsWishlist.getString("ImageURL") %>" alt="<%= rsWishlist.getString("LaptopName") %>"></td>
-                        <td><%= rsWishlist.getString("LaptopName") %></td>
-                        <td><%= rsWishlist.getInt("Price") %> VNĐ</td>
-                        <td>
-                            <a href="${pageContext.request.contextPath}/productDetail?productId=<%= rsWishlist.getInt("LaptopID") %>" class="btn btn-primary btn-custom">Xem chi tiết</a>
-                            <a href="${pageContext.request.contextPath}/AddToCart?id=<%= rsWishlist.getInt("LaptopID") %>" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</a>
-                            <a href="${pageContext.request.contextPath}/removeWishList?id=<%= rsWishlist.getInt("WishlistID") %>" class="btn btn-danger btn-custom ms-2" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
-                                <i class="fas fa-trash"></i> Xóa
-                            </a>
-                        </td>
-                    </tr>
-                    <%
-                        } while (rsWishlist.next());
-                    %>
-                </tbody>
-            </table>
-            <% } else { %>
-            <div class="empty-wishlist">
-                <h4>Danh sách yêu thích của bạn đang trống!</h4>
-                <p>Thêm các sản phẩm yêu thích để theo dõi chúng.</p>
-            </div>
-            <% } %>
+            <c:choose>
+                <c:when test="${not empty wishList}">
+                    <table class="table wishlist-table">
+                        <thead>
+                            <tr>
+                                <th>Hình ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="w" items="${wishList}">
+                                <tr>
+                                    <td>
+                                        <img src="images/${w.laptop.imageURL}" alt="${w.laptop.laptopName}">
+                                    </td>
+                                    <td>${w.laptop.laptopName}</td>
+                                    <td>${w.laptop.price} VNĐ</td>
+                                    <td>
+                                        <a href="productDetail?productId=${w.laptop.laptopID}" class="btn btn-primary btn-custom">Xem chi tiết</a>
+                                        <a href="AddToCart?id=${w.laptop.laptopID}" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</a>
+                                        <a href="removeWishList?id=${w.wishlistId}" class="btn btn-danger btn-custom ms-2" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
+                                            <i class="fas fa-trash"></i> Xóa
+                                        </a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </c:when>
+                <c:otherwise>
+                    <div class="empty-wishlist">
+                        <h4>Danh sách yêu thích của bạn đang trống!</h4>
+                        <p>Thêm các sản phẩm yêu thích để theo dõi chúng.</p>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+
+            <c:if test="${totalPages > 1}">
+                    <nav aria-label="Pagination" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <!-- Nút Trước -->
+                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                <a class="page-link" href="wishList?page=${currentPage - 1}">Trước</a>
+                            </li>
+
+                            <!-- Trang đầu và dấu ... -->
+                            <c:if test="${currentPage > 3}">
+                                <li class="page-item"><a class="page-link" href="wishList?page=1">1</a></li>
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                </c:if>
+
+                            <!-- Các trang gần current -->
+                            <c:forEach begin="${currentPage - 2 < 1 ? 1 : currentPage - 2}" 
+                                       end="${currentPage + 2 > totalPages ? totalPages : currentPage + 2}" 
+                                       var="i">
+                                <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                    <a class="page-link" href="wishList?page=${i}">${i}</a>
+                                </li>
+                            </c:forEach>
+
+                            <!-- Dấu ... và trang cuối -->
+                            <c:if test="${currentPage + 2 < totalPages}">
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                <li class="page-item"><a class="page-link" href="wishList?page=${totalPages}">${totalPages}</a></li>
+                                </c:if>
+
+                            <!-- Nút Sau -->
+                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                <a class="page-link" href="wishList?page=${currentPage + 1}">Sau</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </c:if>
 
             <div class="continue-shopping">
                 <a href="${pageContext.request.contextPath}/home" class="btn btn-lg">Tiếp tục mua sắm</a>
@@ -153,7 +188,7 @@
         </div>
 
         <jsp:include page="/components/Footer.jsp"></jsp:include>
-
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
+
 </html>

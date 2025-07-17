@@ -66,7 +66,7 @@ public class StaffEditAccount extends HttpServlet {
             int userId = Integer.parseInt(request.getParameter("userId"));
 
             if ("save".equals(action)) {
-                // Cập nhật thông tin
+               
                 String fullName = request.getParameter("fullName");
                 String phone = request.getParameter("phoneNumber");
                 String password = request.getParameter("password");
@@ -83,11 +83,11 @@ public class StaffEditAccount extends HttpServlet {
 
                 dao.updateUser(user);
 
-                response.sendRedirect("staffList"); // quay về danh sách staff
+                response.sendRedirect("staffList");
                 return;
             }
 
-            // Nếu không có action => hiển thị form
+           
             User user = dao.getStaffByID(userId);
 
             request.setAttribute("user", user);
@@ -95,7 +95,7 @@ public class StaffEditAccount extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("staffList"); // fallback nếu lỗi
+            response.sendRedirect("staffList");
         }
     }
 

@@ -15,6 +15,7 @@ public class WishList {
     private int userId;
     private int laptopId;
     private Date addedDate;
+    private Laptop laptop;
 
     public WishList() {
     }
@@ -57,6 +58,11 @@ public class WishList {
     public void setAddedDate(Date addedDate) {
         this.addedDate = addedDate;
     }
-    
+    public Laptop getLaptop() {
+        return laptop;
+    }
+    public void setLaptop(Laptop laptop) {
+        this.laptop = laptop;
+    }
     
 }

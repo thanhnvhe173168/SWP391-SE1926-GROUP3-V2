@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -57,7 +58,20 @@ public class CreateAccountStaff extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-          try {
+          
+    } 
+
+    /** 
+     * Handles the HTTP <code>POST</code> method.
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+      try {
             String fullName = request.getParameter("fullName");
             String email = request.getParameter("email");
             String phoneNumber = request.getParameter("phoneNumber");
@@ -71,11 +85,12 @@ public class CreateAccountStaff extends HttpServlet {
                 request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
                 return;
             }
+            String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
             User user = new User();
             user.setFullName(fullName);
             user.setEmail(email);
             user.setPhoneNumber(phoneNumber);
-            user.setPassword(password);
+            user.setPassword(hashPassword);
             user.setRoleID(roleID);
             user.setStatusID(statusID);
             
@@ -90,19 +105,6 @@ public class CreateAccountStaff extends HttpServlet {
             e.printStackTrace();
         }
         
-    } 
-
-    /** 
-     * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-      
     }
 
     /** 
