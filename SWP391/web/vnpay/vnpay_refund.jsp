@@ -41,10 +41,9 @@
                     </div>
                     <fmt:formatNumber value="${payment.amount}" type="number" groupingUsed="true" var="payamount"/>
                     <div class="form-group">
-                        <label for="amount">Số tiền hoàn</label>
-                        <input class="form-control" type="text" value="${payamount} VNĐ"/>             
+                        <label for=<"amount">Số tiền hoàn</label>
+                        <input name="amount" class="form-control" type="text" value="${payamount} VNĐ"/>             
                     </div>
-                    <input id="amount" name="amount" value="${payment.amount}" type="hidden"/>
                     <div class="form-group">
                         <label for="trantype">Kiểu hoàn tiền</label>
                         <select name="trantype" id="trantype" class="form-control">

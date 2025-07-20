@@ -4,8 +4,8 @@
  */
 package controller.OrderController;
 
-import dao.CartDetailDAO;
-import dao.*;
+import dao.OrderDAO;
+import dao.OrderDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,18 +13,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import model.*;
+import model.OrderDetail;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "OrderItemSelect", urlPatterns = {"/OrderItemSelect"})
-public class OrderItemSelect extends HttpServlet {
+@WebServlet(name = "ViewReasonCancel", urlPatterns = {"/ViewReasonCancel"})
+public class ViewReasonCancel extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +40,10 @@ public class OrderItemSelect extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OrderItemSelect</title>");            
+            out.println("<title>Servlet ViewReasonCancel</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet OrderItemSelect at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ViewReasonCancel at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,24 +61,21 @@ public class OrderItemSelect extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        CartDetailDAO cartdetaildao = new CartDetailDAO();
-        HttpSession session = request.getSession(); 
-        User user = (User)session.getAttribute("user");
-        CartDAO cdao = new CartDAO();
-        Cart cart = cdao.GetCartByUserID(user.getUserID());
-        List<CartDetail> listordering =new ArrayList<>();
-        List<CartDetail> listcart =cartdetaildao.ListCart(cart.getCartID());
-        BigDecimal total=new BigDecimal(0);
-        for(CartDetail cd : listcart){
-            if(cd.isIsSelect()==true){
-                listordering.add(cd);
-                total=total.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
-            }
+        String id_req = request.getParameter("id");
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        OrderDAO odao = new OrderDAO();
+        try{
+            int id = Integer.parseInt(id_req);
+            List<OrderDetail> list = oddao.GetListOrderDetailByID(id);
+            String reason = odao.GetOrderByID(id).getReasonCancel();
+            request.setAttribute("orderid", id);
+            request.setAttribute("list", list);
+            request.setAttribute("reason", reason);
+            request.getRequestDispatcher("admin/ViewReasonCancel.jsp").forward(request, response);
         }
-        session.setAttribute("listordering", listordering);
-        request.setAttribute("total", total);
-        request.getRequestDispatcher("user/order.jsp").forward(request, response);
+        catch(NumberFormatException e){
+            e.printStackTrace();
+        }
     }
 
     /**

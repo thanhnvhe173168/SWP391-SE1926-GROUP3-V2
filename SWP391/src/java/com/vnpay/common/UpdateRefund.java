@@ -2,10 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.OrderController;
+package com.vnpay.common;
 
-import dao.CartDetailDAO;
-import dao.*;
+import dao.OrderDAO;
+import dao.PaymentDAO;
+import dao.RefundDAO;
+import dao.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,16 +17,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import model.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import model.Order;
+import model.Refund;
+import model.User;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "OrderItemSelect", urlPatterns = {"/OrderItemSelect"})
-public class OrderItemSelect extends HttpServlet {
+@WebServlet(name = "UpdateRefund", urlPatterns = {"/UpdateRefund"})
+public class UpdateRefund extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +47,10 @@ public class OrderItemSelect extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OrderItemSelect</title>");            
+            out.println("<title>Servlet UpdateRefund</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet OrderItemSelect at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateRefund at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,24 +68,7 @@ public class OrderItemSelect extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        CartDetailDAO cartdetaildao = new CartDetailDAO();
-        HttpSession session = request.getSession(); 
-        User user = (User)session.getAttribute("user");
-        CartDAO cdao = new CartDAO();
-        Cart cart = cdao.GetCartByUserID(user.getUserID());
-        List<CartDetail> listordering =new ArrayList<>();
-        List<CartDetail> listcart =cartdetaildao.ListCart(cart.getCartID());
-        BigDecimal total=new BigDecimal(0);
-        for(CartDetail cd : listcart){
-            if(cd.isIsSelect()==true){
-                listordering.add(cd);
-                total=total.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
-            }
-        }
-        session.setAttribute("listordering", listordering);
-        request.setAttribute("total", total);
-        request.getRequestDispatcher("user/order.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -95,7 +82,38 @@ public class OrderItemSelect extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        PaymentDAO pdao = new PaymentDAO();
+        RefundDAO rdao = new RefundDAO();
+        OrderDAO odao = new OrderDAO();
+        StatusDAO sdao = new StatusDAO();
+        String orderId_req = request.getParameter("vnp_TxnRef");
+        String tranNo_req = request.getParameter("vnp_TransactionNo");
+        String amount_req = request.getParameter("vnp_Amount");
+        String responseCode = request.getParameter("vnp_ResponseCode");
+        String tranType = request.getParameter("vnp_TransactionType");
+        String createDate = request.getParameter("vnp_CreateDate");
+        //String status = request.getParameter("vnp_TransactionStatus");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        LocalDateTime dateTime = LocalDateTime.parse(createDate, formatter);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        BigDecimal amount = new BigDecimal(amount_req);
+        int orderid = Integer.parseInt(orderId_req);
+        if("00".equals(responseCode)){
+        Refund refund = new Refund();
+        refund.setAmount(amount);
+        refund.setCreateBy(user.getFullName());
+        refund.setCreateDate(dateTime);
+        refund.setPaymentId(pdao.getPayment(orderid).getPaymentId());
+        refund.setRefundTransactionNo(tranNo_req);
+        refund.setRefundType(tranType);
+        refund.setStatusId(29);
+        rdao.addRefund(refund);
+        Order order = odao.GetOrderByID(orderid);
+        order.setPaymentstatus(sdao.GetStatus(28));
+        odao.updateOrderPaymentStatus(order);
+        }
+        request.getRequestDispatcher("OrderManager").forward(request, response);
     }
 
     /**

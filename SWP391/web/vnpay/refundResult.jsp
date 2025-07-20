@@ -16,7 +16,8 @@
     String vnp_TxnRef = refundResult.optString("vnp_TxnRef");
     String vnp_Amount = refundResult.optString("vnp_Amount");
     String vnp_TransactionType = refundResult.optString("vnp_TransactionType");
-    
+    String vnp_CreateDate = refundResult.optString("vnp_PayDate");
+    String vnp_TransactionStatus = refundResult.optString("vnp_TransactionStatus");
     BigDecimal amountRaw = new BigDecimal(vnp_Amount);
     BigDecimal amountVND = amountRaw.divide(BigDecimal.valueOf(100));
     
@@ -42,38 +43,46 @@
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">KẾT QUẢ HOÀN TIỀN VNPAY</h4>
                 </div>
-                <div class="card-body">
+                <form action="UpdateRefund" method="post">
+                    <div class="card-body">
+                        <input type="hidden" name="vnp_TransactionStatus" value="<%= vnp_TransactionStatus %>">
+                        <input type="hidden" name="vnp_CreateDate" value="<%= vnp_CreateDate %>">
+                        <input type="hidden" name="vnp_TxnRef" value="<%= vnp_TxnRef %>">
+                        <input type="hidden" name="vnp_TransactionNo" value="<%= vnp_TransactionNo %>">
+                        <input type="hidden" name="vnp_Amount" value="<%= amountVND %>">
+                        <input type="hidden" name="vnp_TransactionType" value="<%= vnp_TransactionType %>">
+                        <input type="hidden" name="vnp_ResponseCode" value="<%= vnp_ResponseCode %>">
+                        <div class="mb-3">
+                            <strong>Mã giao dịch gốc :</strong>
+                            <span class="text-primary"><%= vnp_TxnRef %></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <strong>Mã giao dịch gốc :</strong>
-                        <span class="text-primary"><%= vnp_TxnRef %></span>
-                    </div>
+                        <div class="mb-3">
+                            <strong>Mã giao dịch tại VNPAY:</strong>
+                            <span class="text-primary"><%= vnp_TransactionNo %></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <strong>Mã giao dịch tại VNPAY:</strong>
-                        <span class="text-primary"><%= vnp_TransactionNo %></span>
-                    </div>
+                        <div class="mb-3">
+                            <strong>Số tiền hoàn:</strong>
+                            <span class="text-primary"><%= formattedAmount %></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <strong>Số tiền hoàn:</strong>
-                        <span class="text-primary"><%= formattedAmount %></span>
-                    </div>
+                        <div class="mb-3">
+                            <strong>Loại hoàn tiền:</strong>
+                            <span><%= vnp_TransactionType.equals("02") ? "Hoàn toàn phần" : "Hoàn một phần" %></span>
+                        </div>
+                        <div class="alert
+                             <%= "00".equals(vnp_ResponseCode) ? "alert-success" : "alert-danger" %>">
+                            <strong>
+                                <%= "00".equals(vnp_ResponseCode) ? "Hoàn tiền thành công!" : "Hoàn tiền thất bại!" %>
+                            </strong>
+                        </div>
 
-                    <div class="mb-3">
-                        <strong>Loại hoàn tiền:</strong>
-                        <span><%= vnp_TransactionType.equals("02") ? "Hoàn toàn phần" : "Hoàn một phần" %></span>
+                        <button type="submit" class="btn btn-primary">
+                            Quay lại danh sách đơn hàng
+                        </button>
                     </div>
-                    <div class="alert
-                         <%= "00".equals(vnp_ResponseCode) ? "alert-success" : "alert-danger" %>">
-                        <strong>
-                            <%= "00".equals(vnp_ResponseCode) ? "Hoàn tiền thành công!" : "Hoàn tiền thất bại!" %>
-                        </strong>
-                    </div>
-
-                    <a href="${pageContext.request.contextPath}/OrderManager" class="btn btn-primary">
-                        Quay lại danh sách đơn hàng
-                    </a>
-                </div>
+                </form>
                 <div class="card-footer text-muted text-center">
                     &copy; VNPAY Refund - <%= new java.util.Date() %>
                 </div>
