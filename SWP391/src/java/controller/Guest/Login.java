@@ -75,6 +75,7 @@ public class Login extends HttpServlet {
         }
         HttpSession session = request.getSession();
         session.setAttribute("user", user);
+        session.setAttribute("currentUser", user);//feedback
         switch (user.getRoleID()) {
             case 1: // Admin
                 response.sendRedirect("dashboard");

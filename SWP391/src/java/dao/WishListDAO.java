@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import model.Laptop;
 import model.WishList;
 
@@ -35,19 +37,60 @@ public class WishListDAO extends ConnectDB {
             return false;
         }
     }
+//view List WishList
 
-    public ResultSet getWishlistByUserId(int userId) {
-        String sql = "SELECT w.WishlistID, w.LaptopID, l.LaptopName, l.Price, l.ImageURL "
-                + "FROM Wishlist w JOIN Laptop l ON w.LaptopID = l.LaptopID "
-                + "WHERE w.UserID = ?";
+    public List<WishList> getWishlistByUserIdWithPaging(int userId, int offset, int pageSize) {
+        List<WishList> list = new ArrayList<>();
+        String sql = "SELECT w.WishlistID, w.UserID, w.LaptopID, "
+                + "l.LaptopName, l.Price, l.ImageURL "
+                + "FROM Wishlist w "
+                + "JOIN Laptop l ON w.LaptopID = l.LaptopID "
+                + "WHERE w.UserID = ? "
+                + "ORDER BY w.WishlistID "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setInt(1, userId);
-            return ps.executeQuery();
+            ps.setInt(2, offset);
+            ps.setInt(3, pageSize);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                WishList wishList = new WishList();
+                wishList.setWishlistId(rs.getInt("WishlistId"));
+                wishList.setUserId(rs.getInt("UserId"));
+                wishList.setLaptopId(rs.getInt("LaptopId"));
+
+                Laptop laptop = new Laptop();
+                laptop.setLaptopID(rs.getInt("LaptopID"));
+                laptop.setLaptopName(rs.getString("LaptopName"));
+                laptop.setPrice(rs.getBigDecimal("Price"));
+                laptop.setImageURL(rs.getString("ImageURL"));
+
+                wishList.setLaptop(laptop); 
+
+                list.add(wishList);
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
+        return list;
+    }
+
+    public int getTotalWishListCount(int userID) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Wishlist WHERE UserID = ?";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
     public int removeWishList(int wishlistID) throws SQLException {
@@ -57,7 +100,7 @@ public class WishListDAO extends ConnectDB {
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setInt(1, wishlistID);
             n = ps.executeUpdate();
-            ps.close(); 
+            ps.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -145,5 +188,3 @@ public class WishListDAO extends ConnectDB {
         }
     }
 }
-
-

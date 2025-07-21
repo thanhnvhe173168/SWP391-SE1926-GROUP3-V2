@@ -307,5 +307,42 @@ public class OrderDetailDAO extends ConnectDB {
         }
         return list;
     }
-    
+
+    //Linh:Lấy danh sách laptop đã mua và cần đánh giá
+    public List<OrderDetail> getOrderDetailsByOrderID(int orderID) {
+        List<OrderDetail> list = new ArrayList<>();
+
+        String sql = "SELECT od.OrderID, od.LaptopID, od.Quantity, od.UnitPrice,\n"
+                + "       l.LaptopID, l.LaptopName, l.ImageURL\n"
+                + "FROM OrderDetail od\n"
+                + "JOIN Laptop l ON od.LaptopID = l.LaptopID\n"
+                + "WHERE od.OrderID = ?";
+
+        try {
+            PreparedStatement ps = connect.prepareCall(sql);
+            ps.setInt(1, orderID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                OrderDetail od = new OrderDetail();
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setQuantity(rs.getInt("Quantity"));
+                od.setUnitPrice(rs.getBigDecimal("UnitPrice"));
+
+                Laptop laptop = new Laptop();
+                laptop.setLaptopID(rs.getInt("LaptopID"));
+                laptop.setLaptopName(rs.getString("LaptopName"));
+                laptop.setImageURL(rs.getString("ImageURL"));
+
+                od.setLaptop(laptop);  
+
+                list.add(od);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
 }

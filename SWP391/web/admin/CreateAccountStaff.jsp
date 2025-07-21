@@ -53,7 +53,7 @@
     <body>
         <div class="form-container">
             <h2>Tạo tài khoản nhân viên</h2>
-            <form action="/swp391/createAccountStaff" method="get">
+            <form action="/swp391/createAccountStaff" method="post">
 
                 <label>Họ và tên:</label>
                 <input type="text" name="fullName" required />

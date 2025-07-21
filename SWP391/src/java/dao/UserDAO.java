@@ -62,31 +62,57 @@ public class UserDAO extends ConnectDB {
         return n;
 
     }
-//Linh: StaffList
 
-    public List<User> getListStaff() {
+
+    //Linh: StaffList
+    public List<User> getListStaffWithPaging(int offset, int pageSize) {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, StatusID FROM Users where roleID = 2";
+        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, StatusID "
+                + "FROM Users "
+                + "WHERE RoleID = 2 "
+                + "ORDER BY UserID "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, offset);
+            ps.setInt(2, pageSize);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User U = new User(
+                            rs.getInt("UserID"),
+                            rs.getString("FullName"),
+                            rs.getString("Email"),
+                            rs.getString("PhoneNumber"),
+                            rs.getDate("RegistrationDate"),
+                            rs.getInt("StatusID")
+                    );
+                    list.add(U);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("getListStaffWithPaging: " + e.getMessage());
+        }
+
+        return list;
+    }
+
+    public int getTotalStaffCount() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users WHERE RoleID = 2";
 
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                User U = new User(
-                        rs.getInt("UserID"),
-                        rs.getString("FullName"),
-                        rs.getString("Email"),
-                        rs.getString("PhoneNumber"),
-                        rs.getDate("RegistrationDate"),
-                        rs.getInt("StatusID")
-                );
-                list.add(U);
+            if (rs.next()) {
+                count = rs.getInt(1);
             }
         } catch (Exception e) {
-            System.out.println("getListStaff" + e.getMessage());
+            System.out.println("getTotalStaffCount: " + e.getMessage());
         }
 
-        return list;
+        return count;
     }
 
     //Linh: StaffDetail
@@ -160,12 +186,10 @@ public class UserDAO extends ConnectDB {
         return n;
     }
 
-    // Tìm kiếm User theo FullName + StatusID
-    public List<User> searchUser(String search, Integer statusID) {
+    // Linh: Tìm kiếm User theo FullName + StatusID
+    public List<User> searchStaff(String search, Integer statusID) {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users WHERE 1=1";
-
-        // Bổ sung điều kiện nếu có input tìm kiếm hoặc lọc
+        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users WHERE RoleID= ? ";
         if (search != null && !search.trim().isEmpty()) {
             sql += " AND FullName LIKE ?";
         }
@@ -177,8 +201,8 @@ public class UserDAO extends ConnectDB {
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
 
-            // Gán giá trị cho các ? trong câu SQL
             int index = 1;
+            ps.setInt(index++, 2);//roleID=2
             if (search != null && !search.trim().isEmpty()) {
                 ps.setString(index++, "%" + search.trim() + "%");
             }
@@ -195,6 +219,7 @@ public class UserDAO extends ConnectDB {
                         rs.getString("Email"),
                         rs.getString("PhoneNumber"),
                         rs.getDate("RegistrationDate"),
+                        rs.getInt("roleID"),
                         rs.getInt("StatusID")
                 );
                 list.add(u);
@@ -206,6 +231,51 @@ public class UserDAO extends ConnectDB {
         return list;
     }
 
+    public List<User> searchCustomer(String search, Integer statusID) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users WHERE RoleID= ? ";
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND FullName LIKE ?";
+        }
+
+        if (statusID != null) {
+            sql += " AND StatusID = ?";
+        }
+
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+
+            int index = 1;
+            ps.setInt(index++, 3);//roleID=3
+            if (search != null && !search.trim().isEmpty()) {
+                ps.setString(index++, "%" + search.trim() + "%");
+            }
+
+            if (statusID != null) {
+                ps.setInt(index++, statusID);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User u = new User(
+                        rs.getInt("UserID"),
+                        rs.getString("FullName"),
+                        rs.getString("Email"),
+                        rs.getString("PhoneNumber"),
+                        rs.getDate("RegistrationDate"),
+                        rs.getInt("roleID"),
+                        rs.getInt("StatusID")
+                );
+                list.add(u);
+            }
+        } catch (SQLException e) {
+            System.out.println("searchUsers: " + e.getMessage());
+        }
+
+        return list;
+    }
+
+    //Linh: Change status 
     public boolean changeStatus(int userID, int statusID) {
         String sql = "UPDATE Users SET StatusID = ? WHERE UserID = ?";
         try {
@@ -220,37 +290,63 @@ public class UserDAO extends ConnectDB {
             return false;
         }
     }
-//Linh: UserList
 
-    public List<User> getAllUser() {
+
+    //Linh: UserList
+    public List<User> getListUserWithPaging(int offset, int pageSize) {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, StatusID FROM Users where roleID = 3";
+        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, StatusID "
+                + "FROM Users "
+                + "WHERE RoleID = 3 "
+                + "ORDER BY UserID "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                User U = new User(
-                        rs.getInt("UserID"),
-                        rs.getString("FullName"),
-                        rs.getString("Email"),
-                        rs.getString("PhoneNumber"),
-                        rs.getDate("RegistrationDate"),
-                        rs.getInt("StatusID")
-                );
-                list.add(U);
+            ps.setInt(1, offset);
+            ps.setInt(2, pageSize);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User U = new User(
+                            rs.getInt("UserID"),
+                            rs.getString("FullName"),
+                            rs.getString("Email"),
+                            rs.getString("PhoneNumber"),
+                            rs.getDate("RegistrationDate"),
+                            rs.getInt("StatusID")
+                    );
+                    list.add(U);
+                }
             }
         } catch (Exception e) {
-            System.out.println("getAllUser" + e.getMessage());
+            System.out.println("getListUserWithPaging: " + e.getMessage());
         }
 
         return list;
     }
-    //Linh: UserDetail
 
+    public int getTotalUserCount() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Users WHERE RoleID = 3";
+
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println("getTotalUserCount: " + e.getMessage());
+        }
+
+        return count;
+    }
+
+    //Linh: UserDetail
     public User getUserById(int userId) {
         User user = null;
-        String sql = "SELECT * FROM Users WHERE UserID = ? AND RoleID = 3"; 
+        String sql = "SELECT * FROM Users WHERE UserID = ? AND RoleID = 3";
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setInt(1, userId);
@@ -287,4 +383,36 @@ public class UserDAO extends ConnectDB {
         }
         return userID;
     }
+
+//    public int getTotalStaff(String search, Integer statusID) {
+//        int total = 0;
+//        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Users WHERE RoleID = ?");
+//        List<Object> parameters = new ArrayList<>();
+//        parameters.add(2); // Staff
+//
+//        if (search != null && !search.trim().isEmpty()) {
+//            sql.append(" AND FullName LIKE ?");
+//            parameters.add("%" + search.trim() + "%");
+//        }
+//
+//        if (statusID != null) {
+//            sql.append(" AND StatusID = ?");
+//            parameters.add(statusID);
+//        }
+//
+//        try {
+//            PreparedStatement ps = connect.prepareStatement(sql.toString());
+//            for (int i = 0; i < parameters.size(); i++) {
+//                ps.setObject(i + 1, parameters.get(i));
+//            }
+//            ResultSet rs = ps.executeQuery();
+//            if (rs.next()) {
+//                total = rs.getInt(1);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return total;
+//    }
+
 }

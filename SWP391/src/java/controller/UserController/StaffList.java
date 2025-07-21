@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.ResultSet;
 import java.util.List;
 import model.User;
 
@@ -60,16 +61,13 @@ public class StaffList extends HttpServlet {
             throws ServletException, IOException {
         String search = request.getParameter("search");
         String statusParam = request.getParameter("statusId");
-        String reset = request.getParameter("reset"); // Thêm tham số reset
+        String reset = request.getParameter("reset");
         Integer statusID = null;
 
-        // Reset về danh sách gốc nếu nhấn nút "Trở về"
         if ("true".equals(reset)) {
             search = null;
             statusParam = null;
         }
-
-        // Xử lý chuyển đổi statusParam sang Integer
         if (statusParam != null && !statusParam.trim().isEmpty()) {
             try {
                 statusID = Integer.parseInt(statusParam.trim());
@@ -77,17 +75,27 @@ public class StaffList extends HttpServlet {
                 request.setAttribute("errorMessage", "Giá trị trạng thái không hợp lệ: " + statusParam);
             }
         }
-        
-        UserDAO dao = new UserDAO();
-        List<User> list;
-        if(search !=null && !search.trim().isEmpty()||statusID !=null){
-            list = dao.searchUser(search, statusID);
-        }else{
-            list= dao.getListStaff();
+        int pageSize = 5;
+        int currentPage = 1;
+
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            currentPage = Integer.parseInt(pageParam);
         }
-       
-       
+        int offset = (currentPage - 1) * pageSize;
+
+        UserDAO dao = new UserDAO();
+        int totalRecords = dao.getTotalStaffCount();
+        int totalPages = (totalRecords + pageSize-1)/pageSize;
         
+        List<User> list;
+        if (search != null && !search.trim().isEmpty() || statusID != null) {
+            list = dao.searchStaff(search, statusID);
+        } else {
+            list = dao.getListStaffWithPaging(offset, pageSize);
+        }
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("totalPages", totalPages);
         request.setAttribute("listStaff", list);
         request.getRequestDispatcher("/admin/StaffList.jsp").forward(request, response);
     }
