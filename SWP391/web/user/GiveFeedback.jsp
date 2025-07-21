@@ -149,7 +149,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="rating-label">Đánh giá shop:</label><br>
+                        <label class="rating-label">Dịch vụ người bán:</label><br>
                         <div class="star-rating">
                             <input type="radio" id="seller5" name="sellerRating" value="5" required><label for="seller5">★</label>
                             <input type="radio" id="seller4" name="sellerRating" value="4"><label for="seller4">★</label>
@@ -160,7 +160,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="rating-label">Đánh giá giao hàng:</label><br>
+                        <label class="rating-label">Tốc độ giao hàng:</label><br>
                         <div class="star-rating">
                             <input type="radio" id="ship5" name="shippingRating" value="5" required><label for="ship5">★</label>
                             <input type="radio" id="ship4" name="shippingRating" value="4"><label for="ship4">★</label>
