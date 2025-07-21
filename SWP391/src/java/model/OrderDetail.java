@@ -16,7 +16,7 @@ public class OrderDetail {
     private Laptop laptop;
     private int quantity;
     private BigDecimal unitPrice;
-    private Review review;
+    private Feedback feedback;
     private Status orderDetailStatus;
     private String reasonReturn;
     private LocalDate returnDate;
@@ -26,44 +26,44 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
-    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Review review, Status orderDetailStatus, String reasonReturn, LocalDate returnDate) {
+    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Feedback feedback, Status orderDetailStatus, String reasonReturn, LocalDate returnDate) {
         this.orderID = orderID;
         this.laptop = laptop;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
-        this.review = review;
+        this.feedback = feedback;
         this.orderDetailStatus = orderDetailStatus;
         this.reasonReturn = reasonReturn;
         this.returnDate = returnDate;
     }
 
-    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Review review, Status orderDetailStatus) {
+    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Feedback feedback, Status orderDetailStatus) {
         this.orderID = orderID;
         this.laptop = laptop;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
-        this.review = review;
+        this.feedback = feedback;
         this.orderDetailStatus = orderDetailStatus;
     }
 
-    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Review review, Status orderDetailStatus, String reasonReturn, LocalDate returnDate, boolean isSelect) {
+    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Feedback feedback, Status orderDetailStatus, String reasonReturn, LocalDate returnDate, boolean isSelect) {
         this.orderID = orderID;
         this.laptop = laptop;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
-        this.review = review;
+        this.feedback = feedback;
         this.orderDetailStatus = orderDetailStatus;
         this.reasonReturn = reasonReturn;
         this.returnDate = returnDate;
         this.isSelect = isSelect;
     }
 
-    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Review review, Status orderDetailStatus, String reasonReturn, LocalDate returnDate, boolean isSelect, String imageReturn) {
+    public OrderDetail(int orderID, Laptop laptop, int quantity, BigDecimal unitPrice, Feedback feedback, Status orderDetailStatus, String reasonReturn, LocalDate returnDate, boolean isSelect, String imageReturn) {
         this.orderID = orderID;
         this.laptop = laptop;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
-        this.review = review;
+        this.feedback = feedback;
         this.orderDetailStatus = orderDetailStatus;
         this.reasonReturn = reasonReturn;
         this.returnDate = returnDate;
@@ -105,12 +105,12 @@ public class OrderDetail {
         this.unitPrice = unitPrice;
     }
 
-    public Review getReview() {
-        return review;
+    public Feedback getFeedback() {
+        return feedback;
     }
 
-    public void setReview(Review review) {
-        this.review = review;
+    public void setFeedback(Feedback feedback) {
+        this.feedback = feedback;
     }
 
     public Status getOrderDetailStatus() {

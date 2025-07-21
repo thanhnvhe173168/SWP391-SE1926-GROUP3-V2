@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class OrderDetailDAO extends ConnectDB {
 
-    ReviewDAO rdao = new ReviewDAO();
+    FeedbackDAO fdao = new FeedbackDAO();
     LaptopDAO ldao = new LaptopDAO();
     StatusDAO sdao = new StatusDAO();
 
@@ -34,10 +34,10 @@ public class OrderDetailDAO extends ConnectDB {
             st.setInt(3, ord.getQuantity());
             st.setBigDecimal(4, ord.getUnitPrice());
 
-            if (ord.getReview() == null) {
+            if (ord.getFeedback()== null) {
                 st.setNull(5, java.sql.Types.INTEGER);
             } else {
-                st.setInt(5, ord.getReview().getReviewID());
+                st.setInt(5, ord.getFeedback().getFeedbackID());
             }
 
             st.setInt(6, ord.getOrderDetailStatus().getStatusID());
@@ -87,9 +87,9 @@ public class OrderDetailDAO extends ConnectDB {
                 // ReviewID - có thể null
                 int reviewId = rs.getInt("ReviewID");
                 if (!rs.wasNull()) {
-                    od.setReview(rdao.getReviewByID(reviewId));
+                    od.setFeedback(fdao.getFeedbackByID(reviewId));
                 } else {
-                    od.setReview(null);
+                    od.setFeedback(null);
                 }
 
                 // OrderDetailStatusID - không null
@@ -186,9 +186,9 @@ public class OrderDetailDAO extends ConnectDB {
                 // ReviewID - có thể null
                 int reviewId = rs.getInt("ReviewID");
                 if (!rs.wasNull()) {
-                    od.setReview(rdao.getReviewByID(reviewId));
+                    od.setFeedback(fdao.getFeedbackByID(reviewId));
                 } else {
-                    od.setReview(null);
+                    od.setFeedback(null);
                 }
 
                 // OrderDetailStatusID - không null
@@ -275,9 +275,9 @@ public class OrderDetailDAO extends ConnectDB {
                 // ReviewID - có thể null
                 int reviewId = rs.getInt("ReviewID");
                 if (!rs.wasNull()) {
-                    od.setReview(rdao.getReviewByID(reviewId));
+                    od.setFeedback(fdao.getFeedbackByID(reviewId));
                 } else {
-                    od.setReview(null);
+                    od.setFeedback(null);
                 }
 
                 // OrderDetailStatusID - không null
