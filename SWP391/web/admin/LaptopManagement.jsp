@@ -72,12 +72,48 @@
                 object-fit: cover;
             }
 
-            .btn-outline-primary {
-                font-weight: 600;
-                border-radius: 8px;
-                border-color: #dd3726;
-                color: #dd3726;
-                transition: all 0.3s ease;
+            /*            .btn-outline-primary {
+                            font-weight: 600;
+                            border-radius: 8px;
+                            border-color: #dd3726;
+                            color: #dd3726;
+                            transition: all 0.3s ease;
+                        }*/
+
+            .btn-icon {
+                border-radius: 50px;
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
+            .btn-view {
+                color: #0d6efd !important;
+                border: 1px solid #0d6efd;
+            }
+
+            .btn-view:hover {
+                background-color: #0d6efd;
+                color: white !important;
+            }
+
+            .btn-update {
+                color: #ffc107 !important;
+                border: 1px solid #ffc107;
+            }
+
+            .btn-update:hover {
+                background-color: #ffc107;
+                color: white !important;
+            }
+
+            .btn-delete {
+                color: #dc3545 !important;
+                border: 1px solid #dc3545;
+            }
+
+            .btn-delete:hover {
+                background-color: #dc3545;
+                color: white !important;
             }
 
             .btn-outline-primary:hover {
@@ -126,6 +162,12 @@
             p[style*="font-size"]:hover {
                 color: #bb2c1c;
                 transform: scale(1.02);
+            }
+
+            .disabled-link {
+                pointer-events: none;
+                opacity: 0.6;
+                cursor: not-allowed;
             }
         </style>
     </head>
@@ -213,7 +255,7 @@
                                     <th>Màn hình</th>
                                     <th>RAM</th>
                                     <th>Số lượng</th>
-                                    <th>Chức năng</th>
+                                    <th style="width: 20%">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -236,11 +278,15 @@
                                     <td><%=rsLaptop.getString("RAM")%></td>
                                     <td><%=rsLaptop.getInt("Stock")%></td>
                                     <td>
-                                        <a href="updateLaptop?laptopId=<%=rsLaptop.getInt("LaptopID")%>" class="btn btn-sm btn-warning me-1">
+                                        <a href="getDetailStock?laptopId=<%= rsLaptop.getInt("LaptopID") %>" 
+                                           class="btn btn-view btn-icon me-2">
+                                            <i class="fa-regular fa-eye"></i>
+                                        </a>
+                                        <a href="updateLaptop?laptopId=<%=rsLaptop.getInt("LaptopID")%>" class="btn btn-update btn-icon me-2">
                                             <i class="fa-solid fa-pen-to-square"></i> Sửa
                                         </a>
-                                        <a href="deleteLaptop?laptopId=<%=rsLaptop.getInt("LaptopID")%>" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?');">
-                                            <i class="fa-solid fa-trash"></i> Xóa
+                                        <a href="deleteLaptop?laptopId=<%=rsLaptop.getInt("LaptopID")%>&statusId=<%=rsLaptop.getInt("StatusID") == 31 ? 3 : 31%>" class="btn btn-delete btn-icon me-2" onclick="return confirm('Bạn có chắc muốn ẩn/hiện sản phẩm này không?');">
+                                            <i class="fa-solid fa-trash"></i> <%=rsLaptop.getInt("StatusID") == 31 ? "Hiện" : "Ẩn"%>
                                         </a>
                                     </td>
 

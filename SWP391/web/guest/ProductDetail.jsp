@@ -124,7 +124,7 @@
         %>
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <div class="container my-5">
-            <%if(rsLaptop.next()) {%>
+            <%if(rsLaptop != null && rsLaptop.next()) {%>
             <div class="row">
                 <div class="col-md-8">
                     <img src="images/<%=rsLaptop.getString("ImageURL")%>" class="product-image" alt="">

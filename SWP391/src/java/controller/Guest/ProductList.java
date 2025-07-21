@@ -57,7 +57,7 @@ public class ProductList extends HttpServlet {
                 ? Integer.parseInt(request.getParameter("screenId"))
                 : 0;
         ResultSet rsLaptop = laptopDao.getListLaptop(currentPage, PAGE_SIZE, laptopName, brandId, categoryId, cpuId,
-                screenId, 0);
+                screenId, 3);
         int totalPage = 0;
         int totalRecord = laptopDao.getTotalRecord(laptopName, brandId, categoryId, cpuId,
                 screenId, 0);

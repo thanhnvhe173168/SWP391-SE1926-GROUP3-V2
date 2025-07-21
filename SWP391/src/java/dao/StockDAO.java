@@ -32,7 +32,10 @@ public class StockDAO extends ConnectDB {
 
     public ResultSet getListStockByLaptop(int laptopId) {
         ResultSet rs = null;
-        String sql = "Select * from Stock where LaptopID = ?";
+        String sql = "select s.ID, s.Quantity, s.[Date], s.[Action], l.LaptopName, u.FullName from Stock s "
+                + "inner join Laptop l on s.LaptopID = l.LaptopID "
+                + "inner join Users u on s.UserID = u.UserID "
+                + "where s.LaptopID = ?";
         try {
             PreparedStatement pre = connect.prepareStatement(sql);
             pre.setInt(1, laptopId);
