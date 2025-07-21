@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.sql.ResultSet"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,9 +22,64 @@
                 height: 200px;
                 object-fit: cover;
             }
+            .toast-message {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #28a745;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 6px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+                z-index: 9999;
+                animation: fadeOut 5s forwards;
+                min-width: 200px;
+                max-width: 300px;
+                font-size: 14px;
+            }
+
+            .close-btn {
+                position: absolute;
+                top: 5px;
+                right: 10px;
+                color: white;
+                font-weight: bold;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            @keyframes fadeOut {
+                0% {
+                    opacity: 1;
+                }
+                80% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 0;
+                    display: none;
+                }
+            }
         </style>
+
+
     </head>
+    <script>
+        function closeToast() {
+            var toast = document.getElementById("toastMessage");
+            if (toast) {
+                toast.style.display = "none";
+            }
+        }
+    </script>
     <body>
+        <c:if test="${not empty sessionScope.mess}">
+            <div id="toastMessage" class="toast-message">
+                <span class="close-btn" onclick="closeToast()">✕</span>
+                ${sessionScope.mess}
+            </div>
+            <c:remove var="mess" scope="session"/>
+        </c:if>
 
         <%
            ResultSet rsBrand = (ResultSet) request.getAttribute("rsBrand");

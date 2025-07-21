@@ -1,180 +1,188 @@
-<%-- 
-    Document   : GiveFeedback
-    Created on : Jul 2, 2025, 5:08:03 PM
-    Author     : linhd
---%>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="model.Laptop" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="model.User" %>
-<%
-    User user = (User) session.getAttribute("user"); 
-    if (user == null) {
-        response.sendRedirect(request.getContextPath() + "guest/Login.jsp");
-        return;
-    }
-%>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
     <head>
         <meta charset="UTF-8">
-        <title>Gửi phản hồi</title>
+        <title>Gửi Đánh Giá</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
         <style>
             body {
+                background: linear-gradient(to right, #e3f2fd, #ffffff);
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: #f9fafb;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
-                margin: 0;
             }
 
-            .feedback-container {
+            .form-section {
                 background: #fff;
-                padding: 40px 35px;
-                border-radius: 16px;
-                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-                max-width: 550px;
-                width: 100%;
+                border-radius: 20px;
+                padding: 40px;
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+                max-width: 700px;
+                margin: auto;
             }
 
-            .feedback-container h2 {
-                margin-top: 0;
-                margin-bottom: 25px;
+            .form-section h2 {
                 text-align: center;
-                color: #222;
+                margin-bottom: 35px;
                 font-weight: 700;
-                font-size: 26px;
+                color: #0d6efd;
+                font-size: 30px;
             }
 
-            label {
-                display: block;
-                margin-bottom: 6px;
+            .form-label, .rating-label {
                 font-weight: 600;
+                margin-bottom: 8px;
+                display: block;
                 color: #333;
             }
 
-            input[type="text"],
-            textarea,
-            select,
-            input[type="file"] {
-                width: 100%;
+            .form-control {
+                border-radius: 10px;
                 padding: 12px 16px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
                 font-size: 15px;
-                margin-bottom: 20px;
-                transition: border-color 0.3s, box-shadow 0.3s;
-                background: #fdfdfd;
+                border: 1px solid #ced4da;
+                transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
             }
 
-            input[type="text"]:focus,
-            textarea:focus,
-            select:focus,
-            input[type="file"]:focus {
-                border-color: #ff5722;
-                box-shadow: 0 0 5px rgba(255, 87, 34, 0.3);
-                outline: none;
+            .form-control:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
             }
 
-            select {
-                appearance: none;
-                background: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5H7z"/></svg>') no-repeat right 12px center;
-                background-size: 18px;
+            .star-rating {
+                direction: rtl;
+                display: inline-flex;
+                font-size: 28px;
+                justify-content: flex-start;
+                gap: 3px;
+                padding: 5px 0;
             }
 
-            button[type="submit"] {
-                background-color: #ff5722;
-                color: #fff;
-                padding: 14px 0;
-                border: none;
-                border-radius: 8px;
-                font-size: 17px;
-                font-weight: 600;
+            .star-rating input[type="radio"] {
+                display: none;
+            }
+
+            .star-rating label {
+                color: #ccc;
                 cursor: pointer;
-                width: 100%;
-                transition: background-color 0.3s, transform 0.1s;
+                transition: transform 0.2s, color 0.3s;
             }
 
-            button[type="submit"]:hover {
-                background-color: #e64a19;
+            .star-rating label:hover,
+            .star-rating label:hover ~ label,
+            .star-rating input:checked ~ label {
+                color: #ffc107;
+                transform: scale(1.1);
             }
 
-            button[type="submit"]:active {
-                transform: scale(0.98);
+            .btn-submit {
+                background: linear-gradient(to right, #0d6efd, #6610f2);
+                border: none;
+                padding: 12px 30px;
+                font-size: 16px;
+                font-weight: 600;
+                border-radius: 10px;
+                color: #fff;
+                transition: background 0.3s ease-in-out;
             }
 
-            p {
-                text-align: center;
-                margin-top: 18px;
-                font-weight: bold;
-                color: #28a745;
+            .btn-submit:hover {
+                background: linear-gradient(to right, #0056b3, #520dc2);
             }
 
-            ::placeholder {
-                color: #aaa;
-                font-style: italic;
+            @media (max-width: 768px) {
+                .form-section {
+                    padding: 25px 20px;
+                }
+
+                .form-section h2 {
+                    font-size: 24px;
+                }
+
+                .star-rating {
+                    font-size: 22px;
+                }
+
+                .btn-submit {
+                    width: 100%;
+                }
             }
         </style>
+
     </head>
+    <body style="background-color: #f8f9fa;">
+        <div class="container mt-5">
+            <div class="form-section">
+                <h2>Gửi Đánh Giá Sản Phẩm</h2>
 
-    <body>
-        <div class="feedback-container">
-            <h2>Gửi phản hồi của bạn</h2>
+               <form action="${pageContext.request.contextPath}/giveFeedback" method="post" enctype="multipart/form-data">
 
-            <form action="<%= request.getContextPath() %>/giveFeedback" 
-                  method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="orderID" value="${requestScope.orderId}" />
+                    <input type="hidden" name="laptopID" value="${requestScope.laptopId}" />
 
-                <input type="hidden" name="userID" value="<%= user.getUserID() %>">
+                    <c:if test="${not empty mess}">
+                        <div class="alert alert-info">${mess}</div>
+                    </c:if>
 
+                    <div class="mb-3">
+                        <label class="form-label">Tiêu đề:</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
 
-                <label for="title">Tiêu đề:</label>
-                <input type="text" id="title" name="title" required>
+                    <div class="mb-3">
+                        <label class="form-label">Nội dung đánh giá:</label>
+                        <textarea class="form-control" name="content" rows="4" required></textarea>
+                    </div>
 
+                    <div class="mb-3">
+                        <label class="rating-label">Đánh giá sản phẩm:</label><br>
+                        <div class="star-rating">
+                            <input type="radio" id="product5" name="productRating" value="5" required><label for="product5">★</label>
+                            <input type="radio" id="product4" name="productRating" value="4"><label for="product4">★</label>
+                            <input type="radio" id="product3" name="productRating" value="3"><label for="product3">★</label>
+                            <input type="radio" id="product2" name="productRating" value="2"><label for="product2">★</label>
+                            <input type="radio" id="product1" name="productRating" value="1"><label for="product1">★</label>
+                        </div>
+                    </div>
 
-                <label for="content">Nội dung:</label>
-                <textarea id="content" name="content" rows="5" required></textarea>
+                    <div class="mb-3">
+                        <label class="rating-label">Đánh giá shop:</label><br>
+                        <div class="star-rating">
+                            <input type="radio" id="seller5" name="sellerRating" value="5" required><label for="seller5">★</label>
+                            <input type="radio" id="seller4" name="sellerRating" value="4"><label for="seller4">★</label>
+                            <input type="radio" id="seller3" name="sellerRating" value="3"><label for="seller3">★</label>
+                            <input type="radio" id="seller2" name="sellerRating" value="2"><label for="seller2">★</label>
+                            <input type="radio" id="seller1" name="sellerRating" value="1"><label for="seller1">★</label>
+                        </div>
+                    </div>
 
+                    <div class="mb-3">
+                        <label class="rating-label">Đánh giá giao hàng:</label><br>
+                        <div class="star-rating">
+                            <input type="radio" id="ship5" name="shippingRating" value="5" required><label for="ship5">★</label>
+                            <input type="radio" id="ship4" name="shippingRating" value="4"><label for="ship4">★</label>
+                            <input type="radio" id="ship3" name="shippingRating" value="3"><label for="ship3">★</label>
+                            <input type="radio" id="ship2" name="shippingRating" value="2"><label for="ship2">★</label>
+                            <input type="radio" id="ship1" name="shippingRating" value="1"><label for="ship1">★</label>
+                        </div>
+                    </div>
 
-                <label for="rating">Đánh giá sao sản phẩm:</label>
-                <select id="rating" name="rating">
-                    <option value="1">1 ⭐</option>
-                    <option value="2">2 ⭐</option>
-                    <option value="3">3 ⭐</option>
-                    <option value="4">4 ⭐</option>
-                    <option value="5">5 ⭐</option>
-                </select>
+                    <div class="mb-4">
+                        <label class="form-label">Hình ảnh minh họa:</label>
+                        <input type="file" class="form-control" name="productImage" accept="image/*">
 
+                    </div>
 
-                <label for="sellerRating">Dịch vụ người bán:</label>
-                <select id="sellerRating" name="sellerRating">
-                    <option value="1">1 ⭐</option>
-                    <option value="2">2 ⭐</option>
-                    <option value="3">3 ⭐</option>
-                    <option value="4">4 ⭐</option>
-                    <option value="5">5 ⭐</option>
-                </select>
-
-
-                <label for="shippingRating">Tốc độ giao hàng:</label>
-                <select id="shippingRating" name="shippingRating">
-                    <option value="1">1 ⭐</option>
-                    <option value="2">2 ⭐</option>
-                    <option value="3">3 ⭐</option>
-                    <option value="4">4 ⭐</option>
-                    <option value="5">5 ⭐</option>
-                </select>
-
-
-                <label for="productImage">Ảnh thực tế sản phẩm:</label>
-                <input type="file" id="productImage" name="productImage" accept="image/*" required>
-
-                <!-- Submit -->
-                <button type="submit">Gửi phản hồi</button>
-
-            </form>
-
-            <p><%= request.getAttribute("mess") != null ? request.getAttribute("mess") : "" %></p>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-submit">Gửi đánh giá</button>
+                    </div>
+                </form>
+            </div>
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

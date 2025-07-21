@@ -16,7 +16,7 @@
         <style>
             body {
                 font-family: 'Segoe UI', sans-serif;
-                background: #f4f6f9;
+                background: #f8f9fa;
                 margin: 0;
             }
 
@@ -26,56 +26,94 @@
                 left: 0;
                 width: 250px;
                 height: 100%;
-                background: #222;
+                background: #343a40;
                 color: #fff;
                 z-index: 1000;
                 padding: 20px 0;
             }
 
             .main-content {
-                margin-left: 250px; /* same as sidebar width */
+                margin-left: 250px;
                 padding: 30px;
                 max-width: calc(100% - 250px);
                 overflow-x: auto;
             }
 
             h2 {
-                color: #111827;
-                margin-bottom: 20px;
-            }
-
-            img {
-                max-width: 80px;
-                height: auto;
-                border-radius: 4px;
-            }
-
-            .reply-text {
-                background: #e9f7ef;
-                border: 1px solid #d4edda;
-                padding: 8px;
-                border-radius: 4px;
-                font-size: 13px;
-            }
-
-            .no-reply {
-                color: #999;
-                font-style: italic;
+                color: #343a40;
+                margin-bottom: 30px;
+                font-weight: 600;
+                font-size: 28px;
+                text-align: center;
             }
 
             .table {
-                table-layout: auto; /* Cho phép cột tự co */
-                width: 100%;
+                table-layout: auto;
+                background-color: white;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .table th, .table td {
+                vertical-align: middle;
+                padding: 12px 16px;
+            }
+
+            .table-hover tbody tr:hover {
+                background-color: #f1f3f5;
+            }
+
+            .btn-primary.btn-sm {
+                background-color: #4a90e2;
+                border: none;
+                padding: 5px 12px;
+                font-size: 13px;
+                border-radius: 5px;
+            }
+
+            .btn-danger.btn-sm {
+                background-color: #e74c3c;
+                border: none;
+                padding: 5px 12px;
+                font-size: 13px;
+                border-radius: 5px;
+            }
+
+            .btn-primary.btn-sm:hover,
+            .btn-danger.btn-sm:hover {
+                opacity: 0.9;
+            }
+
+            .pagination .page-link {
+                color: #007bff;
+            }
+
+            .pagination .active .page-link {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: white;
             }
 
             @media (max-width: 768px) {
                 .sidebar {
                     display: none;
                 }
+
                 .main-content {
                     margin-left: 0;
                     max-width: 100%;
                     padding: 20px;
+                }
+
+                .table th, .table td {
+                    font-size: 14px;
+                    padding: 10px 8px;
+                }
+
+                .btn-sm {
+                    font-size: 12px;
+                    padding: 4px 8px;
                 }
             }
         </style>
@@ -97,61 +135,42 @@
                         <tr>
                             <th>ID</th>
                             <th>UserID</th>
+                            <th>LaptopID</th>
                             <th>Title</th>
                             <th>Content</th>
-                            <th>Rating</th>
-                            <th>Seller</th>
-                            <th>Shipping</th>
-                            <th>Image</th>
                             <th>Created At</th>
-                            <th>Reply</th>
-                            <th>Status</th>
+                            <th>Updated At</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <%
-                            List<Feedback> list = (List<Feedback>) request.getAttribute("feedbackList");
-                            if (list != null && !list.isEmpty()) {
-                                for (Feedback fb : list) {
-                        %>
-                        <tr>
-                            <td><%= fb.getFeedbackID() %></td>
-                            <td><%= fb.getUserID() %></td>
-                            <td><%= fb.getTitle() %></td>
-                            <td><%= fb.getContent() %></td>
-                            <td><%= fb.getRating() %></td>
-                            <td><%= fb.getSellerRating() %></td>
-                            <td><%= fb.getShippingRating() %></td>
-                            <td>
-                                <% if (fb.getImageURL() != null && !fb.getImageURL().isEmpty()) { %>
-                                <img src="<%= request.getContextPath() %>/image?path=<%= fb.getImageURL() %>">
-                                <% } else { %>
-                                <span class="no-reply">No Image</span>
-                                <% } %>
-                            </td>
-                            <td style="white-space: nowrap;"><%= fb.getCreatedAt() %></td>
-                            <td>
-                                <% if (fb.getReplyContent() != null && !fb.getReplyContent().isEmpty()) { %>
-                                <div class="reply-text"><%= fb.getReplyContent() %></div>
-                                <% } else { %>
-                                <span class="no-reply">Chưa phản hồi</span>
-                                <% } %>
-                            </td>
-                            <td><%= fb.getStatusName() %></td>
-                            <td>
-                                <a href="replyFeedback?id=<%= fb.getFeedbackID() %>" class="btn btn-success btn-sm">Reply</a>
-                            </td>
-                        </tr>
-                        <%
-                                }
-                            } else {
-                        %>
-                        <tr>
-                            <td colspan="12" class="text-center text-danger">Không có phản hồi nào.</td>
-                        </tr>
-                        <% } %>
+                        <c:choose>
+                            <c:when test="${not empty feedbackList}">
+                                <c:forEach var="f" items="${feedbackList}">
+                                    <tr>
+                                        <td>${f.feedbackID}</td>
+                                        <td>${f.userID}</td>
+                                        <td>${f.laptopID}</td>
+                                        <td>${f.title}</td>
+                                        <td>${f.content}</td>
+                                        <td>${f.createdAt}</td>
+                                        <td>${f.updatedAt}</td>
+                                        <td>
+                                            <a href="feedbackDetail?fid=${f.getFeedbackID()}" class="btn btn-primary btn-sm">View Detail</a>
+                                           <a href="deleteFeedback?feedbackId=${f.feedbackID}&productId=${f.laptopID}" onclick="return confirm('Xoá đánh giá này?')" class="btn btn-danger btn-sm">Delete</a>
+
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="12" class="text-center text-danger">Không có phản hồi nào.</td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
                     </tbody>
+
                 </table>
                 <c:if test="${totalPages > 1}">
                     <nav aria-label="Pagination" class="mt-4">

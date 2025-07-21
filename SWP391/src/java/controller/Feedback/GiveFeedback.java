@@ -10,19 +10,21 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import model.Feedback;
+import model.User;
 
-@WebServlet(name="GiveFeedback", urlPatterns={"/giveFeedback"})
+@WebServlet(name = "GiveFeedback", urlPatterns = {"/giveFeedback"})
 @MultipartConfig(
-    fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-    maxFileSize = 1024 * 1024 * 10,      // 10MB
-    maxRequestSize = 1024 * 1024 * 50    // 50MB
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 public class GiveFeedback extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             out.println("<!DOCTYPE html>");
@@ -31,7 +33,7 @@ public class GiveFeedback extends HttpServlet {
             out.println("<title>Servlet GiveFeedback</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet GiveFeedback at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet GiveFeedback at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -39,35 +41,68 @@ public class GiveFeedback extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
+        String orderId = request.getParameter("orderID");
+        String laptopId = request.getParameter("laptopID");
+        System.out.println("orderId:" + orderId);
+        System.out.println("laptopId:" + laptopId);
+        request.setAttribute("orderId", orderId);
+        request.setAttribute("laptopId", laptopId);
+        request.getRequestDispatcher("user/GiveFeedback.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            response.sendRedirect("login");
+            return;
+        }
 
-        int userID = Integer.parseInt(request.getSession().getAttribute("userID").toString());
-        int laptopID = Integer.parseInt(request.getParameter("laptopID"));
-        int orderID = Integer.parseInt(request.getParameter("orderID"));
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            response.sendRedirect("login");
+            return;
+        }
+        int userID = user.getUserID();
+
+        String orderIDRaw = request.getParameter("orderID");
+        String laptopIDRaw = request.getParameter("laptopID");
+        System.out.println("orderIDRaw:" + orderIDRaw);
+        System.out.println("laptopIDRaw:" + laptopIDRaw);
+        if (orderIDRaw == null || laptopIDRaw == null || orderIDRaw.isEmpty() || laptopIDRaw.isEmpty()) {
+            request.setAttribute("mess", "Thiếu thông tin đánh giá.");
+            request.getRequestDispatcher("user/GiveFeedback.jsp").forward(request, response);
+            return;
+        }
+
+        int orderID = Integer.parseInt(orderIDRaw);
+        int laptopID = Integer.parseInt(laptopIDRaw);
+
         String title = request.getParameter("title");
         String content = request.getParameter("content");
-        int rating = Integer.parseInt(request.getParameter("rating"));
-        int sellerRating = Integer.parseInt(request.getParameter("sellerRating"));
-        int shippingRating = Integer.parseInt(request.getParameter("shippingRating"));
-        int statusID = 28; // Mặc định trạng thái Feedback mới
 
-        // Xử lý file upload
+        int rating = Integer.parseInt(request.getParameter("productRating"));
+
+        int sellerRating = Integer.parseInt(request.getParameter("sellerRating"));
+        System.out.println("seller" + sellerRating);
+        int shippingRating = Integer.parseInt(request.getParameter("shippingRating"));
+        System.out.println("Shipping" + shippingRating);
+        int statusID = 30;
+
+        //file upload
         Part filePart = request.getPart("productImage");
         String fileName = extractFileName(filePart);
 
-        // Đường dẫn lưu file trên server (bạn đổi path phù hợp nhé)
+        // Đường dẫn lưu file trên server 
         String uploadPath = "C:/MyUploads/Feedback";
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
 
-        // Xử lý file trùng tên
+        // file trùng tên
         File file = new File(uploadDir, fileName);
         int count = 0;
         String baseName = fileName;
@@ -98,9 +133,11 @@ public class GiveFeedback extends HttpServlet {
         // Ghi DB
         FeedbackDAO dao = new FeedbackDAO();
         boolean giveF = dao.addFeedback(fb);
+
         if (giveF) {
-            request.setAttribute("mess", "Cảm ơn bạn đã gửi phản hồi!");
-            request.getRequestDispatcher("user/feedbackSuccess.jsp").forward(request, response);
+            System.out.println("Đã vào đây");
+            session.setAttribute("mess", "Cảm ơn bạn đã gửi phản hồi!");
+            response.sendRedirect("home");
         } else {
             request.setAttribute("mess", "Có lỗi xảy ra! Vui lòng thử lại");
             request.getRequestDispatcher("user/GiveFeedback.jsp").forward(request, response);

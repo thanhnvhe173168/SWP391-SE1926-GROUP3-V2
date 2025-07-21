@@ -61,7 +61,12 @@ public class UpdateFeedback extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int feedbackID = Integer.parseInt(request.getParameter("id"));
+        String id = request.getParameter("feedbackID");
+        if(id==null || id.isEmpty() ){
+            System.out.println("Thiếu tham số feedBackID");
+        }
+        try {
+            int feedbackID = Integer.parseInt(id);
         FeedbackDAO dao = new FeedbackDAO();
         Feedback fb = dao.getFeedbackByID(feedbackID);
 
@@ -71,6 +76,10 @@ public class UpdateFeedback extends HttpServlet {
         } else {
             response.getWriter().println("Feedback không tồn tại!");
         }
+        } catch (NumberFormatException e) {
+            System.out.println("ID không hợp lệ " + id);
+        }
+        
     }
 
     /**
@@ -89,6 +98,8 @@ public class UpdateFeedback extends HttpServlet {
 
         if (user != null) {
             int feedbackID = Integer.parseInt(request.getParameter("feedbackID"));
+            int laptopID = Integer.parseInt(request.getParameter("laptopID"));
+            int orderID = Integer.parseInt(request.getParameter("orderID"));
             String title = request.getParameter("title");
             String content = request.getParameter("content");
             int rating = Integer.parseInt(request.getParameter("rating"));
@@ -97,17 +108,20 @@ public class UpdateFeedback extends HttpServlet {
 
             System.out.println("FeedbackID: " + feedbackID);
             System.out.println("UserID: " + user.getUserID());
+            
 
             FeedbackDAO dao = new FeedbackDAO();
-            int rowsUpdated = dao.updateFeedback(feedbackID, user.getUserID(), title, content, rating, sellerRating, shippingRating);
+            int productId = Integer.parseInt(request.getParameter("productId"));
+            int update = dao.updateFeedback(feedbackID,laptopID,orderID, user.getUserID(), title, content, rating, sellerRating, shippingRating);
+            
+            System.out.println("Rows updated: " + update);
 
-            System.out.println("Rows updated: " + rowsUpdated);
+            if (update > 0) {
+                response.sendRedirect("productDetail?productId=" + productId);
 
-            if (rowsUpdated > 0) {
-                response.sendRedirect("customerFeedbackList");
             
         } else {
-            response.sendRedirect("guest/Login.jsp");
+            response.sendRedirect("login");
         }
     
         }}

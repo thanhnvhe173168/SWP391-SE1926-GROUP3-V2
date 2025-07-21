@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.Laptop;
 import model.User;
 
 /**
@@ -62,16 +63,27 @@ public class DeleteFeedback extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+
         if (user != null) {
-            int userID = user.getUserID();
-            int feedbackID = Integer.parseInt(request.getParameter("id"));
+            int roleID = user.getRoleID(); 
+            int feedbackID = Integer.parseInt(request.getParameter("feedbackId"));
+            int productID = Integer.parseInt(request.getParameter("productId"));
+
             FeedbackDAO dao = new FeedbackDAO();
-            dao.deleteFeedback(feedbackID, userID);
-            
-                response.sendRedirect("customerFeedbackList");
-            
+
+            if (roleID == 1) {
+                dao.deleteFeedbackByAdmin(feedbackID);
+            } else { 
+                int userID = user.getUserID();
+                int laptopID = Integer.parseInt(request.getParameter("laptopId"));
+                int orderID = Integer.parseInt(request.getParameter("orderId"));
+
+                dao.deleteFeedbackByCustomer(feedbackID, userID, laptopID, orderID);
+            }
+
+            response.sendRedirect("productDetail?productId=" + productID);
         } else {
-            response.sendRedirect("guest/Login.jsp");
+            response.sendRedirect("login");
         }
     }
 

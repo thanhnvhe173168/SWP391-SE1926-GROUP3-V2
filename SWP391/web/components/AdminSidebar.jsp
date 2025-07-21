@@ -1,8 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <%
     String currentPage = request.getRequestURI();
 %>
 <style>
+
     .nav-link.active {
         background-color: rgba(255, 255, 255, 0.2);
         font-weight: bold;
@@ -45,6 +47,11 @@
         <li class="nav-item">
             <a class="nav-link text-white <%= currentPage.contains("getListPromotion") ? "active" : "" %>" href="getListPromotion">
                 <i class="fas fa-tags me-2"></i> Quản lý khuyến mãi
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= currentPage.contains("feedBackList") ? "active" : "" %>" href="feedBackList">
+                <i class="fas fa-tags me-2"></i> Quản lý đánh giá
             </a>
         </li>
         <li class="nav-item">

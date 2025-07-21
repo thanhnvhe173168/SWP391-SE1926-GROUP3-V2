@@ -35,15 +35,7 @@ public class ProductDetail extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LaptopDAO laptopDao = new LaptopDAO();
-        FeedbackDAO feedbackDao = new FeedbackDAO();
-        int productId = Integer.parseInt(request.getParameter("productId"));
-        ResultSet rsLaptop = laptopDao.getDetailLaptop(productId);
-        
-         List<Feedback> feedbackList = feedbackDao.getFeedbackByProductID(productId);
-        request.setAttribute("rsLaptop", rsLaptop);
-        request.setAttribute("feedbackList", feedbackList);
-        request.getRequestDispatcher("/guest/ProductDetail.jsp").forward(request, response);
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -58,7 +50,25 @@ public class ProductDetail extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        LaptopDAO laptopDao = new LaptopDAO();
+        FeedbackDAO feedbackDao = new FeedbackDAO();
+
+        String idStr = request.getParameter("productId");
+        if (idStr == null || idStr.isEmpty()) {
+            response.sendRedirect("homepage.jsp");
+            return;
+        }
+
+        int productId = Integer.parseInt(request.getParameter("productId"));
+        ResultSet rsLaptop = laptopDao.getDetailLaptop(productId);
+        int laptopId = productId;
+
+        List<Feedback> feedbackList = feedbackDao.getFeedbackByLaptopID(laptopId);
+        String mess = (String) request.getAttribute("mess");
+        request.setAttribute("mess", mess);
+        request.setAttribute("rsLaptop", rsLaptop);
+        request.setAttribute("feedbackList", feedbackList);
+        request.getRequestDispatcher("/guest/ProductDetail.jsp").forward(request, response);
     }
 
     /**
@@ -72,17 +82,7 @@ public class ProductDetail extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LaptopDAO laptopDao = new LaptopDAO();
-        FeedbackDAO feedbackDao = new FeedbackDAO();
-        int productId = Integer.parseInt(request.getParameter("productId"));
-        ResultSet rsLaptop = laptopDao.getDetailLaptop(productId);
-        
-          List<Feedback> feedbackList = feedbackDao.getFeedbackByProductID(productId);
-        String mess = (String) request.getAttribute("mess");
-        request.setAttribute("mess", mess);
-        request.setAttribute("rsLaptop", rsLaptop);
-         request.setAttribute("feedbackList", feedbackList);
-        request.getRequestDispatcher("/guest/ProductDetail.jsp").forward(request, response);
+
     }
 
     /**

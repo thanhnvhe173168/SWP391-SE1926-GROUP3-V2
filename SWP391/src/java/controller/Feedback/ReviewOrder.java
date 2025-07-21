@@ -4,7 +4,7 @@
  */
 package controller.Feedback;
 
-import dao.FeedbackDAO;
+import dao.OrderDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,14 +12,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.Feedback;
+import java.util.List;
+import model.OrderDetail;
 
 /**
  *
  * @author linhd
  */
-@WebServlet(name = "ReplyFeedback", urlPatterns = {"/replyFeedback"})
-public class ReplyFeedback extends HttpServlet {
+@WebServlet(name = "ReviewOrder", urlPatterns = {"/reviewOrder"})
+public class ReviewOrder extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +39,10 @@ public class ReplyFeedback extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ReplyFeedback</title>");
+            out.println("<title>Servlet ReviewOrder</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ReplyFeedback at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ReviewOrder at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,15 +60,18 @@ public class ReplyFeedback extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int feedbackID = Integer.parseInt(request.getParameter("id"));
-        FeedbackDAO dao = new FeedbackDAO();
-        Feedback fb = dao.getFeedbackByID(feedbackID);
+        try {
+            int orderID = Integer.parseInt(request.getParameter("orderID"));
 
-        if (fb != null) {
-            request.setAttribute("feedback", fb);
-            request.getRequestDispatcher("admin/ReplyFeedback.jsp").forward(request, response);
-        } else {
-            response.sendRedirect("feedBackList");
+            OrderDetailDAO dao = new OrderDetailDAO();
+            List<OrderDetail> orderDetails = dao.getOrderDetailsByOrderID(orderID);
+
+            request.setAttribute("orderDetails", orderDetails);
+            request.setAttribute("orderID", orderID);
+            request.getRequestDispatcher("user/ReviewOrder.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(500, "Có lỗi xảy ra khi lấy danh sách sản phẩm trong đơn hàng.");
         }
     }
 
@@ -82,15 +86,7 @@ public class ReplyFeedback extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int feedbackID = Integer.parseInt(request.getParameter("feedbackID"));
-        String replyContent = request.getParameter("replyContent");
-        FeedbackDAO dao = new FeedbackDAO();
-        dao.replyFeedback(feedbackID, replyContent);
-        
-         request.getSession().setAttribute("message", "✅ Phản hồi đã được lưu thành công!");
-         response.sendRedirect("feedBackList");
-        
-
+        processRequest(request, response);
     }
 
     /**

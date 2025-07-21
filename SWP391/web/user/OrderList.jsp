@@ -231,7 +231,7 @@
                                 <c:forEach items="${orderidneedreview}" var="orderidneed">
                                     <c:if test="${orderidneed==order.orderID}">
                                         <div style="display: inline">
-                                            <button type="button" onclick="window.location.href = 'giveFeedback?id=${order.orderID}'">Review Order</button>
+                                            <button type="button" onclick="window.location.href='reviewOrder?orderID=${order.orderID}'">Review Order</button>
                                         </div>
                                     </c:if>
                                 </c:forEach>
