@@ -24,12 +24,12 @@ public class Feedback {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private int statusID; 
-    private String replyContent; 
+    
 
     public Feedback() {
     }
 
-    public Feedback(int feedbackID, int laptopID, int orderID, int userID, String title, String content, int rating, int sellerRating, int shippingRating, String imageURL, Timestamp createdAt, Timestamp updatedAt, int statusID, String replyContent) {
+    public Feedback(int feedbackID, int laptopID, int orderID, int userID, String title, String content, int rating, int sellerRating, int shippingRating, String imageURL, Timestamp createdAt, Timestamp updatedAt, int statusID) {
         this.feedbackID = feedbackID;
         this.laptopID = laptopID;
         this.orderID = orderID;
@@ -43,7 +43,7 @@ public class Feedback {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.statusID = statusID;
-        this.replyContent = replyContent;
+        
     }
 
     public int getFeedbackID() {
@@ -150,13 +150,7 @@ public class Feedback {
         this.statusID = statusID;
     }
 
-    public String getReplyContent() {
-        return replyContent;
-    }
-
-    public void setReplyContent(String replyContent) {
-        this.replyContent = replyContent;
-    }
+  
     
     
 
