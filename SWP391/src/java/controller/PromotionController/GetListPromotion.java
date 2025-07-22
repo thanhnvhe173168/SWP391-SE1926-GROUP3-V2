@@ -33,7 +33,9 @@ public class GetListPromotion extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         PromotionDAO promotionDao = new PromotionDAO();
-        ResultSet rsPromotion = promotionDao.getListPromotion();
+        String title = request.getParameter("title");
+        String status = request.getParameter("status");
+        ResultSet rsPromotion = promotionDao.getListPromotion(title, status);
         request.setAttribute("rsPromotion", rsPromotion);
         request.getRequestDispatcher("/admin/PromotionManagement.jsp").forward(request, response);
     }
