@@ -295,7 +295,6 @@ public class LaptopDAO extends ConnectDB {
             PreparedStatement pre = connect.prepareStatement("Select * from Laptop where StatusID not in (4, 31)");
             ResultSet rs = pre.executeQuery();
             while (rs.next()) {
-//                stockDao.createStock(new Stock(rs.getInt("LaptopID"), userId, rs.getInt("Stock"), "set"));
                 list.add(new Laptop(
                         rs.getInt("LaptopID"),
                         rs.getString("LaptopName"),

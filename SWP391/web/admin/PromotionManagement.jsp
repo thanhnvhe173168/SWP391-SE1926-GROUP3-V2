@@ -72,6 +72,15 @@
                 background-color: #dc3545;
                 color: white;
             }
+
+            .toolbar input,
+            .toolbar select {
+                padding: 8px 12px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                background-color: #ffffff;
+                width: 100%;
+            }
         </style>
     </head>
     <body>
@@ -81,28 +90,56 @@
         <div class="d-flex">
             <jsp:include page="/components/AdminSidebar.jsp"></jsp:include>
                 <div style="width: 100%; height: calc(100vh - 118px); overflow-y: auto" class="container">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
                         <p style="color: #dd3726; font-size: 40px; font-weight: 700;">Quản lý khuyến mãi</p>
                         <button type="button" class="btn btn-outline-primary" onclick="handleRedirect()">
                             <i class="fa-solid fa-plus"></i> Thêm chương trình khuyến mãi
                         </button>
                     </div>
                     <div class="row">
-                        <div class="col-12 table-responsive">
-                            <table class="table table-bordered text-center">
-                                <thead>
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>Ảnh</th>
-                                        <th>Tiêu đề chương trình khuyến mãi</th>
-                                        <th>Thời gian băt đầu</th>
-                                        <th>Thời gian kết thúc</th>
-                                        <th>Số lượng sản phẩm</th>
-                                        <th>Trạng thái</th>
-                                        <th>Chức năng</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                        <div class="col-8 toolbar mb-4">
+                            <input 
+                                type="text" 
+                                id="title" 
+                                placeholder="Tìm kiếm theo tiêu đề" 
+                                value="<%=request.getParameter("title") != null ? request.getParameter("title") : ""%>" 
+                            />
+                    </div>
+                    <div class="col-2 toolbar mb-4">
+                        <select name="status" id="status">
+                            <option value="0" <%="0".equals(request.getParameter("status")) ? "selected" : "" %>>Trạng thái</option>
+                            <option 
+                                value="active"
+                                <%=(request.getParameter("status") != null && request.getParameter("status").equals("active")) ? "selected" : "" %>>
+                                Active
+                            </option>
+                            <option 
+                                value="inactive"
+                                <%=(request.getParameter("status") != null && request.getParameter("status").equals("inactive")) ? "selected" : "" %>>
+                                Inactive
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2 toolbar mb-4">
+                        <button type="submit" class="btn btn-primary" onclick="handleFilter()">
+                            <i class="fas fa-search me-1"></i> Tìm kiếm
+                        </button>
+                    </div>
+                    <div class="col-12 table-responsive">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Ảnh</th>
+                                    <th>Tiêu đề chương trình khuyến mãi</th>
+                                    <th>Thời gian băt đầu</th>
+                                    <th>Thời gian kết thúc</th>
+                                    <th>Số lượng sản phẩm</th>
+                                    <th>Trạng thái</th>
+                                    <th>Chức năng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 <%
                             if (rsPromotion != null) {
                                 int index = 0;
@@ -122,12 +159,12 @@
                                     <td>
                                         <a href="updatePromotion?promotionId=<%= rsPromotion.getInt("ID") %>" 
                                            class="btn btn-update btn-icon me-2">
-                                            <i class="fa-solid fa-pen-to-square"></i>
+                                            <i class="fa-solid fa-pen-to-square"></i>Sửa
                                         </a>
-                                        <a href="deletePromotion?promotionId=<%= rsPromotion.getInt("ID") %>" 
+                                        <a href="deletePromotion?promotionId=<%=rsPromotion.getInt("ID")%>&status=<%=rsPromotion.getString("Status").equals("inactive") ? "active" : "inactive"%>" 
                                            class="btn btn-delete btn-icon" 
-                                           onclick="return confirm('Bạn có chắc chắn muốn xóa chương trình khuyến mãi này?');">
-                                            <i class="fa-solid fa-trash"></i>
+                                           onclick="return confirm('Bạn có chắc chắn muốn ẩn/hiện chương trình khuyến mãi này?');">
+                                            <i class="fa-solid fa-trash"></i> <%=rsPromotion.getString("Status").equals("inactive") ? "Hiện" : "Ẩn"%>
                                         </a>
                                     </td>
                                 </tr>
@@ -148,8 +185,26 @@
             </div>
         </div>
         <script>
+            const params = new URLSearchParams(window.location.search);
+
             function handleRedirect() {
                 window.location.href = "createPromotion";
+            }
+
+            function handleFilter() {
+                var title = document.getElementById("title").value;
+                var status = document.getElementById("status").value;
+                if (!title || +status !== 0) {
+                    params.delete("title");
+                    params.delete("status");
+                }
+                if (!!title) {
+                    params.set("title", title);
+                }
+                if (+status !== 0) {
+                    params.set("status", status);
+                }
+                window.location.href = "getListPromotion?" + params.toString();
             }
         </script>
     </body>
