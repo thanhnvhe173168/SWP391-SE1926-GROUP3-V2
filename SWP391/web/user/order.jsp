@@ -19,15 +19,18 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             body {
-                font-family: 'Segoe UI', sans-serif;
-                background-color: #f0f2f5;
-                color: #2c3e50;
+                font-family: 'Roboto', sans-serif;
+                background-color: #f6f6f6;
+                color: #212121;
+                margin: 0;
+                padding: 20px;
             }
 
             h1 {
                 text-align: center;
-                color: #1e272e;
+                color: #d70018;
                 margin-bottom: 30px;
+                font-weight: 700;
             }
 
             table {
@@ -35,36 +38,36 @@
                 border-collapse: collapse;
                 background: #ffffff;
                 margin-bottom: 25px;
-                border-radius: 10px;
+                border-radius: 8px;
                 overflow: hidden;
-                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             }
 
-            table:first-of-type th, table:first-of-type td {
-                padding: 14px;
-                border-bottom: 1px solid #ddd;
+            table th, table td {
+                padding: 14px 16px;
+                border-bottom: 1px solid #eee;
                 text-align: center;
-            }
-
-            table:first-of-type th {
-                background-color: #dfe6e9;
-                color: #2c3e50;
-                font-weight: bold;
-            }
-
-            /* Table chi tiết đơn hàng */
-            .order-details {
-                width: 65%;
-                margin: auto;
-                background: #ffffff;
-                border: 1px solid #b2bec3;
                 font-size: 15px;
             }
 
+            table th {
+                background-color: #d70018;
+                color: white;
+                font-weight: 600;
+            }
+
+            .order-details {
+                width: 65%;
+                margin: 0 auto 30px auto;
+                background: #fff;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 20px;
+            }
+
             .order-details td {
-                padding: 12px;
-                border-bottom: 1px solid #dcdde1;
-                vertical-align: top;
+                padding: 12px 10px;
+                border-bottom: 1px solid #f1f1f1;
                 font-weight: 500;
             }
 
@@ -72,72 +75,72 @@
             .order-details select,
             .order-details textarea {
                 width: 100%;
-                padding: 8px;
+                padding: 10px;
                 font-size: 14px;
-                border: 1px solid #636e72;
-                border-radius: 5px;
-                box-sizing: border-box;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                transition: border-color 0.3s;
+            }
+
+            .order-details input:focus,
+            .order-details select:focus,
+            .order-details textarea:focus {
+                border-color: #d70018;
+                outline: none;
+                box-shadow: 0 0 4px rgba(215, 0, 24, 0.3);
             }
 
             .order-details input[type="radio"] {
-                margin-right: 8px;
                 transform: scale(1.1);
+                margin-right: 8px;
                 cursor: pointer;
             }
 
             .order-details label {
                 display: block;
                 margin-bottom: 6px;
-                cursor: pointer;
-                color: #2c3e50;
+                font-weight: 500;
+                color: #333;
             }
 
             button {
-                background-color: #0984e3;
+                background-color: #d70018;
                 color: white;
                 border: none;
-                padding: 9px 16px;
-                border-radius: 5px;
+                padding: 10px 20px;
+                border-radius: 6px;
                 cursor: pointer;
-                transition: background-color 0.3s ease;
                 font-weight: 600;
+                transition: background-color 0.3s ease;
             }
 
             button:hover {
-                background-color: #0652dd;
+                background-color: #b40015;
             }
 
             #shipFeeDisplay {
                 font-weight: bold;
-                color: #e17055;
+                color: #d70018;
+                font-size: 16px;
             }
 
             .total-row td {
                 font-weight: bold;
                 font-size: 16px;
-                background-color: #dff9fb;
-                color: #130f40;
+                background-color: #ffecec;
+                color: #d70018;
             }
 
-            input:focus, select:focus, textarea:focus {
-                border-color: #00a8ff;
-                outline: none;
-                box-shadow: 0 0 6px rgba(0, 168, 255, 0.5);
-            }
-            input[type="radio"]:focus {
-                outline: none;
-                box-shadow: none;
-            }
             .payment-container {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 20px;
-                min-height: 40px; /* Đảm bảo chiều cao tối thiểu */
+                margin-top: 10px;
             }
 
             .payment-option {
-                min-width: 120px; /* hoặc tuỳ theo bạn muốn chia đều bao nhiêu cột */
-                flex: 1;           /* để các option chia đều khoảng trống */
+                flex: 1;
+                min-width: 150px;
             }
         </style>
 
@@ -174,7 +177,7 @@
                 <c:forEach var="item" items="${listorderings}">
                     <tr>
                     <input type="hidden" name="id" value="${item.getLaptop().getLaptopID()}" />
-                    <td><button type="button" onclick="window.location.href = 'LaptopInfo?id=${item.getLaptop().getLaptopID()}'"><img src="images/${item.laptop.imageURL}" width="100" alt="${item.laptop.laptopName}" /></button></td>
+                    <td><img src="images/${item.laptop.imageURL}" width="100" alt="${item.laptop.laptopName}" /></td>
                     <td>${item.laptop.laptopName}</td>
                     <td><fmt:formatNumber value="${item.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
                     <td>
