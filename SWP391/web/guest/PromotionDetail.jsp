@@ -77,7 +77,7 @@
                                 <span><%=String.format("%,.0f VNĐ", rsLaptop.getDouble("DiscountPrice"))%></span>
                             </div>
                         </div>  
-                        <button class="btn btn-success ms-2" onclick="addtocart(<%=rsLaptop.getInt("LaptopID")%>)">
+                        <button class="btn btn-success ms-2" onclick="addtocart(<%=rsLaptop.getInt("LaptopID")%>,<%=rsLaptop.getDouble("DiscountPrice")%>)">
                             Add to Cart
                         </button> 
                         <button class="btn btn-outline-danger ms-2" onclick="addToWishlist(<%=rsLaptop.getInt("LaptopID")%>)">
@@ -93,5 +93,24 @@
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+                            function addtocart(laptopid, price) {
+                                const url = 'AddToCart?id=' + encodeURIComponent(laptopid) + '&price=' + encodeURIComponent(price);
+                                fetch(url)
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            Swal.fire({
+                                                icon: data.icon,
+                                                title: data.mess,
+                                                showConfirmButton: false,
+                                                timer: 2000
+                                            });
+                                        })
+                                        .catch(error => {
+                                            console.error('Lỗi:', error);
+                                        });
+                            }
+        </script>
     </body>
 </html>

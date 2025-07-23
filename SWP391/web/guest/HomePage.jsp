@@ -150,7 +150,7 @@
                             <p class="card-text"><%=rsLaptop.getString("Size")%>, <%=rsLaptop.getString("CPUInfo")%>, <%=rsLaptop.getString("RAM")%>, <%=rsLaptop.getString("HardDrive")%></p>
                             <p class="card-text fw-bold"><%=String.format("%,.0f VNĐ", rsLaptop.getDouble("Price"))%></p>
                             <a href="productDetail?productId=<%=rsLaptop.getInt("LaptopID")%>" class="btn btn-primary">View Details</a>
-                            <button class="btn btn-success ms-2" onclick="addtocart(<%=rsLaptop.getInt("LaptopID")%>,?)">
+                            <button class="btn btn-success ms-2" onclick="addtocart(<%=rsLaptop.getInt("LaptopID")%>,<%=rsLaptop.getDouble("Price")%>)">
                                 Add to Cart
                             </button>   
                             <button class="btn btn-outline-danger ms-2" onclick="addToWishlist(<%=rsLaptop.getInt("LaptopID")%>)">
