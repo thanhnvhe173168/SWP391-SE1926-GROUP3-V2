@@ -21,59 +21,61 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             body {
-                font-family: 'Segoe UI', Tahoma, sans-serif;
-                background-color: #f5f5f5;
+                font-family: 'Segoe UI', sans-serif;
+                background-color: #f9f9f9;
+                margin: 0;
+                padding: 0;
             }
 
             h2 {
                 text-align: center;
-                margin-bottom: 30px;
-                color: #ee4d2d; /* Shopee cam */
+                margin: 30px 0;
+                color: #d70018; /* Đỏ đặc trưng CellphoneS */
+                font-weight: bold;
+                font-size: 28px;
+            }
+
+            .main {
+                padding: 30px;
             }
 
             table {
                 width: 100%;
-                border-spacing: 0;
                 background: #fff;
-                border-radius: 8px;
-                box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+                border-radius: 10px;
                 overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                border-collapse: collapse;
             }
 
             table th {
-                text-align: center;
-                background: #007bff;  /* Cam Shopee nổi bật */
-                color: #fff;          /* Chữ trắng dễ đọc */
-                font-weight: bold;
-                text-transform: uppercase; /* Viết hoa tất cả tiêu đề */
+                background: #d70018;
+                color: white;
+                text-transform: uppercase;
                 letter-spacing: 0.5px;
-                padding: 15px;
-                vertical-align: middle;
+                padding: 16px;
+                font-size: 14px;
             }
 
-            td {
+            table td {
                 text-align: center;
-                padding: 20px 15px;
-                border-bottom: 1px solid #f2f2f2;
-                vertical-align: middle;
+                padding: 16px;
+                border-bottom: 1px solid #f0f0f0;
             }
 
             tr:hover {
-                background: #fffdfa;
+                background-color: #fcfcfc;
             }
 
             img {
-                border-radius: 8px;
+                border-radius: 6px;
+                width: 100px;
                 object-fit: cover;
-                box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-            }
-            input[type="checkbox"] {
-                transform: scale(1.2);
-                cursor: pointer;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
             }
 
             .price {
-                color: #ee4d2d;
+                color: #d70018;
                 font-weight: bold;
                 font-size: 16px;
             }
@@ -87,70 +89,71 @@
             }
 
             .qty-control button {
-                width: 36px;
-                height: 36px;
-                font-size: 16px;
-            }
-
-            .qty-control span {
-                width: 40px;
-                line-height: 36px;
-            }
-
-            button[onclick*='Order'] {
-                background: #27ae60;
-                color: #fff;
-                padding: 6px 12px;
-                border-radius: 4px;
+                width: 32px;
+                height: 32px;
+                background: #eee;
                 border: none;
+                font-weight: bold;
+                cursor: pointer;
             }
 
-            button[onclick*='RemoveFromCart'] {
-                background: #e74c3c;
-                color: #fff;
-                padding: 6px 12px;
-                border-radius: 4px;
+            .qty-control input {
+                width: 50px;
                 border: none;
+                text-align: center;
+            }
+
+            button {
+                padding: 8px 14px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: 500;
+                transition: all 0.2s ease-in-out;
             }
 
             button:hover {
                 opacity: 0.9;
             }
 
-            .total-row {
-                background: #fafafa;
+            button.order-btn {
+                background-color: #d70018;
+                color: white;
+            }
+
+            button.remove-btn {
+                background-color: #888;
+                color: white;
+            }
+
+            button.buy-more-btn {
+                background-color: #d70018;
+                color: white;
                 font-weight: bold;
-                color: #555;
+            }
+
+            input[type="checkbox"] {
+                transform: scale(1.2);
+                cursor: pointer;
+            }
+
+            .total-row {
+                background: #f8f8f8;
+                font-weight: bold;
             }
 
             .total-row td {
                 font-size: 18px;
+                color: #333;
             }
 
             .empty-cart {
                 text-align: center;
-                color: #888;
                 font-size: 20px;
-                margin: 50px auto;
-            }
-            .main{
-                padding: 30px;
-            }
-            .qty-control {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
+                color: #999;
+                margin: 50px 0;
             }
 
-            .qty-control button {
-                width: 32px;
-                height: 32px;
-            }
-
-            .qty-control input {
-                width: 50px;
-                text-align: center;
-            }
 
         </style>
         <%  
@@ -218,7 +221,7 @@
                                            ${item.isSelect ? 'checked' : ''}
                                            onchange="itemSelectReOrder(this)">
                                 </td>
-                                <td><button type="button" onclick="window.location.href = 'LaptopInfo?id=${item.getLaptop().getLaptopID()}'"><img src="images/${item.laptop.imageURL}" width="100" alt="${item.laptop.laptopName}" /></button></td>
+                                <td><img src="images/${item.laptop.imageURL}" width="100" alt="${item.laptop.laptopName}" /></td>
                                 <td>${item.laptop.laptopName}</td>
                                 <td class="price"><fmt:formatNumber value="${item.unitPrice}" type="number" groupingUsed="true"/> VNĐ</td>
                                 <td>
@@ -231,16 +234,13 @@
                                 </td>                                    
                                 <td id="price-${item.laptop.laptopID}">
                                     <fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ
-                                </td>
-                                <td><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?id=${item.getLaptop().getLaptopID()}'">Order</button></td>
-                                <td>
-                                    <button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'RemoveFromCart?id=${item.getLaptop().getLaptopID()}'">Remove</button>
-                                </td>
+                                <td><button class="order-btn" onclick="window.location.href = 'Order?id=${item.getLaptop().getLaptopID()}'">Order</button></td>
+                                <td><button class="remove-btn" onclick="window.location.href = 'RemoveFromCart?id=${item.getLaptop().getLaptopID()}'">Remove</button></td>
                             </tr>
                         </c:forEach>
 
                         <tr class="total-row">
-                            <td colspan="1"><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'OrderItemSelect?'">Buy more</button></td>
+                            <td colspan="1"><button class="buy-more-btn" onclick="window.location.href = 'OrderItemSelect?'">Buy more</button></td>
                             <td colspan="4"><strong>Total amount:</strong></td>
                             <td id="total-price" colspan="1"><strong><fmt:formatNumber value="${total}" type="number" groupingUsed="true"/> VNĐ</strong></td>
                         </tr>

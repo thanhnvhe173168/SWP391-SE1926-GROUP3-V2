@@ -25,17 +25,17 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white <%= currentPage.contains("getListUser") ? "active" : "" %>" href="userList">
+            <a class="nav-link text-white <%= currentPage.contains("getListUser") ? "active" : "" %>" href="${pageContext.request.contextPath}/userList">
                 <i class="fas fa-users me-2"></i> Quản lý khách hàng
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white <%= currentPage.contains("getListLaptop") ? "active" : "" %>" href="getListLaptop">
+            <a class="nav-link text-white <%= currentPage.contains("getListLaptop") ? "active" : "" %>" href="${pageContext.request.contextPath}/getListLaptop">
                 <i class="fas fa-box me-2"></i> Quản lý sản phẩm
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white <%= currentPage.contains("getListOrder") ? "active" : "" %>" href="OrderManager">
+            <a class="nav-link text-white <%= currentPage.contains("getListOrder") ? "active" : "" %>" href="${pageContext.request.contextPath}/OrderManager">
                 <i class="fas fa-box me-2"></i> Quản lý đơn hàng
             </a>
         </li>
@@ -45,27 +45,27 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white <%= currentPage.contains("getListPromotion") ? "active" : "" %>" href="getListPromotion">
+            <a class="nav-link text-white <%= currentPage.contains("getListPromotion") ? "active" : "" %>" href="${pageContext.request.contextPath}/getListPromotion">
                 <i class="fas fa-tags me-2"></i> Quản lý khuyến mãi
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white <%= currentPage.contains("feedBackList") ? "active" : "" %>" href="feedBackList">
+            <a class="nav-link text-white <%= currentPage.contains("feedBackList") ? "active" : "" %>" href="${pageContext.request.contextPath}/feedBackList">
                 <i class="fas fa-tags me-2"></i> Quản lý đánh giá
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white <%= currentPage.contains("getListCategory") ? "active" : "" %>" href="getListCategory">
+            <a class="nav-link text-white <%= currentPage.contains("getListCategory") ? "active" : "" %>" href="${pageContext.request.contextPath}/getListCategory">
                 <i class="fas fa-list me-2"></i> Quản lý danh mục sản phẩm
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white <%= currentPage.contains("getListBrand") ? "active" : "" %>" href="getListBrand">
+            <a class="nav-link text-white <%= currentPage.contains("getListBrand") ? "active" : "" %>" href="${pageContext.request.contextPath}/getListBrand">
                 <i class="fas fa-tags me-2"></i> Quản lý nhãn hiệu
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white <%= currentPage.contains("getListBlog") ? "active" : "" %>" href="getListBlog">
+            <a class="nav-link text-white <%= currentPage.contains("getListBlog") ? "active" : "" %>" href="${pageContext.request.contextPath}/getListBlog">
                 <i class="fas fa-tags me-2"></i> Quản lý blog
             </a>
         </li>

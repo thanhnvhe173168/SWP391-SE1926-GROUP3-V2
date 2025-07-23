@@ -78,6 +78,7 @@ public class AddToCart extends HttpServlet {
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         BigDecimal total = cart.getTotal();
         try {
+            String price_raw = request.getParameter("price");
             String id_raw = request.getParameter("id");
             int id = Integer.parseInt(id_raw);
             Laptop lap = ldao.getLaptopById(id);
@@ -134,6 +135,7 @@ public class AddToCart extends HttpServlet {
         CartDetailDAO cddao = new CartDetailDAO();
         String id_raw = request.getParameter("productId");
         String quantity_raw = request.getParameter("quantity");
+        String price_raw = request.getParameter("price");
         String mess = "";
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         BigDecimal total = cart.getTotal();
