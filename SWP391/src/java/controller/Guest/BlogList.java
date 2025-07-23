@@ -38,7 +38,7 @@ public class BlogList extends HttpServlet {
         int currentPage = request.getParameter("currentPage") != null
                 ? Integer.parseInt(request.getParameter("currentPage"))
                 : 1;
-        ResultSet rsBlog = blogDao.getListBlog(currentPage, PAGE_SIZE);
+        ResultSet rsBlog = blogDao.getListBlog(currentPage, PAGE_SIZE, null, "active");
         int totalPage = 0;
         int totalRecord = blogDao.getTotalRecord("Select * from Blog");
         if (totalRecord % PAGE_SIZE != 0) {

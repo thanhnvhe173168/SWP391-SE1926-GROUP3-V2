@@ -50,6 +50,11 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link text-white <%= currentPage.contains("getListContribute") ? "active" : "" %>" href="${pageContext.request.contextPath}/getListContribute">
+                <i class="fas fa-tags me-2"></i> Ý kiến khách hàng
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link text-white <%= currentPage.contains("feedBackList") ? "active" : "" %>" href="${pageContext.request.contextPath}/feedBackList">
                 <i class="fas fa-tags me-2"></i> Quản lý đánh giá
             </a>

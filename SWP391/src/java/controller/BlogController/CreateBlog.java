@@ -12,7 +12,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.Blog;
+import model.User;
 import org.json.JSONObject;
 
 /**
@@ -33,7 +35,7 @@ public class CreateBlog extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -65,11 +67,13 @@ public class CreateBlog extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
-        
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         BlogDAO blogDao = new BlogDAO();
         String title = request.getParameter("title");
         String avatar = request.getParameter("avatar");
         String content = request.getParameter("content");
+        String blogStatus = request.getParameter("blogStatus");
         boolean checkExistTitle = blogDao.checkExistBlogTitle(title, 0);
         JSONObject json = new JSONObject();
         if (checkExistTitle) {
@@ -79,7 +83,7 @@ public class CreateBlog extends HttpServlet {
             response.getWriter().write(json.toString());
             return;
         }
-        Blog newBlog = new Blog(avatar, title, content);
+        Blog newBlog = new Blog(user.getUserID(), avatar, title, content, blogStatus);
         int check = blogDao.createBlog(newBlog);
         if (check <= 0) {
             json.put("message", "Có lỗi xảy ra");

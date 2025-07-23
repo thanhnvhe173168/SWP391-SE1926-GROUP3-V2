@@ -21,7 +21,7 @@ import java.sql.ResultSet;
 @WebServlet(name = "GetListBlog", urlPatterns = {"/getListBlog"})
 public class GetListBlog extends HttpServlet {
 
-    private static int PAGE_SIZE = 9;
+    private static final int PAGE_SIZE = 9;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,7 +39,9 @@ public class GetListBlog extends HttpServlet {
         int currentPage = request.getParameter("currentPage") != null
                 ? Integer.parseInt(request.getParameter("currentPage"))
                 : 1;
-        ResultSet rsBlog = blogDao.getListBlog(currentPage, PAGE_SIZE);
+        String title = request.getParameter("title");
+        String blogStatus = request.getParameter("blogStatus");
+        ResultSet rsBlog = blogDao.getListBlog(currentPage, PAGE_SIZE, title, blogStatus);
         int totalPage = 0;
         int totalRecord = blogDao.getTotalRecord("Select * from Blog");
         if (totalRecord % PAGE_SIZE != 0) {

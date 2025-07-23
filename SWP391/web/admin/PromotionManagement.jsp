@@ -194,7 +194,7 @@
             function handleFilter() {
                 var title = document.getElementById("title").value;
                 var status = document.getElementById("status").value;
-                if (!title || +status !== 0) {
+                if (!title || +status === 0) {
                     params.delete("title");
                     params.delete("status");
                 }

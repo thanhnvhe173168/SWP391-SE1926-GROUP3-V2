@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.BlogController;
+package controller.ContributeController;
 
-import dao.BlogDAO;
+import dao.ContributeDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,15 +12,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.Blog;
+import jakarta.servlet.http.HttpSession;
+import model.Contribute;
+import model.User;
 import org.json.JSONObject;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "UpdateBlog", urlPatterns = {"/updateBlog"})
-public class UpdateBlog extends HttpServlet {
+@WebServlet(name = "CreateContribute", urlPatterns = {"/createContribute"})
+public class CreateContribute extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,11 +50,7 @@ public class UpdateBlog extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BlogDAO blogDao = new BlogDAO();
-        int blogId = Integer.parseInt(request.getParameter("blogId"));
-        Blog blog = blogDao.getBlogById(blogId);
-        request.setAttribute("blog", blog);
-        request.getRequestDispatcher("/admin/UpdateBlog.jsp").forward(request, response);
+        request.getRequestDispatcher("/user/CreateContribute.jsp").forward(request, response);
     }
 
     /**
@@ -66,39 +64,14 @@ public class UpdateBlog extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        
-        BlogDAO blogDao = new BlogDAO();
-        int blogId = Integer.parseInt(request.getParameter("blogId"));
-        String title = request.getParameter("title");
-        String avatar = request.getParameter("avatar");
+        ContributeDAO contributeDao = new ContributeDAO();
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         String content = request.getParameter("content");
-         String blogStatus = request.getParameter("blogStatus");
-        boolean checkExistTitle = blogDao.checkExistBlogTitle(title, blogId);
-        JSONObject json = new JSONObject();
-        if (checkExistTitle) {
-            json.put("message", "Tiêu đề blog đã tồn tại");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(json.toString());
-            return;
-        }
-        Blog newBlog = new Blog();
-        newBlog.setBlogID(blogId);
-        newBlog.setAvatar(avatar);
-        newBlog.setTitle(title);
-        newBlog.setAvatar(avatar);
-        newBlog.setContent(content);
-        newBlog.setBlogStatus(blogStatus);
-        int check = blogDao.updateBlog(newBlog);
-        if (check <= 0) {
-            json.put("message", "Có lỗi xảy ra");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(json.toString());
-        }
+        Contribute newContribute = new Contribute(user.getUserID(), content);
+        contributeDao.createContribute(newContribute);
+        request.setAttribute("message", "Cảm ơn bạn đã đóng góp ý kiến");
+        request.getRequestDispatcher("/user/CreateContribute.jsp").forward(request, response);
     }
 
     /**

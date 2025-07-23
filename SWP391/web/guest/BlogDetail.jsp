@@ -1,38 +1,77 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="model.Blog"%>
+<%@page import="java.sql.ResultSet"%>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
     <head>
         <meta charset="UTF-8">
-        <title>${blog.title}</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Chi Tiết Blog</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Custom CSS -->
         <style>
             body {
                 font-family: Arial, sans-serif;
+                background-color: #f8f9fa;
+            }
+            .blog-container {
+                max-width: 800px;
+                margin: 50px auto;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .blog-title {
+                font-size: 2.5rem;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            .blog-meta {
+                color: #6c757d;
+                font-size: 0.9rem;
+                margin-bottom: 20px;
             }
             .blog-content {
                 line-height: 1.6;
-                font-size: 16px;
+                font-size: 1.1rem;
+                margin-bottom: 30px;
             }
-            .blog-content img {
-                max-width: 100%;
-                height: auto;
+            .comment-section {
+                margin-top: 40px;
+            }
+            .comment-form {
+                margin-top: 20px;
+            }
+            .comment {
+                border-bottom: 1px solid #dee2e6;
+                padding: 15px 0;
             }
         </style>
     </head>
     <body>
         <%
-                Blog blog = (Blog) request.getAttribute("blog");
+               ResultSet rsBlog = (ResultSet) request.getAttribute("rsBlog");
         %>
-        <jsp:include page="/components/Header.jsp"></jsp:include>
-            <div class="container my-5">
-                <h1 class="mb-4"><%=blog.getTitle()%></h1>
-            <div class="blog-content">
-                <%=blog.getContent()%>
+        <div class="container blog-container">
+            <!-- Blog Title -->
+            <%if(rsBlog != null) {
+            while(rsBlog.next()) {%>
+            <h1 class="blog-title"><%=rsBlog.getString("Title")%></h1>
+            <div class="blog-meta">
+                <span>Đăng bởi: <%=rsBlog.getString("AuthorName")%></span> | 
+                <span>Ngày đăng: <%=rsBlog.getString("CreatedAt")%></span>
             </div>
-            <a href="blogList" class="btn btn-secondary mt-3">Quay lại</a>
+            <div class="blog-content">
+                <%=rsBlog.getString("Content")%>
+            </div>
+            <%  }
+        } else {%>
+            <h3>Blog không tồn tại</h3>
+            <%}%>
         </div>
-        <jsp:include page="/components/Footer.jsp"></jsp:include>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Bootstrap JS and Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

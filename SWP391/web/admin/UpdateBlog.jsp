@@ -84,7 +84,8 @@
                                 >
                                 Trở lại
                             </button>
-                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                            <button type="button" style="margin-right: 12px" class="btn btn-primary" onclick="handleSubmit('draft')">Lưu nháp</button>
+                            <button type="button" class="btn btn-primary" onclick="handleSubmit('active')">Lưu</button>
                         </div>
                     </form>
                 </div>
@@ -96,6 +97,7 @@
                     .create(document.querySelector('#editor'))
                     .then(editor => {
                         console.log('Editor was initialized', editor);
+                        window.editor = editor;
                     })
                     .catch(error => {
                         console.error(error);
@@ -105,27 +107,34 @@
                 window.location.href = "getListBlog";
             }
 
-            $(document).ready(function () {
-                $('#formUpdateBlog').submit((function (e) {
-                    e.preventDefault();
-                    $.ajax(({
-                        url: "updateBlog",
-                        type: 'POST',
-                        data: $('#formUpdateBlog').serialize(),
-                        success: function (data) {
-                            if (data.message) {
-                                $("#message").text(data.message);
-                            } else {
-                                handleRedirect();
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error:', error.toString());
-                            $("#result").text('Có lỗi xảy ra!');
+            function handleSubmit(blogStatus) {
+                if (window.editor) {
+                    var content = window.editor.getData(); // Lấy nội dung từ CKEditor
+                    document.getElementById('editor').value = content; // Gán vào <textarea>
+                    console.log("Content synchronized:", content);
+                } else {
+                    console.warn("CKEditor instance not found");
+                }
+                var formData = $('#formUpdateBlog').serialize();
+                var data = formData + '&blogStatus=' + encodeURIComponent(blogStatus);
+
+                $.ajax({
+                    url: 'updateBlog',
+                    type: 'POST',
+                    data: data,
+                    success: function (data) {
+                        if (data.message) {
+                            $("#message").text(data.message);
+                        } else {
+                            handleRedirect();
                         }
-                    }));
-                }));
-            });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error.toString());
+                        $("#result").text('Có lỗi xảy ra!');
+                    }
+                });
+            }
         </script>
     </body>
 </html>

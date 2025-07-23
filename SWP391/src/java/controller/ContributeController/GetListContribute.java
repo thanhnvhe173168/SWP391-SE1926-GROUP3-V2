@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.BlogController;
+package controller.ContributeController;
 
-import dao.BlogDAO;
+import dao.ContributeDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,15 +12,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.Blog;
-import org.json.JSONObject;
+import java.sql.ResultSet;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "UpdateBlog", urlPatterns = {"/updateBlog"})
-public class UpdateBlog extends HttpServlet {
+@WebServlet(name = "GetListContribute", urlPatterns = {"/getListContribute"})
+public class GetListContribute extends HttpServlet {
+
+    private static final int PAGE_SIZE = 10;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,7 +34,27 @@ public class UpdateBlog extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        ContributeDAO contributeDao = new ContributeDAO();
+        int currentPage = request.getParameter("currentPage") != null
+                ? Integer.parseInt(request.getParameter("currentPage"))
+                : 1;
+        String authorName = request.getParameter("authorName");
+        String orderBy = request.getParameter("orderBy") != null
+                ? request.getParameter("orderBy")
+                : "DESC";
+        ResultSet rsContribute = contributeDao.getContribute(currentPage, PAGE_SIZE, authorName, orderBy);
+        int totalPage = 0;
+        int totalRecord = contributeDao.getTotalRecord("Select * from Contribute");
+        if (totalRecord % PAGE_SIZE != 0) {
+            totalPage = totalRecord / PAGE_SIZE + 1;
+        } else {
+            totalPage = totalRecord / PAGE_SIZE;
+        }
 
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("totalPage", totalPage);
+        request.setAttribute("rsContribute", rsContribute);
+        request.getRequestDispatcher("/admin/ContributeManagement.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -48,11 +69,7 @@ public class UpdateBlog extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BlogDAO blogDao = new BlogDAO();
-        int blogId = Integer.parseInt(request.getParameter("blogId"));
-        Blog blog = blogDao.getBlogById(blogId);
-        request.setAttribute("blog", blog);
-        request.getRequestDispatcher("/admin/UpdateBlog.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -66,39 +83,7 @@ public class UpdateBlog extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        
-        BlogDAO blogDao = new BlogDAO();
-        int blogId = Integer.parseInt(request.getParameter("blogId"));
-        String title = request.getParameter("title");
-        String avatar = request.getParameter("avatar");
-        String content = request.getParameter("content");
-         String blogStatus = request.getParameter("blogStatus");
-        boolean checkExistTitle = blogDao.checkExistBlogTitle(title, blogId);
-        JSONObject json = new JSONObject();
-        if (checkExistTitle) {
-            json.put("message", "Tiêu đề blog đã tồn tại");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(json.toString());
-            return;
-        }
-        Blog newBlog = new Blog();
-        newBlog.setBlogID(blogId);
-        newBlog.setAvatar(avatar);
-        newBlog.setTitle(title);
-        newBlog.setAvatar(avatar);
-        newBlog.setContent(content);
-        newBlog.setBlogStatus(blogStatus);
-        int check = blogDao.updateBlog(newBlog);
-        if (check <= 0) {
-            json.put("message", "Có lỗi xảy ra");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(json.toString());
-        }
+        processRequest(request, response);
     }
 
     /**

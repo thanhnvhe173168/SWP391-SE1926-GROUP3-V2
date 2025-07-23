@@ -3,8 +3,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <title>Quản lý blog</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Góp ý của khách hàng</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
         <style>
@@ -47,11 +47,15 @@
                 color: white;
             }
 
+            .btn-icon {
+                border-radius: 50px;
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
             .btn-update {
                 color: #ffc107;
                 border: 1px solid #ffc107;
-                border-radius: 6px;
-                padding: 4px 8px;
             }
 
             .btn-update:hover {
@@ -62,20 +66,11 @@
             .btn-delete {
                 color: #dc3545;
                 border: 1px solid #dc3545;
-                border-radius: 6px;
-                padding: 4px 8px;
             }
 
             .btn-delete:hover {
                 background-color: #dc3545;
                 color: white;
-            }
-
-            img.avatar {
-                width: 50px;
-                height: 50px;
-                border-radius: 10px;
-                object-fit: cover;
             }
 
             .toolbar input,
@@ -90,38 +85,35 @@
     </head>
     <body>
         <%
-            ResultSet rsBlog = (ResultSet) request.getAttribute("rsBlog");
+            ResultSet rsContribute = (ResultSet) request.getAttribute("rsContribute");
         %>
         <div class="d-flex">
             <jsp:include page="/components/AdminSidebar.jsp"></jsp:include>
-                <div style="width: 100%; height: calc(100vh - 100px); overflow-y: auto" class="container">
+                <div style="width: 100%; height: calc(100dvh - 100px); overflow-y: auto" class="container">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <p style="color: #dd3726; font-size: 40px; font-weight: 700;">Quản lý blog</p>
-                        <button type="button" class="btn btn-outline-primary" onclick="handleRedirect()">
-                            <i class="fa-solid fa-plus"></i> Thêm blog
-                        </button>
+                        <p style="color: #dd3726; font-size: 40px; font-weight: 700;">Góp ý của khách hàng</p>
                     </div>
                     <div class="row">
                         <div class="col-8 toolbar mb-4">
                             <input 
                                 type="text" 
-                                id="title" 
-                                placeholder="Tìm kiếm theo tiêu đề" 
-                                value="<%=request.getParameter("title") != null ? request.getParameter("title") : ""%>" 
+                                id="authorName" 
+                                placeholder="Tìm kiếm tên khách hàng" 
+                                value="<%=request.getParameter("authorName") != null ? request.getParameter("authorName") : ""%>" 
                             />
                     </div>
                     <div class="col-2 toolbar mb-4">
-                        <select name="blogStatus" id="blogStatus">
-                            <option value="0" <%="0".equals(request.getParameter("blogStatus")) ? "selected" : "" %>>Trạng thái</option>
+                        <select name="orderBy" id="orderBy">
+                            <option value="0" <%="0".equals(request.getParameter("orderBy")) ? "selected" : "" %>>Sắp xếp theo ngày tạo</option>
                             <option 
-                                value="active"
-                                <%=(request.getParameter("blogStatus") != null && request.getParameter("blogStatus").equals("active")) ? "selected" : "" %>>
-                                Active
+                                value="DESC"
+                                <%=(request.getParameter("orderBy") != null && request.getParameter("orderBy").equals("DESC")) ? "selected" : "" %>>
+                                Giảm dần
                             </option>
                             <option 
-                                value="inactive"
-                                <%=(request.getParameter("blogStatus") != null && request.getParameter("blogStatus").equals("inactive")) ? "selected" : "" %>>
-                                Inactive
+                                value="ASC"
+                                <%=(request.getParameter("orderBy") != null && request.getParameter("orderBy").equals("ASC")) ? "selected" : "" %>>
+                                Tăng dần
                             </option>
                             <option 
                                 value="draft"
@@ -139,42 +131,31 @@
                         <table class="table table-bordered text-center">
                             <thead>
                                 <tr>
-                                    <th style="width: 8%">STT</th>
-                                    <th style="width: 15%">Ảnh</th>
-                                    <th>Tiêu đề</th>
+                                    <th style="width: 10%">STT</th>
+                                    <th>Tên khách hàng</th>
+                                    <th>Nội dung</th>
                                     <th>Ngày tạo</th>
-                                    <th>Trạng thái</th>
-                                    <th style="width: 20%">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <% if (rsBlog != null) {
-                                    int index = 0;
-                                    while (rsBlog.next()) {
-                                        index++;
+                                <%
+                                    if (rsContribute != null) {
+                                        int index = 0;
+                                        while (rsContribute.next()) {
+                                            index++;
                                 %>
                                 <tr>
-                                    <td><%= index %></td>
-                                    <td>
-                                        <img src="<%= rsBlog.getString("Avatar") %>" class="avatar" alt="Ảnh blog">
-                                    </td>
-                                    <td><%= rsBlog.getString("Title") %></td>
-                                    <td><%= rsBlog.getString("CreatedAt") %></td>
-                                    <td><%= rsBlog.getString("BlogStatus") %></td>
-                                    <td>
-                                        <a href="updateBlog?blogId=<%= rsBlog.getInt("BlogID") %>" class="btn btn-update me-2">
-                                            <i class="fa-solid fa-pen-to-square"></i> Sửa
-                                        </a>
-                                        <a href="deleteBlog?blogId=<%= rsBlog.getInt("BlogID") %>" class="btn btn-delete"
-                                           onclick="return confirm('Bạn có chắc chắn muốn xóa blog này không?');">
-                                            <i class="fa-solid fa-trash"></i> Xóa
-                                        </a>
-                                    </td>
+                                    <th><%= index %></th>
+                                    <td><%= rsContribute.getString("AuthorName") %></td>
+                                    <td><%= rsContribute.getString("Content") %></td>
+                                    <td><%= rsContribute.getString("CreatedAt") %></td>
                                 </tr>
-                                <%  } 
-                           } else { %>
+                                <%
+                                        }
+                                    } else {
+                                %>
                                 <tr>
-                                    <td colspan="4">
+                                    <td colspan="3">
                                         <div class="text-center">Không có dữ liệu</div>
                                     </td>
                                 </tr>
@@ -189,22 +170,23 @@
             const params = new URLSearchParams(window.location.search);
 
             function handleRedirect() {
-                window.location.href = "createBlog";
+                window.location.href = "createBrand";
             }
+
             function handleFilter() {
-                var title = document.getElementById("title").value;
-                var blogStatus = document.getElementById("blogStatus").value;
-                if (!title || +blogStatus === 0) {
-                    params.delete("title");
-                    params.delete("blogStatus");
+                var authorName = document.getElementById("authorName").value;
+                var orderBy = document.getElementById("orderBy").value;
+                if (!authorName || +orderBy === 0) {
+                    params.delete("authorName");
+                    params.delete("orderBy");
                 }
-                if (!!title) {
-                    params.set("title", title);
+                if (!!authorName) {
+                    params.set("authorName", authorName);
                 }
-                if (+blogStatus !== 0) {
-                    params.set("blogStatus", blogStatus);
+                if (+orderBy !== 0) {
+                    params.set("orderBy", orderBy);
                 }
-                window.location.href = "getListBlog?" + params.toString();
+                window.location.href = "getListContribute?" + params.toString();
             }
         </script>
     </body>
