@@ -150,7 +150,7 @@
                             <p class="card-text"><%=rsLaptop.getString("Size")%>, <%=rsLaptop.getString("CPUInfo")%>, <%=rsLaptop.getString("RAM")%>, <%=rsLaptop.getString("HardDrive")%></p>
                             <p class="card-text fw-bold"><%=String.format("%,.0f VNĐ", rsLaptop.getDouble("Price"))%></p>
                             <a href="productDetail?productId=<%=rsLaptop.getInt("LaptopID")%>" class="btn btn-primary">View Details</a>
-                            <button class="btn btn-success ms-2" onclick="addtocart(<%=rsLaptop.getInt("LaptopID")%>)">
+                            <button class="btn btn-success ms-2" onclick="addtocart(<%=rsLaptop.getInt("LaptopID")%>,?)">
                                 Add to Cart
                             </button>   
                             <button class="btn btn-outline-danger ms-2" onclick="addToWishlist(<%=rsLaptop.getInt("LaptopID")%>)">
@@ -203,8 +203,9 @@
                 window.location.href = '/swp391/addToWishList?id=' + laptopId;
             }
 
-            function addtocart(laptopid) {
-                fetch('AddToCart?id=' + encodeURIComponent(laptopid))
+            function addtocart(laptopid, price) {
+                const url = 'AddToCart?id=' + encodeURIComponent(laptopid) + '&price=' + encodeURIComponent(price);
+                fetch(url)
                         .then(res => res.json())
                         .then(data => {
                             Swal.fire({
