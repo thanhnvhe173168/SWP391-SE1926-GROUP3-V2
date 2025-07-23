@@ -155,6 +155,7 @@
                     <form id="addToCartForm" action="AddToCart" method="post">
                         <input type="hidden" name="productId" id="productId" value="<%=rsLaptop.getInt("LaptopID")%>">
                         <input type="hidden" name="quantity" id="quantityhidden">
+                        <input type="hidden" name="price" id="price" value="?">
                     </form>
                     <br>
                     <button class="buy-now-btn" onclick="buyNow()">
