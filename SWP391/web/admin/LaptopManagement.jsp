@@ -270,7 +270,7 @@
                                         <img src="images/<%=rsLaptop.getString("ImageURL")%>" alt="<%=rsLaptop.getString("LaptopName")%>" style="width: 40px; height: 40px"/>
                                     </td>
                                     <td><%=rsLaptop.getString("LaptopName")%></td>
-                                    <td><%=rsLaptop.getString("Price")%></td>
+                                    <td><%=String.format("%,.0f VNĐ", rsLaptop.getDouble("Price"))%></td>
                                     <td><%=rsLaptop.getString("HardDrive")%></td>
                                     <td><%=rsLaptop.getString("WarrantyPeriod")%></td>
                                     <td><%=rsLaptop.getString("CPUInfo")%></td>

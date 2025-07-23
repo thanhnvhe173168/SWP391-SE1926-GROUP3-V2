@@ -56,8 +56,8 @@ public class Home extends HttpServlet {
         ResultSet rsCategory = laptopDao.getData("Select * from Category");
         ResultSet rsCPU = laptopDao.getData("Select * from CPU");
         ResultSet rsScreen = laptopDao.getData("Select * from ScreenSize");
-        
-        ResultSet rsBlog = blogDao.getListBlog(1, PAGE_SIZE);
+
+        ResultSet rsBlog = blogDao.getListBlog(1, PAGE_SIZE, null, "active");
 
         ResultSet rsLaptop = laptopDao.getListLaptop(1, PAGE_SIZE, null, 0, 0, 0, 0, 0);
         request.setAttribute("rsBrand", rsBrand);

@@ -5,7 +5,7 @@
 
 package controller.Guest;
 
-import dao.BlogDAO;
+import dao.PromotionDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,14 +14,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.ResultSet;
-import model.Blog;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name="BlogDetail", urlPatterns={"/blogDetail"})
-public class BlogDetail extends HttpServlet {
+@WebServlet(name="PromotionDetail", urlPatterns={"/promotionDetail"})
+public class PromotionDetail extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -32,11 +31,11 @@ public class BlogDetail extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        BlogDAO blogDao = new BlogDAO();
-        int blogId = Integer.parseInt(request.getParameter("blogId"));
-        ResultSet rsBlog = blogDao.blogDetail(blogId);
-        request.setAttribute("rsBlog", rsBlog);
-        request.getRequestDispatcher("/guest/BlogDetail.jsp").forward(request, response);
+        PromotionDAO promotionDao = new PromotionDAO();
+        int promotionId = Integer.parseInt(request.getParameter("promotionId"));
+        ResultSet rsLaptop = promotionDao.promotionDetail(promotionId);
+        request.setAttribute("rsLaptop", rsLaptop);
+        request.getRequestDispatcher("/guest/PromotionDetail.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
