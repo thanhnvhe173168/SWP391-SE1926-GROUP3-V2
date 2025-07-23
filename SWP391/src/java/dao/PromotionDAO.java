@@ -76,18 +76,12 @@ public class PromotionDAO extends ConnectDB {
                 prefixSql += "where p.Title like ? and p.Status = ? ";
             }
             String sql = prefixSql + suffixSql;
-            System.out.println(sql);
-            System.out.println(title);
-            System.out.println(status);
             PreparedStatement pre = connect.prepareStatement(sql);
             if (title != null && !title.trim().isEmpty() && status == null) {
-                System.out.println("only title");
                 pre.setString(1, "%" + title + "%");
             } else if (title == null && status != null && !status.trim().isEmpty()) {
-                System.out.println("only status");
                 pre.setString(1, status);
             } else if (title != null && !title.trim().isEmpty() && status != null && !status.trim().isEmpty()) {
-                System.out.println("both");
                 pre.setString(1, "%" + title + "%");
                 pre.setString(2, status);
             }
@@ -226,5 +220,20 @@ public class PromotionDAO extends ConnectDB {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public ResultSet promotionDetail(int promotionId) {
+        ResultSet rs = null;
+        String sqlPromotion = "select p.DiscountPrice, l.LaptopID, l.ImageURL, l.LaptopName, l.HardDrive, l.RAM, l.Price from PromotionProduct p "
+                + "inner join Laptop l on p.LaptopID = l.LaptopID "
+                + "where p.PromotionID = ?";
+        try {
+            PreparedStatement prePromotion = connect.prepareStatement(sqlPromotion);
+            prePromotion.setInt(1, promotionId);
+            rs = prePromotion.executeQuery();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rs;
     }
 }

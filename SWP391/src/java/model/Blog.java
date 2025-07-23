@@ -12,11 +12,21 @@ import java.util.Date;
  */
 public class Blog {
 
-    private int BlogID;
-    private String Avatar, Title, Content;
+    private int BlogID, Author;
+    private String Avatar, Title, Content, BlogStatus;
     private Date CreatedAt;
 
     public Blog() {
+    }
+
+    public Blog(int BlogID, int Author, String Avatar, String Title, String Content, String BlogStatus, Date CreatedAt) {
+        this.BlogID = BlogID;
+        this.Author = Author;
+        this.Avatar = Avatar;
+        this.Title = Title;
+        this.Content = Content;
+        this.BlogStatus = BlogStatus;
+        this.CreatedAt = CreatedAt;
     }
 
     public Blog(int BlogID, String Avatar, String Title, String Content) {
@@ -26,10 +36,12 @@ public class Blog {
         this.Content = Content;
     }
 
-    public Blog(String Avatar, String Title, String Content) {
+    public Blog(int Author, String Avatar, String Title, String Content, String BlogStatus) {
+        this.Author = Author;
         this.Avatar = Avatar;
         this.Title = Title;
         this.Content = Content;
+        this.BlogStatus = BlogStatus;
     }
 
     public int getBlogID() {
@@ -38,6 +50,14 @@ public class Blog {
 
     public void setBlogID(int BlogID) {
         this.BlogID = BlogID;
+    }
+
+    public int getAuthor() {
+        return Author;
+    }
+
+    public void setAuthor(int Author) {
+        this.Author = Author;
     }
 
     public String getAvatar() {
@@ -62,6 +82,14 @@ public class Blog {
 
     public void setContent(String Content) {
         this.Content = Content;
+    }
+
+    public String getBlogStatus() {
+        return BlogStatus;
+    }
+
+    public void setBlogStatus(String BlogStatus) {
+        this.BlogStatus = BlogStatus;
     }
 
     public Date getCreatedAt() {

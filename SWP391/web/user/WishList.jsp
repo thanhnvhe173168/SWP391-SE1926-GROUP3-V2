@@ -127,7 +127,7 @@
                                     <td>${w.laptop.price} VNĐ</td>
                                     <td>
                                         <a href="productDetail?productId=${w.laptop.laptopID}" class="btn btn-primary btn-custom">Xem chi tiết</a>
-                                        <a href="AddToCart?id=${w.laptop.laptopID}" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</a>
+                                        <button onclick="addtocart(<%=rsLaptop.getInt("LaptopID")%>,<%=rsLaptop.getDouble("Price")%>)" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</button>
                                         <a href="removeWishList?id=${w.wishlistId}" class="btn btn-danger btn-custom ms-2" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
                                             <i class="fas fa-trash"></i> Xóa
                                         </a>
@@ -146,41 +146,41 @@
             </c:choose>
 
             <c:if test="${totalPages > 1}">
-                    <nav aria-label="Pagination" class="mt-4">
-                        <ul class="pagination justify-content-center">
-                            <!-- Nút Trước -->
-                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                <a class="page-link" href="wishList?page=${currentPage - 1}">Trước</a>
+                <nav aria-label="Pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <!-- Nút Trước -->
+                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                            <a class="page-link" href="wishList?page=${currentPage - 1}">Trước</a>
+                        </li>
+
+                        <!-- Trang đầu và dấu ... -->
+                        <c:if test="${currentPage > 3}">
+                            <li class="page-item"><a class="page-link" href="wishList?page=1">1</a></li>
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            </c:if>
+
+                        <!-- Các trang gần current -->
+                        <c:forEach begin="${currentPage - 2 < 1 ? 1 : currentPage - 2}" 
+                                   end="${currentPage + 2 > totalPages ? totalPages : currentPage + 2}" 
+                                   var="i">
+                            <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                <a class="page-link" href="wishList?page=${i}">${i}</a>
                             </li>
+                        </c:forEach>
 
-                            <!-- Trang đầu và dấu ... -->
-                            <c:if test="${currentPage > 3}">
-                                <li class="page-item"><a class="page-link" href="wishList?page=1">1</a></li>
-                                <li class="page-item disabled"><span class="page-link">...</span></li>
-                                </c:if>
+                        <!-- Dấu ... và trang cuối -->
+                        <c:if test="${currentPage + 2 < totalPages}">
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            <li class="page-item"><a class="page-link" href="wishList?page=${totalPages}">${totalPages}</a></li>
+                            </c:if>
 
-                            <!-- Các trang gần current -->
-                            <c:forEach begin="${currentPage - 2 < 1 ? 1 : currentPage - 2}" 
-                                       end="${currentPage + 2 > totalPages ? totalPages : currentPage + 2}" 
-                                       var="i">
-                                <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                    <a class="page-link" href="wishList?page=${i}">${i}</a>
-                                </li>
-                            </c:forEach>
-
-                            <!-- Dấu ... và trang cuối -->
-                            <c:if test="${currentPage + 2 < totalPages}">
-                                <li class="page-item disabled"><span class="page-link">...</span></li>
-                                <li class="page-item"><a class="page-link" href="wishList?page=${totalPages}">${totalPages}</a></li>
-                                </c:if>
-
-                            <!-- Nút Sau -->
-                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                <a class="page-link" href="wishList?page=${currentPage + 1}">Sau</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </c:if>
+                        <!-- Nút Sau -->
+                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                            <a class="page-link" href="wishList?page=${currentPage + 1}">Sau</a>
+                        </li>
+                    </ul>
+                </nav>
+            </c:if>
 
             <div class="continue-shopping">
                 <a href="${pageContext.request.contextPath}/home" class="btn btn-lg">Tiếp tục mua sắm</a>
@@ -189,6 +189,24 @@
 
         <jsp:include page="/components/Footer.jsp"></jsp:include>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+                                            function addtocart(laptopid, price) {
+                                                const url = 'AddToCart?id=' + encodeURIComponent(laptopid) + '&price=' + encodeURIComponent(price);
+                                                fetch(url)
+                                                        .then(res => res.json())
+                                                        .then(data => {
+                                                            Swal.fire({
+                                                                icon: data.icon,
+                                                                title: data.mess,
+                                                                showConfirmButton: false,
+                                                                timer: 2000
+                                                            });
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('Lỗi:', error);
+                                                        });
+                                            }
+        </script>
     </body>
 
 </html>

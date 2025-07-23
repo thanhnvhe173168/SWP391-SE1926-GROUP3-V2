@@ -117,6 +117,7 @@
                             </button> 
                             <button class="btn btn-outline-danger ms-2" onclick="addToWishlist(<%=rsLaptop.getInt("LaptopID")%>)">
                                 <i class="fas fa-heart"></i>
+                            </button>    
                         </div>
                     </div>
                 </div>
@@ -181,23 +182,23 @@
                 function addToWishlist(laptopId) {
                     window.location.href = '/swp391/addToWishList?id=' + laptopId;
                 }
-                
+
                 function addtocart(laptopid, price) {
-                const url = 'AddToCart?id=' + encodeURIComponent(laptopid) + '&price=' + encodeURIComponent(price);
-                fetch(url)
-                        .then(res => res.json())
-                        .then(data => {
-                            Swal.fire({
-                                icon: data.icon,
-                                title: data.mess,
-                                showConfirmButton: false,
-                                timer: 2000
+                    const url = 'AddToCart?id=' + encodeURIComponent(laptopid) + '&price=' + encodeURIComponent(price);
+                    fetch(url)
+                            .then(res => res.json())
+                            .then(data => {
+                                Swal.fire({
+                                    icon: data.icon,
+                                    title: data.mess,
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Lỗi:', error);
                             });
-                        })
-                        .catch(error => {
-                            console.error('Lỗi:', error);
-                        });
-            }
+                }
 
         </script>
     </body>
