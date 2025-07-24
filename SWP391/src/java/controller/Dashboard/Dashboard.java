@@ -13,6 +13,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
@@ -32,6 +34,11 @@ public class Dashboard extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4 || user.getRoleID() == 2) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         LaptopDAO laptopDao = new LaptopDAO();
         OrderDAO orderDao = new OrderDAO();
 
@@ -45,7 +52,8 @@ public class Dashboard extends HttpServlet {
         request.setAttribute("totalLaptop", totalLaptop);
         request.setAttribute("totalCustomer", totalCustomer);
         request.setAttribute("totalOrder", totalOrder);
-        request.setAttribute("totalAmount", totalAmount);  request.setAttribute("totalCancelOrder", totalCancelOrder);
+        request.setAttribute("totalAmount", totalAmount);
+        request.setAttribute("totalCancelOrder", totalCancelOrder);
         request.setAttribute("totalRefundOrder", totalRefundOrder);
         request.setAttribute("totalCancelOrder", totalCancelOrder);
         request.setAttribute("totalRefundOrder", totalRefundOrder);

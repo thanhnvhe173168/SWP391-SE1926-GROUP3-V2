@@ -6,6 +6,7 @@ package controller.Guest;
 
 import dao.BlogDAO;
 import dao.LaptopDAO;
+import dao.PromotionDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -51,21 +52,16 @@ public class Home extends HttpServlet {
             throws ServletException, IOException {
         LaptopDAO laptopDao = new LaptopDAO();
         BlogDAO blogDao = new BlogDAO();
+        PromotionDAO promotionDao = new PromotionDAO();
 
+        ResultSet rsPromotion = promotionDao.getListPromotion(null, "active");
         ResultSet rsBrand = laptopDao.getData("Select * from Brand");
-        ResultSet rsCategory = laptopDao.getData("Select * from Category");
-        ResultSet rsCPU = laptopDao.getData("Select * from CPU");
-        ResultSet rsScreen = laptopDao.getData("Select * from ScreenSize");
-
         ResultSet rsBlog = blogDao.getListBlog(1, PAGE_SIZE, null, "active");
-
         ResultSet rsLaptop = laptopDao.getListLaptop(1, PAGE_SIZE, null, 0, 0, 0, 0, 0);
         request.setAttribute("rsBrand", rsBrand);
-        request.setAttribute("rsCategory", rsCategory);
-        request.setAttribute("rsCPU", rsCPU);
-        request.setAttribute("rsScreen", rsScreen);
         request.setAttribute("rsLaptop", rsLaptop);
         request.setAttribute("rsBlog", rsBlog);
+        request.setAttribute("rsPromotion", rsPromotion);
 
         request.getRequestDispatcher("/guest/HomePage.jsp").forward(request, response);
     }

@@ -12,6 +12,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 import org.json.JSONObject;
 
 /**
@@ -46,6 +48,11 @@ public class CreateBrand extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4 || user.getRoleID() == 2) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         request.getRequestDispatcher("/admin/CreateBrand.jsp").forward(request, response);
     }
 
@@ -60,6 +67,11 @@ public class CreateBrand extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4 || user.getRoleID() == 2) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         BrandDAO brandDao = new BrandDAO();
         String brandName = request.getParameter("brandName");
         boolean checkExist = brandDao.checkExistBrandName(brandName, 0);
