@@ -15,17 +15,23 @@
                 background-color: #f8f9fa;
             }
             .blog-container {
-                max-width: 800px;
+                width: 900px;
                 margin: 50px auto;
                 padding: 20px;
+            }
+            .blog-body {
+                width: 800px;
+                margin: auto;
                 background-color: #fff;
                 border-radius: 10px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
             }
+
             .blog-title {
                 font-size: 2.5rem;
                 font-weight: bold;
-                margin-bottom: 20px;
+                margin-bottom: 10px;
             }
             .blog-meta {
                 color: #6c757d;
@@ -53,24 +59,30 @@
         <%
                ResultSet rsBlog = (ResultSet) request.getAttribute("rsBlog");
         %>
-        <div class="container blog-container">
-            <!-- Blog Title -->
-            <%if(rsBlog != null) {
+        <jsp:include page="/components/Header.jsp"></jsp:include>
+            <div class="container">
+                <div class="blog-container">
+                    <!-- Blog Title -->
+                <%if(rsBlog != null) {
             while(rsBlog.next()) {%>
-            <h1 class="blog-title"><%=rsBlog.getString("Title")%></h1>
-            <div class="blog-meta">
-                <span>Đăng bởi: <%=rsBlog.getString("AuthorName")%></span> | 
-                <span>Ngày đăng: <%=rsBlog.getString("CreatedAt")%></span>
-            </div>
-            <div class="blog-content">
-                <%=rsBlog.getString("Content")%>
-            </div>
-            <%  }
+                <img style="width: 100%; border-radius: 12px" src="<%=rsBlog.getString("Avatar")%>" />
+                <div class="blog-body">
+                    <h1 class="blog-title"><%=rsBlog.getString("Title")%></h1>
+                    <div class="blog-meta">
+                        <span>Đăng bởi: <%=rsBlog.getString("AuthorName")%></span> | 
+                        <span>Ngày đăng: <%=rsBlog.getString("CreatedAt")%></span>
+                    </div>
+                    <div class="blog-content">
+                        <%=rsBlog.getString("Content")%>
+                    </div>
+                </div>
+                <%  }
         } else {%>
-            <h3>Blog không tồn tại</h3>
-            <%}%>
+                <h3>Blog không tồn tại</h3>
+                <%}%>
+            </div>
         </div>
-
+        <jsp:include page="/components/Footer.jsp"></jsp:include>
         <!-- Bootstrap JS and Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>

@@ -12,6 +12,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -33,6 +35,11 @@ public class GetDetailPromotion extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         PromotionDAO promotionDao = new PromotionDAO();
         int promotionId = Integer.parseInt(request.getParameter("promotionId"));
         JSONObject promotion = promotionDao.getDetailPromotionByAdmin(promotionId);

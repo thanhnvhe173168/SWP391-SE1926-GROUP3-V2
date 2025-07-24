@@ -8,6 +8,7 @@ import dao.CategoryDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
 import dao.StatusDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -42,26 +43,44 @@ public class waitconfirmed extends HttpServlet {
         String id_raw = request.getParameter("id");
         StatusDAO sdao = new StatusDAO();
         OrderDAO odao = new OrderDAO();
+        UserDAO udao = new UserDAO();
         OrderDetailDAO oddao = new OrderDetailDAO();
         CategoryDAO cdao = new CategoryDAO();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        int page = 1;
+        int pageSize = 10;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+        int offset = (page - 1) * pageSize;
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
-                List<Order> list = odao.getListUserOrderByStatusName("Chờ xác nhận", user.getUserID());
+                int totalOrders = odao.countOrdersByStatusIDAndUserID(5, user.getUserID());
+                int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+                List<Order> list = odao.getUserOrdersByPageAndStatusID(offset, pageSize, user.getUserID(), 5);
+                request.setAttribute("udao", udao);
                 request.setAttribute("title", "Order pending confirmation");
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
                 request.setAttribute("OrderStatus", "waitconfirmed");
                 request.setAttribute("list", list);
                 request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
-                List<Status> liststatus = sdao.getListStatusSelect();
-                List<Order> list = odao.getListOrderByStatusName("Chờ xác nhận");
-                request.setAttribute("liststatus", liststatus);
+                int totalOrders = odao.countOrdersByStatusID(5);
+                int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+                List<Order> list = odao.getOrdersByPageandStatus(offset, pageSize, 5);
+                List<Status> selectWaitConfirm = sdao.getListStatusSelectWaitConfirm();
+                request.setAttribute("udao", udao);
+               request.setAttribute("selectWaitConfirm", selectWaitConfirm);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
                 request.setAttribute("OrderStatus", "waitconfirmed");
                 request.setAttribute("list", list);
                 request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);

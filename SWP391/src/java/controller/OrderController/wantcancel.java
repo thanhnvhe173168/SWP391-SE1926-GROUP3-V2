@@ -8,6 +8,7 @@ import dao.CategoryDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
 import dao.StatusDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -45,7 +46,7 @@ public class wantcancel extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet wantcancel</title>");            
+            out.println("<title>Servlet wantcancel</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet wantcancel at " + request.getContextPath() + "</h1>");
@@ -68,28 +69,46 @@ public class wantcancel extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         StatusDAO sdao = new StatusDAO();
+        UserDAO udao = new UserDAO();
         OrderDAO odao = new OrderDAO();
         OrderDetailDAO oddao = new OrderDetailDAO();
         CategoryDAO cdao = new CategoryDAO();
         String id_raw = request.getParameter("id");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        int page = 1;
+        int pageSize = 10;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+        int offset = (page - 1) * pageSize;
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
-                List<Order> list = odao.getListUserOrderByStatusName("Yêu cầu hủy", user.getUserID());
+                int totalOrders = odao.countOrdersByStatusIDAndUserID(6, user.getUserID());
+                int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+                List<Order> list = odao.getUserOrdersByPageAndStatusID(offset, pageSize, user.getUserID(), 6);
+                request.setAttribute("udao", udao);
                 request.setAttribute("title", "Want Cancel Order");
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
                 request.setAttribute("OrderStatus", "wantcancel");
                 request.setAttribute("list", list);
                 request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
-                List<Order> orderlist = odao.getListOrderByStatusName("Yêu cầu hủy");
-                List<Status> liststatus = sdao.getListStatusSelect();
-                request.setAttribute("liststatus", liststatus);
+                int totalOrders = odao.countOrdersByStatusID(6);
+                int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+                List<Order> orderlist = odao.getOrdersByPageandStatus(offset, pageSize, 6);
+                List<Status> selectWantCancel = sdao.getListStatusSelectWantCancel();
+                request.setAttribute("udao", udao);
+                request.setAttribute("selectWantCancel", selectWantCancel);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
                 request.setAttribute("OrderStatus", "wantcancel");
                 request.setAttribute("list", orderlist);
                 request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);

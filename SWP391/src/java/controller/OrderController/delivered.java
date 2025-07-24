@@ -9,6 +9,7 @@ import dao.CategoryDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
 import dao.StatusDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -49,10 +50,20 @@ public class delivered extends HttpServlet {
         String id_raw = request.getParameter("id");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        UserDAO udao = new UserDAO();
+        int page = 1;
+        int pageSize = 10;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+        int offset = (page - 1) * pageSize;
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
-                List<Order> list = odao.getListUserOrderByStatusName("Đã giao", user.getUserID());
+                int totalOrders = odao.countOrdersByStatusIDAndUserID(12, user.getUserID());
+                int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+                List<Order> list = odao.getUserOrdersByPageAndStatusID(offset, pageSize, user.getUserID(), 12);
                 List<Order> orderneedreview = odao.getListUserOrderNeedEvaluate(user.getUserID());
                 List<Integer> orderidneedreview = new ArrayList<>();
                 for (Order order : orderneedreview) {
@@ -60,10 +71,13 @@ public class delivered extends HttpServlet {
                         orderidneedreview.add(order.getOrderID());
                     }
                 }
+                request.setAttribute("udao", udao);
                 request.setAttribute("orderidneedreview", orderidneedreview);
                 request.setAttribute("title", "Order Delivered");
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
                 request.setAttribute("OrderStatus", "delivered");
                 request.setAttribute("list", list);
                 request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
@@ -76,33 +90,32 @@ public class delivered extends HttpServlet {
                     }
                 }
                 List<Status> liststatus = sdao.getListStatusSelect();
-                List<Order> orderlist = odao.getListOrderByStatusName("Đã giao");
+                int totalOrders = odao.countOrdersByStatusID(12);
+                int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+                List<Order> orderlist = odao.getOrdersByPageandStatus(offset, pageSize, 12);
+                request.setAttribute("udao", udao);
                 request.setAttribute("liststatus", liststatus);
                 request.setAttribute("listorderidhavereview", listOrderIdHaveReview);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
                 request.setAttribute("OrderStatus", "delivered");
                 request.setAttribute("list", orderlist);
                 request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
-            }else if(id == 3){
-                int page = 1;
-        int pageSize = 5;
-        String pageParam = request.getParameter("page");
-        if (pageParam != null && !pageParam.isEmpty()) {
-            page = Integer.parseInt(pageParam);
-        }
-        int offset = (page - 1) * pageSize;
-        OrderDAO orderdao = new OrderDAO();
-        List<Status> liststatus = sdao.getListStatusSelectWhenShip();
-        int totalShipOrders = orderdao.countOrdersByStatusID(12);
-        int totalPages = (int) Math.ceil((double) totalShipOrders / pageSize);
-        List<Order> shipperorderlist = orderdao.getOrdersByPageandStatus(offset, pageSize, 12);
-        request.setAttribute("OrderStatus", "delivered");
-        request.setAttribute("liststatus", liststatus);
-        request.setAttribute("shipperorderlist", shipperorderlist);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.getRequestDispatcher("shipper/shipperOrderList.jsp").forward(request, response);
+            } else if (id == 3) {
+                OrderDAO orderdao = new OrderDAO();
+                List<Status> liststatus = sdao.getListStatusSelectWhenShip();
+                int totalShipOrders = orderdao.countOrdersByStatusID(12);
+                int totalPages = (int) Math.ceil((double) totalShipOrders / pageSize);
+                List<Order> shipperorderlist = orderdao.getOrdersByPageandStatus(offset, pageSize, 12);
+                request.setAttribute("udao", udao);
+                request.setAttribute("OrderStatus", "delivered");
+                request.setAttribute("liststatus", liststatus);
+                request.setAttribute("shipperorderlist", shipperorderlist);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
+                request.getRequestDispatcher("shipper/shipperOrderList.jsp").forward(request, response);
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();

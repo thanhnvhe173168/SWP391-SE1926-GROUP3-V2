@@ -5,6 +5,7 @@
 package controller.OrderController;
 
 import dao.OrderDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -67,6 +68,7 @@ public class completed extends HttpServlet {
         OrderDAO odao = new OrderDAO();
         User user = (User) session.getAttribute("user");
         String id_raw = request.getParameter("id");
+        UserDAO udao = new UserDAO();
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
@@ -78,6 +80,7 @@ public class completed extends HttpServlet {
                         orderidneedreview.add(order.getOrderID());
                     }
                 }
+                request.setAttribute("udao", udao);
                 request.setAttribute("title", "Order Completed");
                 request.setAttribute("orderidneedreview", orderidneedreview);
                 request.setAttribute("OrderStatus", "completed");
@@ -85,6 +88,7 @@ public class completed extends HttpServlet {
                 request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
                 List<Order> orderlist = odao.getListOrderByStatusName("Hoàn tất");
+                request.setAttribute("udao", udao);
                 request.setAttribute("OrderStatus", "completed");
                 request.setAttribute("orderlist", orderlist);
                 request.getRequestDispatcher("admin/managecompleted.jsp").forward(request, response);

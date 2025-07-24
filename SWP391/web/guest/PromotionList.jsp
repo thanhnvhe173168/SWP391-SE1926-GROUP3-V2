@@ -9,7 +9,7 @@
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
-            .promotion-card {
+             .promotion-card {
                 border: 1px solid #ddd;
                 border-radius: 8px;
                 padding: 30px 10px;
@@ -43,8 +43,8 @@
         %>
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <div class="container my-5">
-                <h1 class="text-center mb-4">Chương trình khuyến mãi</h1>
-                <div class="row row-cols-1 row-cols-md-3 g-4">
+                <img style="width: 100%; margin-bottom: 20px" src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:0/q:100/plain/https://cellphones.com.vn/media/wysiwyg/hotdeal.png" />
+                <div class="row row-cols-1 row-cols-md-4 g-4">
                 <%if(rsPromotion != null) {
                 while(rsPromotion.next()) {%>
                 <div class="col">

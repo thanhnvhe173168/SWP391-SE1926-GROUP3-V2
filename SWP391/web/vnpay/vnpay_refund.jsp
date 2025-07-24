@@ -22,6 +22,7 @@
         <%
         User user = (User)session.getAttribute("user");
         %>
+        
         <c:set var="payment" value="${p}"></c:set>
             <div class="container">
                 <div class="header clearfix">

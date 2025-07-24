@@ -99,17 +99,17 @@
         <jsp:include page="/components/Header.jsp" />
 
         <div class="container">
-            <h1>Nhập lý do huỷ đơn hàng</h1>
+            <h1>Enter reason for canceling order</h1>
             <form action="CancelOrder" method="get"">
                 <input type="hidden" name="orderID" value="${id}" />
 
-                <label for="reason">Lý do huỷ:</label>
-                <textarea id="reason" name="reason" placeholder="Nhập lý do của bạn..." required></textarea>
+                <label for="reason">Reason for cancellation:</label>
+                <textarea id="reason" name="reason" placeholder="Enter your reason..." required></textarea>
 
-                <button type="submit" class="btn">Huỷ đơn hàng</button>
+                <button type="submit" class="btn">Cancel order</button>
             </form>
 
-            <a href="OrderList" class="back-link">Quay lại lịch sử đơn hàng</a>
+            <a href="OrderList" class="back-link">Back to order history</a>
         </div>
 
         <jsp:include page="/components/Footer.jsp" />

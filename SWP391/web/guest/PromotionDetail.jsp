@@ -60,7 +60,7 @@
         %>
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <div class="container my-5">
-                <h1 class="text-center mb-4">Chi tiết chương trình khuyến mãi</h1>
+                <img style="width: 100%; margin-bottom: 20px" src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:0/q:100/plain/https://cellphones.com.vn/media/wysiwyg/hotdeal.png" />
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                 <%if(rsLaptop != null) {
                 while(rsLaptop.next()) {%>

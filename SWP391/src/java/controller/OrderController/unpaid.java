@@ -7,6 +7,7 @@ package controller.OrderController;
 import dao.CategoryDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -43,20 +44,38 @@ public class unpaid extends HttpServlet {
         CategoryDAO cdao = new CategoryDAO();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        UserDAO udao = new UserDAO();
+        int page = 1;
+        int pageSize = 10;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+        int offset = (page - 1) * pageSize;
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
-                List<Order> list = odao.getListUserOrderByPaymentStatusName("Chưa thanh toán", user.getUserID());
+                int totalOrders = odao.countOrdersByPaymentstatusIDAndUserID(26, user.getUserID());
+                int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+                List<Order> list = odao.getUserOrdersByPageAndPaymentstatusID(offset, pageSize, user.getUserID(), 26);
+                request.setAttribute("udao", udao);
                 request.setAttribute("title", "Unpaid order");
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
                 request.setAttribute("OrderStatus", "unpaid");
                 request.setAttribute("list", list);
                 request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
-                List<Order> orderlist = odao.getListOrderByPaymentStatusName("Chưa thanh toán");
+                int totalOrders = odao.countOrdersByPaymentstatusID(26);
+                int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+                List<Order> orderlist = odao.getOrdersByPageAndPaymentstatusID(offset, pageSize, 26);
+                request.setAttribute("udao", udao);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", totalPages);
                 request.setAttribute("OrderStatus", "unpaid");
                 request.setAttribute("list", orderlist);
                 request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);

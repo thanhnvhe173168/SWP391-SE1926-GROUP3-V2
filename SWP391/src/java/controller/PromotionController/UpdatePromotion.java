@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -22,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Promotion;
 import model.PromotionLaptop;
+import model.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -58,6 +60,11 @@ public class UpdatePromotion extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         request.getRequestDispatcher("/admin/UpdatePromotion.jsp").forward(request, response);
     }
 
@@ -73,6 +80,11 @@ public class UpdatePromotion extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("user");
+            if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4) {
+                request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            }
             PromotionDAO promotionDao = new PromotionDAO();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             StringBuilder buffer = new StringBuilder();

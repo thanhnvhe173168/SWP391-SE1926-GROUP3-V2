@@ -59,7 +59,7 @@
   <jsp:include page="/components/Header.jsp"></jsp:include>
 
   <div class="return-container">
-    <h2>Hoàn sản phẩm</h2>
+    <h2>Return product</h2>
     <form action="returnLaptop" method="post" enctype="multipart/form-data">
       <!-- Bọc tất cả trong 1 form -->
       <input type="hidden" name="orderID" value="${orderid}">
@@ -70,15 +70,15 @@
           <img src="images/${item.laptop.imageURL}" alt="${item.laptop.laptopName}">
           <input type="hidden" name="laptopIDs" value="${item.laptop.laptopID}">
 
-          <label>Lý do hoàn:</label>
-          <textarea name="reason_${item.laptop.laptopID}" placeholder="Nhập lý do hoàn sản phẩm"></textarea>
+          <label>Reason for return:</label>
+          <textarea name="reason_${item.laptop.laptopID}" placeholder="Enter reason for return"></textarea>
 
-          <label>Ảnh minh chứng:</label>
+          <label>Photo evidence:</label>
           <input type="file" name="image_${item.laptop.laptopID}" multiple accept="image/*">
         </div>
       </c:forEach>
 
-      <button type="submit">Gửi yêu cầu hoàn</button>
+      <button type="submit">Submit a refund request</button>
     </form>
   </div>
 

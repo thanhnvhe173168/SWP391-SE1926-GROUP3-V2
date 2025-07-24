@@ -17,13 +17,19 @@
                 height: 40px;
             }
             .navbar {
-                background-color: #343a40;
+                background: linear-gradient(rgb(228, 84, 100) -13%, rgb(215, 0, 24));
             }
             .navbar-nav .nav-link {
                 color: #ffffff !important;
             }
-            .navbar-nav .nav-link:hover {
-                color: #17a2b8 !important;
+            .dropdown-menu {
+                background-color: #ffffff;
+            }
+            .dropdown-item {
+                color: #000000;
+            }
+            .dropdown-item:hover {
+                background-color: #f8f9fa;
             }
         </style>
     </head>
@@ -33,7 +39,6 @@
                 <!-- Logo -->
                 <a class="navbar-brand" href="home">
                     <img src="https://via.placeholder.com/150x40?text=Laptop+Store" alt="Laptop Store Logo">
-
                 </a>
                 <!-- Toggle button for mobile -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,28 +48,25 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="home">Home</a>
+                            <a class="nav-link" href="productList">Sản phẩm</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="productList">Products</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contact.jsp">Contact</a>
+                            <a class="nav-link" href="promotionList">Khuyến mãi</a>
                         </li>
                         <%if(session.getAttribute("user") != null) {
                             User user = (User) session.getAttribute("user");
                         %>
-                         <li class="nav-item">
-                            <a class="nav-link" href="CartSeverlet">Cart</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="OrderList">Order</a>
-                        </li>
-                         <li class="nav-item">
-                            <a class="nav-link" href="wishList">WishList</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="viewProfile"><%=user.getFullName()%></a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%=user.getFullName()%>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="CartServlet">Giỏ hàng</a></li>
+                                <li><a class="dropdown-item" href="OrderList">Lịch sử mua hàng</a></li>
+                                <li><a class="dropdown-item" href="wishList">Sản phẩm yêu thích</a></li>
+                                 <li><a class="dropdown-item" href="changePassword">Đổi mật khẩu</a></li>
+                                 <li><a class="dropdown-item" href="createContribute">Gửi góp ý</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout">Logout</a>

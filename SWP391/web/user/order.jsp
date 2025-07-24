@@ -23,7 +23,7 @@
                 background-color: #f6f6f6;
                 color: #212121;
                 margin: 0;
-                padding: 20px;
+                padding: 0;
             }
 
             h1 {
@@ -34,10 +34,10 @@
             }
 
             table {
-                width: 100%;
+                width: 90%;
                 border-collapse: collapse;
                 background: #ffffff;
-                margin-bottom: 25px;
+                margin: 0 auto;
                 border-radius: 8px;
                 overflow: hidden;
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -161,17 +161,17 @@
     </head>
     <body>
         <jsp:include page="/components/Header.jsp"></jsp:include>
-            <h1>Đặt hàng</h1>
+            <h1>Order Information</h1>
             <form method="post" action="OrderSuccess">
             <c:set var="listorderings" value="${sessionScope.listordering}" />
             <input type="hidden" id="totalProductPrice" value="${total}" />
             <table>
                 <tr>
-                    <th>Hình ảnh</th>
-                    <th>Tên Laptop</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                    <th>Thành tiền</th>
+                    <th>Laptop Image</th>
+                    <th>Laptop Name</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
                 </tr>
 
                 <c:forEach var="item" items="${listorderings}">
@@ -193,7 +193,7 @@
             </table>
             <table class="order-details">
                 <tr>
-                    <td>Cách nhận hàng:</td>
+                    <td>How to receive goods:</td>
                     <td>  
                         <select name="chooseway" id="choosewaySelect" onchange="showShipFee()">
                             <option></option>
@@ -220,19 +220,19 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Địa chỉ nhận hàng:</td> 
+                    <td>Delivery address:</td> 
                     <td><input type="text" name="address" value="" /></td>
                 </tr>
                 <tr>
-                    <td>Số điện thoại:</td>
+                    <td>Phone number:</td>
                     <td><input type="text" name="PhoneNumber" value="" /></td>
                 </tr>    
                 <tr>
-                    <td>Ghi chú:</td> 
+                    <td>Note:</td> 
                     <td><textarea name="note" rows="4" cols="20"></textarea></td>
                 </tr>
                 <tr>
-                    <td>Hình thức thanh toán: </td>
+                    <td>Payment method: </td>
                     <td>
                         <div class="payment-container">
                             <c:forEach var="meth" items="${listPayment}">
@@ -245,20 +245,20 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Phí ship:</td>
+                    <td>Shipping fee:</td>
                     <td id="shipFeeDisplay"></td>
                 </tr>
                 <tr>
-                    <td>Chiết khấu:</td>
+                    <td>Discount:</td>
                     <td id="discountDisplay"></td>
                 </tr>
                 <tr class="total-row">
-                    <td colspan="1"><strong>Tổng tiền:</strong></td>
+                    <td colspan="1"><strong>Total amount:</strong></td>
                     <td colspan="2" id="totalDisplay"><strong></strong></td>
                 <input type="hidden" name="totalprice" value="${finalTotal}" />
                 </tr>
                 <tr>
-                    <td colspan="3"><button type="submit" onclick="orderSuccess()"><strong>Đặt hàng</strong></button></td>
+                    <td colspan="3"><button type="submit" onclick="orderSuccess()"><strong>Order</strong></button></td>
                 </tr>
             </table>
 
@@ -310,23 +310,6 @@
 
             function showShipFee() {
                 updateTotal();
-
-                const selectedWay = document.getElementById("choosewaySelect").value;
-
-                if (selectedWay === '1') {
-                    // Nhận tại shop => hiện tất cả
-                    document.querySelectorAll('.payment-option').forEach(el => {
-                        el.style.visibility = 'visible';
-                    });
-                } else {
-                    // Các cách khác => chỉ hiện Tiền mặt
-                    document.querySelectorAll('.payment-option').forEach(el => {
-                        el.style.visibility = 'hidden';
-                    });
-                    document.querySelectorAll('.payment-1').forEach(el => {
-                        el.style.visibility = 'visible';
-                    });
-                }
             }
 
             function showdiscount() {
