@@ -175,7 +175,7 @@
             <div class="d-flex justify-content-center">
                 <button type="button" class="btn btn-outline-primary" onclick="handleRedirectProduct()">Xem thêm</button>
             </div>
-            <h4 class="mb-4" style="margin-top: 40px">Blog</h4>
+            <h4 class="mb-4" style="margin-top: 40px">Tin tức</h4>
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <%if(rsBlog != null) {%>
                 <%while(rsBlog.next()) {%>
