@@ -115,4 +115,311 @@ public class StatusDAO extends ConnectDB {
         return list;
     }
 
+    public List<Status> getListStatusSelectWaitConfirm() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=8";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Status> getListStatusSelectWantCancel() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=7\n"
+                + "or StatusID=8";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Status> getListStatusSelectConfirm() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=9";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Status> getListStatusSelectWhenDVVCtakesuccess() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=11";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Status> getListStatusSelectWhendelivering() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=12\n"
+                + "or StatusID=13";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Status> getListStatusSelectWhenDelivered() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=22";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Status> getListStatusSelectWhenFail() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=14";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Status> getListStatusSelectWhenReShip() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=12\n"
+                + "or StatusID=15";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Status> getListStatusSelectWhenReShipFail() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=24";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Status> getListStatusSelectWhenRequestReturn() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=18\n"
+                + "or StatusID=19\n"
+                + "or StatusID=22";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Status> getListStatusSelectWhenRequestReturn1part() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=19\n"
+                + "or StatusID=22";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<Status> getListStatusSelectWhenRequestReturnPass() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=23";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<Status> getListStatusSelectWhenDVVCTakeReturnItem() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=24";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<Status> getListStatusSelectWhenReturnItemShipping() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=25";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<Status> getListStatusSelectWhenShopTakeSuccess() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=20\n"
+                + "or StatusID=21\n"
+                + "or StatusID=9";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

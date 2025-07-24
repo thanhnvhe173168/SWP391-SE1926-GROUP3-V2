@@ -4,8 +4,7 @@
  */
 package controller.UserController;
 
-import dao.LaptopDAO;
-import dao.WishListDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,17 +12,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import model.Laptop;
-import model.User;
-import model.WishList;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
  * @author linhd
  */
-@WebServlet(name = "AddToWishList", urlPatterns = {"/addToWishList"})
-public class AddToWishList extends HttpServlet {
+@WebServlet(name = "ResetPassword", urlPatterns = {"/resetPassword"})
+public class ResetPassword extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +38,10 @@ public class AddToWishList extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AddToWishList</title>");
+            out.println("<title>Servlet ResetPassword</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AddToWishList at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ResetPassword at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,33 +59,7 @@ public class AddToWishList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            response.sendRedirect("login");
-            return;
-        }
-
-        String id_raw = request.getParameter("id");
-        if (id_raw == null) {
-            response.sendRedirect("HomePage.jsp");
-            return;
-        }
-
-        int laptopId = Integer.parseInt(id_raw);
-        int userId = user.getUserID();
-
-        WishListDAO wdao = new WishListDAO();
-        boolean added = wdao.addToWishList(userId, laptopId);
-
-        if (added) {
-            session.setAttribute("mess", "Đã thêm vào danh sách yêu thích!");
-        } else {
-            session.setAttribute("mess", "Sản phẩm đã có trong danh sách yêu thích!");
-        }
-
-        response.sendRedirect("wishList"); 
+        processRequest(request, response);
     }
 
     /**
@@ -103,16 +73,23 @@ public class AddToWishList extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        int userId = Integer.parseInt(request.getParameter("userId"));
+
+        String defaultPassword = "123";
+        String hashedPassword = BCrypt.hashpw(defaultPassword, BCrypt.gensalt());
+        UserDAO dao = new UserDAO();
+        dao.resetPassword(userId, hashedPassword);
+        response.sendRedirect("staffEditAccount");
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
+
+/**
+ * Returns a short description of the servlet.
+ *
+ * @return a String containing servlet description
+ */
+@Override
+public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 

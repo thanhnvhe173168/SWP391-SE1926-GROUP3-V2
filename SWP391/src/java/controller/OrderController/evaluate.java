@@ -7,6 +7,7 @@ package controller.OrderController;
 import dao.CategoryDAO;
 import dao.OrderDAO;
 import dao.OrderDetailDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -44,6 +45,7 @@ public class evaluate extends HttpServlet {
         String id_raw = request.getParameter("id");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        UserDAO udao = new UserDAO();
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
@@ -55,6 +57,7 @@ public class evaluate extends HttpServlet {
                         orderidneedreview.add(order.getOrderID());
                     }
                 }
+                request.setAttribute("udao", udao);
                 request.setAttribute("title", "Order to be evaluated");
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
@@ -64,6 +67,7 @@ public class evaluate extends HttpServlet {
                 request.getRequestDispatcher("user/OrderList.jsp").forward(request, response);
             } else if (id == 2) {
                 List<Order> orderlist = odao.getListOrderNeedEvaluate();
+                request.setAttribute("udao", udao);
                 request.setAttribute("OrderStatus", "evaluate");
                 request.setAttribute("oredrlist", orderlist);
                 request.getRequestDispatcher("admin/manageevaluate.jsp").forward(request, response);

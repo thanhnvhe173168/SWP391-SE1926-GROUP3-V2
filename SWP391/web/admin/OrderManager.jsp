@@ -107,6 +107,25 @@
             td {
                 vertical-align: middle; /* Canh giữa select theo chiều dọc */
             }
+
+            .pagination {
+                margin-top: 20px;
+                text-align: center;
+            }
+            .pagination a, .pagination span.current {
+                margin: 0 5px;
+                padding: 6px 12px;
+                background: #f1f1f1;
+                border-radius: 5px;
+                text-decoration: none;
+                color: #dd3726;
+                font-weight: bold;
+            }
+            .pagination span.current {
+                background: #dd3726;
+                color: #fff;
+            }
+
         </style>
     </head>
     <body>
@@ -127,12 +146,10 @@
             <!-- Sidebar -->
             <jsp:include page="/components/AdminSidebar.jsp"></jsp:include>
 
-                <!-- Nội dung chính -->
                 <div style="width: 100%; height: calc(100dvh - 40px); overflow-y: auto;" class="container">
                     <!-- Tiêu đề -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <p style="color: #dd3726; font-size: 40px; font-weight: 700;">Quản lý đơn hàng</p>
-                        <!-- Nếu cần thêm nút action ở đây -->
                     </div>
 
                     <!-- Tabs -->
@@ -162,7 +179,7 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>STT</th>
+                                    <th>Mã đơn</th>
                                     <th>Ngày đặt hàng</th>
                                     <th>Người đặt</th>
                                     <th>Tổng tiền</th>
@@ -172,20 +189,98 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach items="${orderlists}" var="order" varStatus="status">
+                                <c:forEach items="${orderlists}" var="order">
                                     <tr>
-                                        <td>${status.index + 1}</td>
+                                        <td>${order.orderID}</td>
                                         <td>${order.orderDate}</td>
                                         <td>${udao.getUserById(order.userID).fullName}</td>
                                         <td><fmt:formatNumber value="${order.totalAmount}" type="number" groupingUsed="true"/> VNĐ</td>
                                         <td>
                                             <c:choose>
-                                                <c:when test="${order.orderstatus.statusID == 5 || order.orderstatus.statusID == 6 || order.orderstatus.statusID == 8 || order.orderstatus.statusID == 16 ||order.orderstatus.statusID == 17 || order.orderstatus.statusID == 25 || order.orderstatus.statusID == 12}">
+                                                <c:when test="${order.orderstatus.statusID == 5}">
                                                     <form>
                                                         <input type="hidden" name="orderid" id="orderid" value="${order.orderID}"/>
                                                         <select name="OrderStatus" onchange="updateStatus(this)" id="orderstatus">
                                                             <option value="${order.orderstatus.statusID}">${order.orderstatus.statusName}</option>
-                                                            <c:forEach items="${liststatus}" var="status">
+                                                            <c:forEach items="${selectWaitConfirm}" var="status">
+                                                                <c:if test="${order.orderstatus.statusID != status.statusID}">
+                                                                    <option value="${status.statusID}">${status.statusName}</option>
+                                                                </c:if>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </form>
+                                                </c:when>
+                                                <c:when test="${order.orderstatus.statusID == 6}">
+                                                    <form>
+                                                        <input type="hidden" name="orderid" id="orderid" value="${order.orderID}"/>
+                                                        <select name="OrderStatus" onchange="updateStatus(this)" id="orderstatus">
+                                                            <option value="${order.orderstatus.statusID}">${order.orderstatus.statusName}</option>
+                                                            <c:forEach items="${selectWantCancel}" var="status">
+                                                                <c:if test="${order.orderstatus.statusID != status.statusID}">
+                                                                    <option value="${status.statusID}">${status.statusName}</option>
+                                                                </c:if>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </form>
+                                                </c:when>
+                                                <c:when test="${order.orderstatus.statusID == 8}">
+                                                    <form>
+                                                        <input type="hidden" name="orderid" id="orderid" value="${order.orderID}"/>
+                                                        <select name="OrderStatus" onchange="updateStatus(this)" id="orderstatus">
+                                                            <option value="${order.orderstatus.statusID}">${order.orderstatus.statusName}</option>
+                                                            <c:forEach items="${selectConfirm}" var="status">
+                                                                <c:if test="${order.orderstatus.statusID != status.statusID}">
+                                                                    <option value="${status.statusID}">${status.statusName}</option>
+                                                                </c:if>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </form>
+                                                </c:when>
+                                                <c:when test="${order.orderstatus.statusID == 16}">
+                                                    <form>
+                                                        <input type="hidden" name="orderid" id="orderid" value="${order.orderID}"/>
+                                                        <select name="OrderStatus" onchange="updateStatus(this)" id="orderstatus">
+                                                            <option value="${order.orderstatus.statusID}">${order.orderstatus.statusName}</option>
+                                                            <c:forEach items="${selectWhenRequestReturn}" var="status">
+                                                                <c:if test="${order.orderstatus.statusID != status.statusID}">
+                                                                    <option value="${status.statusID}">${status.statusName}</option>
+                                                                </c:if>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </form>
+                                                </c:when>
+                                                <c:when test="${order.orderstatus.statusID == 17}">
+                                                    <form>
+                                                        <input type="hidden" name="orderid" id="orderid" value="${order.orderID}"/>
+                                                        <select name="OrderStatus" onchange="updateStatus(this)" id="orderstatus">
+                                                            <option value="${order.orderstatus.statusID}">${order.orderstatus.statusName}</option>
+                                                            <c:forEach items="${selectWhenRequestReturn1part}" var="status">
+                                                                <c:if test="${order.orderstatus.statusID != status.statusID}">
+                                                                    <option value="${status.statusID}">${status.statusName}</option>
+                                                                </c:if>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </form>
+                                                </c:when>
+                                                <c:when test="${order.orderstatus.statusID == 12}">
+                                                    <form>
+                                                        <input type="hidden" name="orderid" id="orderid" value="${order.orderID}"/>
+                                                        <select name="OrderStatus" onchange="updateStatus(this)" id="orderstatus">
+                                                            <option value="${order.orderstatus.statusID}">${order.orderstatus.statusName}</option>
+                                                            <c:forEach items="${selectWhenDelivered}" var="status">
+                                                                <c:if test="${order.orderstatus.statusID != status.statusID}">
+                                                                    <option value="${status.statusID}">${status.statusName}</option>
+                                                                </c:if>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </form>
+                                                </c:when>
+                                                <c:when test="${order.orderstatus.statusID == 25}">
+                                                    <form>
+                                                        <input type="hidden" name="orderid" id="orderid" value="${order.orderID}"/>
+                                                        <select name="OrderStatus" onchange="updateStatus(this)" id="orderstatus">
+                                                            <option value="${order.orderstatus.statusID}">${order.orderstatus.statusName}</option>
+                                                            <c:forEach items="${selectWhenShopTakeSuccess}" var="status">
                                                                 <c:if test="${order.orderstatus.statusID != status.statusID}">
                                                                     <option value="${status.statusID}">${status.statusName}</option>
                                                                 </c:if>
@@ -235,6 +330,27 @@
                         </table>
                     </c:otherwise>
                 </c:choose>
+                <div class="pagination">
+                    <c:set var="pageLink" value="${pageContext.request.servletPath}" />
+                    <c:if test="${totalPages > 1}">
+                        <c:if test="${currentPage > 1}">
+                            <a href="?page=${currentPage - 1}&id=2">Previous</a>
+                        </c:if>
+                        <c:forEach begin="1" end="${totalPages}" var="i">
+                            <c:choose>
+                                <c:when test="${i == currentPage}">
+                                    <span class="current">${i}</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="?page=${i}&id=2">${i}</a>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                        <c:if test="${currentPage < totalPages}">
+                            <a href="?page=${currentPage + 1}&id=2">Next</a>
+                        </c:if>
+                    </c:if>
+                </div>
             </div>
         </div>
         <script>

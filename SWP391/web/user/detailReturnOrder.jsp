@@ -19,93 +19,101 @@
         <style>
             body {
                 font-family: 'Segoe UI', Tahoma, sans-serif;
-                background: #f9f9f9;
+                background-color: #f5f5f5;
                 margin: 0;
+                padding: 0;
             }
 
             main {
                 max-width: 1200px;
                 margin: 0 auto;
                 background: #fff;
-                padding: 30px;
+                padding: 20px 30px;
                 border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                box-shadow: 0 1px 6px rgba(0,0,0,0.05);
             }
 
             h1 {
                 text-align: center;
-                color: #007bff;
+                color: #1d4ed8; /* Xanh dương đậm */
                 margin-bottom: 30px;
+                font-size: 30px;
+                font-weight: 600;
             }
 
             table {
                 width: 100%;
-                border-collapse: separate;
-                border-spacing: 0;
+                border-collapse: collapse;
                 background: #fff;
                 border-radius: 8px;
                 overflow: hidden;
-                box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+                box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
             }
 
-            table th {
-                background: #007bff;
+            th, td {
+                text-align: center;
+                padding: 16px 12px;
+                border-bottom: 1px solid #eee;
+                font-size: 15px;
+            }
+
+            th {
+                background: #d70018; /* Đổi màu header thành xanh dương */
                 color: #fff;
-                font-weight: bold;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
-                text-align: center;
-                padding: 15px;
-                vertical-align: middle;
-            }
-
-            td {
-                text-align: center;
-                padding: 20px 15px;
-                vertical-align: middle;
-                border-bottom: 1px solid #f2f2f2;
             }
 
             tr:hover {
-                background: #f9f9f9;
-            }
-
-            img {
-                border-radius: 8px;
-                object-fit: cover;
-                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+                background-color: #eef2ff;
             }
 
             button {
-                background: #ee4d2d; /* Shopee cam */
+                background: #2563eb; /* Xanh dương */
                 color: #fff;
                 border: none;
-                padding: 10px 20px;
+                padding: 10px 16px;
                 border-radius: 4px;
                 cursor: pointer;
-                font-weight: bold;
-                transition: background 0.3s;
+                font-weight: 500;
+                font-size: 14px;
+                transition: background-color 0.3s ease;
             }
 
             button:hover {
-                background: #d8431f;
+                background-color: #1e40af; /* Đậm hơn khi hover */
             }
 
-            /* Nút hoàn đơn hàng dưới cùng */
+            img {
+                width: 100px;
+                height: 100px;
+                border-radius: 12px;
+                object-fit: cover;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+                transition: transform 0.2s ease;
+            }
+
+            img:hover {
+                transform: scale(1.05);
+            }
+
+            /* Hàng cuối */
             table tr:last-child td {
                 text-align: left;
                 padding: 20px;
+                border-bottom: none;
             }
 
             table tr:last-child button {
-                background: #27ae60; /* Xanh nổi bật */
+                background: #2563eb;
             }
 
             table tr:last-child button:hover {
-                background: #1e874b;
+                background: #1e40af;
             }
-
         </style>
+
+
 
 
     </head>
@@ -130,9 +138,7 @@
                                 <input type="checkbox" name="selectedLaptopIDs" value="${orderdetail.laptop.laptopID}" />
                             </td>
                             <td>
-                                <a href="LaptopInfo?id=${orderdetail.laptop.laptopID}">
-                                    <img src="images/${orderdetail.laptop.imageURL}" width="100" alt="${orderdetail.laptop.laptopName}" />
-                                </a>
+                                <img src="images/${orderdetail.laptop.imageURL}" width="100" alt="${orderdetail.laptop.laptopName}" />
                             </td>
                             <td>${orderdetail.quantity}</td>
                             <td><fmt:formatNumber value="${orderdetail.laptop.price}" type="number" groupingUsed="true"/> VNĐ</td>
@@ -140,7 +146,7 @@
                         </tr>
                     </c:forEach>
                     <tr>
-                        <td>
+                        <td colspan="5">
                             <input type="hidden" name="orderid" value="${order.orderID}">
                             <button type="submit">Return Order</button>
                         </td>

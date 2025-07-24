@@ -69,9 +69,19 @@ public class OrderManager extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String mess = (String) request.getAttribute("mess");
         OrderDAO odao = new OrderDAO();
-        List<Order> list = odao.getListOrder();
         UserDAO udao = new UserDAO();
         StatusDAO sdao = new StatusDAO();
+        
+        int page = 1;
+        int pageSize = 10;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+        int offset = (page - 1) * pageSize;
+        int totalOrders = odao.countOrders();
+        int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+        List<Order> list = odao.getOrdersByPage(offset, pageSize);
         List<Order> listOrderHaveReview = odao.getListOrderHaveEvaluate();
         List<Integer> listOrderIdHaveReview = new ArrayList<>();
         for (Order order : listOrderHaveReview) {
@@ -79,16 +89,46 @@ public class OrderManager extends HttpServlet {
                 listOrderIdHaveReview.add(order.getOrderID());
             }
         }
-        List<Status> liststatus = sdao.getListStatusSelect();
+        List<Status> selectWaitConfirm = sdao.getListStatusSelectWaitConfirm();
+        List<Status> selectWantCancel = sdao.getListStatusSelectWantCancel();
+        List<Status> selectConfirm = sdao.getListStatusSelectConfirm();
+        List<Status> selectWhenDVVCtakesuccess = sdao.getListStatusSelectWhenDVVCtakesuccess();
+        List<Status> selectWhendelivering = sdao.getListStatusSelectWhendelivering();
+        List<Status> selectWhenDelivered = sdao.getListStatusSelectWhenDelivered();
+        List<Status> selectWhenFail= sdao.getListStatusSelectWhenFail();
+        List<Status> selectWhenReShip= sdao.getListStatusSelectWhenReShip();
+        List<Status> selectWhenReShipFail= sdao.getListStatusSelectWhenReShipFail();
+        List<Status> selectWhenRequestReturn= sdao.getListStatusSelectWhenRequestReturn();
+        List<Status> selectWhenRequestReturn1part= sdao.getListStatusSelectWhenRequestReturn1part();
+        List<Status> selectWhenRequestReturnPass= sdao.getListStatusSelectWhenRequestReturnPass();
+        List<Status> selectWhenDVVCTakeReturnItem= sdao.getListStatusSelectWhenDVVCTakeReturnItem();
+        List<Status> selectWhenReturnItemShipping= sdao.getListStatusSelectWhenReturnItemShipping();
+        List<Status> selectWhenShopTakeSuccess= sdao.getListStatusSelectWhenShopTakeSuccess();
         List<Status> listpaymentstatus = sdao.getListPaymentStatusSelect();
         if (mess != null) {
             request.setAttribute("mess", mess);
         }
         request.setAttribute("listPaymentStatus", listpaymentstatus);
         request.setAttribute("listorderidhavereview", listOrderIdHaveReview);
-        request.setAttribute("liststatus", liststatus);
+        request.setAttribute("selectWaitConfirm", selectWaitConfirm);
+        request.setAttribute("selectWantCancel", selectWantCancel);
+        request.setAttribute("selectConfirm", selectConfirm);
+        request.setAttribute("selectWhenDVVCtakesuccess", selectWhenDVVCtakesuccess);
+        request.setAttribute("selectWhendelivering", selectWhendelivering);
+        request.setAttribute("selectWhenDelivered", selectWhenDelivered);
+        request.setAttribute("selectWhenFail", selectWhenFail);
+        request.setAttribute("selectWhenReShip", selectWhenReShip);
+        request.setAttribute("selectWhenReShipFail", selectWhenReShipFail);
+        request.setAttribute("selectWhenRequestReturn", selectWhenRequestReturn);
+        request.setAttribute("selectWhenRequestReturn1part", selectWhenRequestReturn1part);
+        request.setAttribute("selectWhenRequestReturnPass", selectWhenRequestReturnPass);
+        request.setAttribute("selectWhenDVVCTakeReturnItem", selectWhenDVVCTakeReturnItem);
+        request.setAttribute("selectWhenReturnItemShipping", selectWhenReturnItemShipping);
+        request.setAttribute("selectWhenShopTakeSuccess", selectWhenShopTakeSuccess);
         request.setAttribute("udao", udao);
         request.setAttribute("list", list);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.setAttribute("OrderStatus", "OrderList");
         request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
     }

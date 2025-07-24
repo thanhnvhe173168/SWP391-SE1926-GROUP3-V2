@@ -155,7 +155,7 @@
                     <form id="addToCartForm" action="AddToCart" method="post">
                         <input type="hidden" name="productId" id="productId" value="<%=rsLaptop.getInt("LaptopID")%>">
                         <input type="hidden" name="quantity" id="quantityhidden">
-                        <input type="hidden" name="price" id="price" value="?">
+                        <input type="hidden" name="price" value="<%=rsLaptop.getDouble("Price")%>">
                     </form>
                     <br>
                     <button class="buy-now-btn" onclick="buyNow()">
@@ -225,25 +225,25 @@
         <script>
 
 
-                  function updateQuantity(change) {
-                      let quantity = parseInt(document.getElementById('quantity').value);
-                      quantity += change;
-                      if (quantity < 1)
-                          quantity = 1;
-                      document.getElementById('quantity').value = quantity;
-                  }
+                                              function updateQuantity(change) {
+                                                  let quantity = parseInt(document.getElementById('quantity').value);
+                                                  quantity += change;
+                                                  if (quantity < 1)
+                                                      quantity = 1;
+                                                  document.getElementById('quantity').value = quantity;
+                                              }
 
-                  function addToCart() {
-                      let quantity = document.getElementById('quantity').value;
-                      document.getElementById('quantityhidden').value = quantity;
-                      document.getElementById('addToCartForm').submit();
-                  }
+                                              function addToCart() {
+                                                  let quantity = document.getElementById('quantity').value;
+                                                  document.getElementById('quantityhidden').value = quantity;
+                                                  document.getElementById('addToCartForm').submit();
+                                              }
 
-                  function buyNow() {
-                      let quantity = document.getElementById('quantity').value;
-                      alert('Mua ngay ' + quantity + ' sản phẩm!');
-
-                  }
+                                              function buyNow() {
+                                                  let quantity = document.getElementById('quantity').value;
+                                                  document.getElementById('quantityhidden2').value = quantity;
+                                                  document.getElementById('buynow').submit();
+                                              }
         </script>
     </body>
 </html>

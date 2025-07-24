@@ -81,7 +81,17 @@ public class CreateAccountStaff extends HttpServlet {
             
             UserDAO dao = new UserDAO();
             if(dao.checkExistUser(email)!=null){
-                request.setAttribute("error", "Email already exists");
+                request.setAttribute("emailError", "Email already exists");
+                request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
+                return;
+            }
+            if(!email.endsWith("@gmail.com")){
+                request.setAttribute("emailError", "Email phải có đuôi @gmail.com");
+                request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
+                return;
+            }
+            if(!phoneNumber.matches("\\d{10}")){
+                 request.setAttribute("phoneError", "Số điện thoại phải đủ 10 số");
                 request.getRequestDispatcher("admin/CreateAccountStaff.jsp").forward(request, response);
                 return;
             }

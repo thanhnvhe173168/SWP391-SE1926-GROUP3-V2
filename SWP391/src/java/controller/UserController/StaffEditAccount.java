@@ -66,28 +66,23 @@ public class StaffEditAccount extends HttpServlet {
             int userId = Integer.parseInt(request.getParameter("userId"));
 
             if ("save".equals(action)) {
-               
-                String fullName = request.getParameter("fullName");
+               String fullName = request.getParameter("fullName");
                 String phone = request.getParameter("phoneNumber");
-                String password = request.getParameter("password");
                 int statusId = Integer.parseInt(request.getParameter("statusId"));
                 int roleId = Integer.parseInt(request.getParameter("roleId"));
-
-                User user = new User();
+                
+                  User user = new User();
                 user.setUserID(userId);
                 user.setFullName(fullName);
                 user.setPhoneNumber(phone);
-                user.setPassword(password);
                 user.setStatusID(statusId);
                 user.setRoleID(roleId);
 
-                dao.updateUser(user);
-
+                dao.updateStaffInfo(user);
+               
                 response.sendRedirect("staffList");
                 return;
             }
-
-           
             User user = dao.getStaffByID(userId);
 
             request.setAttribute("user", user);

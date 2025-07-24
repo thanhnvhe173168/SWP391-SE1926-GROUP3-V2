@@ -83,7 +83,7 @@
                 background-color: #6c757d;
                 color: white;
             }
-            .continue-shopping .btn:hover {
+.continue-shopping .btn:hover {
                 background-color: #5a6268;
             }
         </style>
@@ -144,8 +144,7 @@
                     </div>
                 </c:otherwise>
             </c:choose>
-
-            <c:if test="${totalPages > 1}">
+<c:if test="${totalPages > 1}">
                 <nav aria-label="Pagination" class="mt-4">
                     <ul class="pagination justify-content-center">
                         <!-- Nút Trước -->
@@ -196,7 +195,7 @@
                                                         .then(res => res.json())
                                                         .then(data => {
                                                             Swal.fire({
-                                                                icon: data.icon,
+icon: data.icon,
                                                                 title: data.mess,
                                                                 showConfirmButton: false,
                                                                 timer: 2000
