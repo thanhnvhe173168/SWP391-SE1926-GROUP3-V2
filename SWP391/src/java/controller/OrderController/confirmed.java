@@ -101,8 +101,8 @@ public class confirmed extends HttpServlet {
                 int totalOrders = odao.countOrdersByStatusID(8);
                 int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
                 List<Order> orderlist = odao.getOrdersByPageandStatus(offset, pageSize, 8);
-                List<Status> liststatus = sdao.getListStatusSelect();
-                request.setAttribute("liststatus", liststatus);
+                List<Status> selectConfirm = sdao.getListStatusSelectConfirm();
+                request.setAttribute("selectConfirm", selectConfirm);
                 request.setAttribute("udao", udao);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);

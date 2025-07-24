@@ -294,17 +294,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <form>
-                                                <input type="hidden" name="orderid" value="${order.orderID}" />
-                                                <select name="PaymentStatus" onchange="updatePaymentStatus(this)">
-                                                    <option value="${order.paymentstatus.statusID}">${order.paymentstatus.statusName}</option>
-                                                    <c:forEach items="${listPaymentStatus}" var="pstatus">
-                                                        <c:if test="${pstatus.statusID != order.paymentstatus.statusID}">
-                                                            <option value="${pstatus.statusID}">${pstatus.statusName}</option>
-                                                        </c:if>
-                                                    </c:forEach>
-                                                </select>
-                                            </form>
+                                            ${order.paymentstatus.statusName}
                                         </td>
 
                                         <td>
@@ -331,7 +321,6 @@
                     </c:otherwise>
                 </c:choose>
                 <div class="pagination">
-                    <c:set var="pageLink" value="${pageContext.request.servletPath}" />
                     <c:if test="${totalPages > 1}">
                         <c:if test="${currentPage > 1}">
                             <a href="?page=${currentPage - 1}&id=2">Previous</a>
@@ -376,26 +365,6 @@
                             const row = form.closest('tr');
                             const actionCell = row.querySelector('td:last-child');
                             actionCell.innerHTML = html;
-                        });
-            }
-
-            function updatePaymentStatus(selectElement) {
-                const newPaymentStatusID = selectElement.value;
-                const orderID = selectElement.closest('form').querySelector('[name="orderid"]').value;
-
-                fetch('UpdatePaymentStatusByAdmin', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        orderId: orderID,
-                        newPaymentStatusID: newPaymentStatusID
-                    })
-                })
-                        .then(res => res.text())
-                        .then(data => {
-                            console.log(data);
                         });
             }
 

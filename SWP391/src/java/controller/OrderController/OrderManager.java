@@ -104,11 +104,9 @@ public class OrderManager extends HttpServlet {
         List<Status> selectWhenDVVCTakeReturnItem= sdao.getListStatusSelectWhenDVVCTakeReturnItem();
         List<Status> selectWhenReturnItemShipping= sdao.getListStatusSelectWhenReturnItemShipping();
         List<Status> selectWhenShopTakeSuccess= sdao.getListStatusSelectWhenShopTakeSuccess();
-        List<Status> listpaymentstatus = sdao.getListPaymentStatusSelect();
         if (mess != null) {
             request.setAttribute("mess", mess);
         }
-        request.setAttribute("listPaymentStatus", listpaymentstatus);
         request.setAttribute("listorderidhavereview", listOrderIdHaveReview);
         request.setAttribute("selectWaitConfirm", selectWaitConfirm);
         request.setAttribute("selectWantCancel", selectWantCancel);

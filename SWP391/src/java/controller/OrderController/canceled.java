@@ -76,9 +76,7 @@ public class canceled extends HttpServlet {
                 int totalOrders = odao.countOrdersByStatusID(7);
                 int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
                 List<Order> orderlist = odao.getOrdersByPageandStatus(offset, pageSize, 7);
-                List<Status> liststatus = sdao.getListStatusSelect();
                 request.setAttribute("udao", udao);
-                request.setAttribute("liststatus", liststatus);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
                 request.setAttribute("currentPage", page);

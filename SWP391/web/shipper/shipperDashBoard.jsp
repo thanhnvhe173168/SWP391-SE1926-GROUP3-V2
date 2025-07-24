@@ -86,9 +86,6 @@
                 color: #444;
             }
         </style>
-        <%
-            OrderDAO odao = new OrderDAO();
-        %>
     </head>
     <body>
         <div class="wrapper">
@@ -101,23 +98,23 @@
                     <div class="status-cards">
                         <div class="card">
                             <h3>Đơn chờ lấy</h3>
-                            <div class="count"><%= odao.countOrdersByStatusID(9) %></div>
+                            <div class="count">${waittake}</div>
                     </div>
                     <div class="card">
                         <h3>Đang giao</h3>
-                        <div class="count"><%= odao.countOrdersByStatusID(11) %></div>
+                        <div class="count">${dilivering}</div>
                     </div>
                     <div class="card">
                         <h3>Đã giao</h3>
-                        <div class="count"><%= odao.countOrdersByStatusID(12) %></div>
+                        <div class="count">${dilivered}</div>
                     </div>
                     <div class="card">
                         <h3>Giao thất bại</h3>
-                        <div class="count"><%= odao.countOrdersByStatusID(13) %></div>
+                        <div class="count">${fail}</div>
                     </div>
                     <div class="card">
                         <h3>Đang hoàn</h3>
-                        <div class="count"><%= odao.countOrdersByStatusID(24) %></div>
+                        <div class="count">${returning}</div>
                     </div>
                 </div>
             </div> <!-- Kết thúc page-container -->

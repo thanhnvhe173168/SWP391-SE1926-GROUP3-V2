@@ -76,9 +76,9 @@ public class delivering extends HttpServlet {
                 int totalOrders = odao.countOrdersByStatusID(11);
                 int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
                 List<Order> orderlist = odao.getOrdersByPageandStatus(offset, pageSize, 11);
-                List<Status> liststatus = sdao.getListStatusSelect();
+                List<Status> selectWhendelivering = sdao.getListStatusSelectWhendelivering();
+                request.setAttribute("selectWhendelivering", selectWhendelivering);
                 request.setAttribute("udao", udao);
-                request.setAttribute("liststatus", liststatus);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
                 request.setAttribute("currentPage", page);
@@ -88,13 +88,13 @@ public class delivering extends HttpServlet {
                 request.getRequestDispatcher("admin/OrderManager.jsp").forward(request, response);
             } else if (id == 3) {
                 OrderDAO orderdao = new OrderDAO();
-                List<Status> liststatus = sdao.getListStatusSelectWhenShip();
+                List<Status> selectWhendelivering = sdao.getListStatusSelectWhendelivering();
                 int totalShipOrders = orderdao.countOrdersByStatusID(11);
                 int totalPages = (int) Math.ceil((double) totalShipOrders / pageSize);
                 List<Order> shipperorderlist = orderdao.getOrdersByPageandStatus(offset, pageSize, 11);
                 request.setAttribute("udao", udao);
                 request.setAttribute("OrderStatus", "delivering");
-                request.setAttribute("liststatus", liststatus);
+                request.setAttribute("selectWhendelivering", selectWhendelivering);
                 request.setAttribute("shipperorderlist", shipperorderlist);
                 request.setAttribute("currentPage", page);
                 request.setAttribute("totalPages", totalPages);

@@ -40,7 +40,6 @@ public class returned extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        StatusDAO sdao = new StatusDAO();
         OrderDAO odao = new OrderDAO();
         OrderDetailDAO oddao = new OrderDetailDAO();
         CategoryDAO cdao = new CategoryDAO();
@@ -74,9 +73,7 @@ public class returned extends HttpServlet {
                int totalOrders = odao.countReturnOrdersByStatusID(20, 21);
                 int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
                 List<Order> orderlist = odao.getReturnOrdersByPageandStatus(offset, pageSize, 20, 21);
-                List<Status> liststatus = sdao.getListStatusSelect();
                 request.setAttribute("udao", udao);
-                request.setAttribute("liststatus", liststatus);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
                 request.setAttribute("currentPage", page);

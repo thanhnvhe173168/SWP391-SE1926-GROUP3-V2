@@ -72,7 +72,18 @@ public class OrderList extends HttpServlet {
         CategoryDAO cdao = new CategoryDAO();
         HttpSession session = request.getSession(); 
         User user = (User)session.getAttribute("user");
-        List<Order> orderlist =odao.getListUserOrder(user.getUserID());
+        
+        int page = 1;
+        int pageSize = 10;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            page = Integer.parseInt(pageParam);
+        }
+        int offset = (page - 1) * pageSize;
+        int totalOrders = odao.countOrders();
+        int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+        List<Order> orderlist =odao.getUserOrdersByPage(offset, pageSize, user.getUserID());
+        
         List<Order> orderneedreview = odao.getListUserOrderNeedEvaluate(user.getUserID());
         List<Integer> orderidneedreview = new ArrayList<>();
         for(Order order : orderneedreview){
@@ -87,6 +98,8 @@ public class OrderList extends HttpServlet {
         request.setAttribute("title", "Order History");
         request.setAttribute("cdao", cdao);
         request.setAttribute("oddao", oddao);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.setAttribute("list", orderlist);
         request.setAttribute("OrderStatus","OrderList" );
         request.setAttribute("orderidneedreview", orderidneedreview);

@@ -86,7 +86,7 @@ public class wantreturn extends HttpServlet {
         try {
             int id = Integer.parseInt(id_raw);
             if (id == 1) {
-                int totalOrders = odao.countReturnOrdersByStatusIDAndUserID(16,17 , user.getUserID());
+                int totalOrders = odao.countReturnOrdersByStatusIDAndUserID(16, 17, user.getUserID());
                 int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
                 List<Order> list = odao.getReturnOrdersByPageAndStatusAndUserID(offset, pageSize, 16, 17, user.getUserID());
                 request.setAttribute("udao", udao);
@@ -102,9 +102,11 @@ public class wantreturn extends HttpServlet {
                 int totalOrders = odao.countReturnOrdersByStatusID(16, 17);
                 int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
                 List<Order> orderlist = odao.getReturnOrdersByPageandStatus(offset, pageSize, 16, 17);
-                List<Status> liststatus = sdao.getListStatusSelect();
+                List<Status> selectWhenRequestReturn = sdao.getListStatusSelectWhenRequestReturn();
+                List<Status> selectWhenRequestReturn1part = sdao.getListStatusSelectWhenRequestReturn1part();
+                request.setAttribute("selectWhenRequestReturn", selectWhenRequestReturn);
+                request.setAttribute("selectWhenRequestReturn1part", selectWhenRequestReturn1part);
                 request.setAttribute("udao", udao);
-                request.setAttribute("liststatus", liststatus);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
                 request.setAttribute("currentPage", page);

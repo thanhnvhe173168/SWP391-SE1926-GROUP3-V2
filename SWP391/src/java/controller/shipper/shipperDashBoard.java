@@ -2,13 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.vnpay.common;
+package controller.shipper;
 
-import dao.LaptopDAO;
 import dao.OrderDAO;
-import dao.OrderDetailDAO;
-import dao.PaymentDAO;
-import dao.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,18 +12,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.util.List;
-import model.Order;
-import model.OrderDetail;
-import org.json.JSONObject;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "UpdatePaymentStatusByAdmin", urlPatterns = {"/UpdatePaymentStatusByAdmin"})
-public class UpdatePaymentStatusByAdmin extends HttpServlet {
+@WebServlet(name = "shipperDashBoard", urlPatterns = {"/shipperDashBoard"})
+public class shipperDashBoard extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -46,10 +39,10 @@ public class UpdatePaymentStatusByAdmin extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UpdatePaymentStatusByAdmin</title>");            
+            out.println("<title>Servlet shipperDashBoard</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UpdatePaymentStatusByAdmin at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet shipperDashBoard at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -67,7 +60,27 @@ public class UpdatePaymentStatusByAdmin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        
+        if (user == null || user.getRoleID() == 1 || user.getRoleID() == 2 || user.getRoleID() == 3) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+        OrderDAO odao = new OrderDAO();
+        int dilivering = odao.countOrdersByStatusID(11);
+        int dilivered = odao.countOrdersByStatusID(12);
+        int waittake = odao.countOrdersByStatusID(9);
+        int fail = odao.countOrdersByStatusID(13);
+        int refail = odao.countOrdersByStatusID(15);
+        int returning = odao.countOrdersByStatusID(24);
+        request.setAttribute("dilivering", dilivering);
+        request.setAttribute("dilivered", dilivered);
+        request.setAttribute("waittake", waittake);
+        request.setAttribute("fail", fail);
+        request.setAttribute("refail", refail);
+        request.setAttribute("returning", returning);
+        request.getRequestDispatcher("shipper/shipperDashBoard.jsp").forward(request, response);
+        
     }
 
     /**
@@ -81,30 +94,7 @@ public class UpdatePaymentStatusByAdmin extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        OrderDAO odao = new OrderDAO();
-        StatusDAO sdao = new StatusDAO();
-        try {
-            BufferedReader reader = request.getReader();
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-
-            JSONObject json = new JSONObject(sb.toString());
-            String orderId = json.getString("orderId");
-            String statusId = json.getString("newPaymentStatusID");
-            int orderid = Integer.parseInt(orderId);
-            int statusid = Integer.parseInt(statusId);
-            Order order = odao.GetOrderByID(orderid);
-            order.setPaymentstatus(sdao.GetStatus(statusid));
-            odao.updateOrderPaymentStatus(order);
-            response.setContentType("text/plain");
-            response.getWriter().write("success");
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request");
-        }
+        processRequest(request, response);
     }
 
     /**

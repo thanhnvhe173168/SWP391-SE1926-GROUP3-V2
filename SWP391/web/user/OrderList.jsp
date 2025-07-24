@@ -131,6 +131,24 @@
             .main {
                 padding: 30px;
             }
+            
+            .pagination {
+                margin-top: 20px;
+                text-align: center;
+            }
+            .pagination a, .pagination span.current {
+                margin: 0 5px;
+                padding: 6px 12px;
+                background: #f1f1f1;
+                border-radius: 5px;
+                text-decoration: none;
+                color: #dd3726;
+                font-weight: bold;
+            }
+            .pagination span.current {
+                background: #dd3726;
+                color: #fff;
+            }
         </style>
 
         <script>
@@ -253,6 +271,26 @@
                     </c:forEach>
                 </c:otherwise>
             </c:choose>
+            <div class="pagination">
+                <c:if test="${totalPages > 1}">
+                    <c:if test="${currentPage > 1}">
+                        <a href="?page=${currentPage - 1}&id=1">Previous</a>
+                    </c:if>
+                    <c:forEach begin="1" end="${totalPages}" var="i">
+                        <c:choose>
+                            <c:when test="${i == currentPage}">
+                                <span class="current">${i}</span>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="?page=${i}&id=1">${i}</a>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                    <c:if test="${currentPage < totalPages}">
+                        <a href="?page=${currentPage + 1}&id=1">Next</a>
+                    </c:if>
+                </c:if>
+            </div>
         </div>
         <jsp:include page="/components/Footer.jsp"></jsp:include>
     </body>
