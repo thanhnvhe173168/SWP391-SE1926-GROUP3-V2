@@ -13,7 +13,7 @@
         <style>
             body {
                 font-family: 'Arial', sans-serif;
-                background-color: #f8f9fa;
+                background-color: #f4f4f4;
                 color: #333;
             }
             .wishlist-container {
@@ -22,7 +22,7 @@
                 padding: 20px;
             }
             .wishlist-header {
-                background-color: #007bff;
+                background-color: #d70018;
                 color: white;
                 padding: 15px;
                 border-radius: 10px 10px 0 0;
@@ -34,7 +34,7 @@
                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             }
             .wishlist-table th {
-                background-color: #007bff;
+                background-color: #d70018;
                 color: white;
                 padding: 12px;
                 text-align: center;
@@ -42,7 +42,7 @@
             .wishlist-table td {
                 vertical-align: middle;
                 padding: 15px;
-                border-bottom: 1px solid #dee2e6;
+                border-bottom: 1px solid #eee;
             }
             .wishlist-table img {
                 width: 100px;
@@ -53,6 +53,14 @@
             .btn-custom {
                 padding: 5px 15px;
                 font-size: 14px;
+            }
+            .btn-primary {
+                background-color: #d70018;
+                border-color: #d70018;
+            }
+            .btn-primary:hover {
+                background-color: #b30014;
+                border-color: #b30014;
             }
             .btn-danger {
                 background-color: #dc3545;
@@ -80,21 +88,38 @@
                 margin-top: 20px;
             }
             .continue-shopping .btn {
-                background-color: #6c757d;
+                background-color: #d70018;
                 color: white;
+                padding: 10px 24px;
+                border-radius: 6px;
+                font-size: 14px;
+                font-weight: 500;
+                transition: background-color 0.3s, transform 0.2s;
             }
             .continue-shopping .btn:hover {
-                background-color: #5a6268;
+                background-color: #b30014;
+                transform: translateY(-2px);
+            }
+            .pagination .page-link {
+                color: #d70018;
+            }
+            .pagination .active .page-link {
+                background-color: #d70018;
+                border-color: #d70018;
+                color: white;
+            }
+            .pagination .page-link:hover {
+                background-color: #fce4e4;
             }
         </style>
     </head>
     <body>
         <jsp:include page="/components/Header.jsp"></jsp:include>
 
-            <div class="wishlist-container">
-                <div class="wishlist-header">
-                    <h2>Danh sách yêu thích</h2>
-                </div>
+        <div class="wishlist-container">
+            <div class="wishlist-header">
+                <h2>Danh sách yêu thích</h2>
+            </div>
 
             <% 
                 String mess = (String) session.getAttribute("mess");
@@ -146,41 +171,41 @@
             </c:choose>
 
             <c:if test="${totalPages > 1}">
-                    <nav aria-label="Pagination" class="mt-4">
-                        <ul class="pagination justify-content-center">
-                            <!-- Nút Trước -->
-                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                <a class="page-link" href="wishList?page=${currentPage - 1}">Trước</a>
+                <nav aria-label="Pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <!-- Nút Trước -->
+                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                            <a class="page-link" href="wishList?page=${currentPage - 1}">Trước</a>
+                        </li>
+
+                        <!-- Trang đầu và dấu ... -->
+                        <c:if test="${currentPage > 3}">
+                            <li class="page-item"><a class="page-link" href="wishList?page=1">1</a></li>
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        </c:if>
+
+                        <!-- Các trang gần current -->
+                        <c:forEach begin="${currentPage - 2 < 1 ? 1 : currentPage - 2}" 
+                                   end="${currentPage + 2 > totalPages ? totalPages : currentPage + 2}" 
+                                   var="i">
+                            <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                <a class="page-link" href="wishList?page=${i}">${i}</a>
                             </li>
+                        </c:forEach>
 
-                            <!-- Trang đầu và dấu ... -->
-                            <c:if test="${currentPage > 3}">
-                                <li class="page-item"><a class="page-link" href="wishList?page=1">1</a></li>
-                                <li class="page-item disabled"><span class="page-link">...</span></li>
-                                </c:if>
+                        <!-- Dấu ... và trang cuối -->
+                        <c:if test="${currentPage + 2 < totalPages}">
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            <li class="page-item"><a class="page-link" href="wishList?page=${totalPages}">${totalPages}</a></li>
+                        </c:if>
 
-                            <!-- Các trang gần current -->
-                            <c:forEach begin="${currentPage - 2 < 1 ? 1 : currentPage - 2}" 
-                                       end="${currentPage + 2 > totalPages ? totalPages : currentPage + 2}" 
-                                       var="i">
-                                <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                    <a class="page-link" href="wishList?page=${i}">${i}</a>
-                                </li>
-                            </c:forEach>
-
-                            <!-- Dấu ... và trang cuối -->
-                            <c:if test="${currentPage + 2 < totalPages}">
-                                <li class="page-item disabled"><span class="page-link">...</span></li>
-                                <li class="page-item"><a class="page-link" href="wishList?page=${totalPages}">${totalPages}</a></li>
-                                </c:if>
-
-                            <!-- Nút Sau -->
-                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                <a class="page-link" href="wishList?page=${currentPage + 1}">Sau</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </c:if>
+                        <!-- Nút Sau -->
+                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                            <a class="page-link" href="wishList?page=${currentPage + 1}">Sau</a>
+                        </li>
+                    </ul>
+                </nav>
+            </c:if>
 
             <div class="continue-shopping">
                 <a href="${pageContext.request.contextPath}/home" class="btn btn-lg">Tiếp tục mua sắm</a>
@@ -190,5 +215,4 @@
         <jsp:include page="/components/Footer.jsp"></jsp:include>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
-
 </html>

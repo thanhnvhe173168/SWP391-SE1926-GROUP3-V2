@@ -384,35 +384,6 @@ public class UserDAO extends ConnectDB {
         return userID;
     }
 
-//    public int getTotalStaff(String search, Integer statusID) {
-//        int total = 0;
-//        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Users WHERE RoleID = ?");
-//        List<Object> parameters = new ArrayList<>();
-//        parameters.add(2); // Staff
-//
-//        if (search != null && !search.trim().isEmpty()) {
-//            sql.append(" AND FullName LIKE ?");
-//            parameters.add("%" + search.trim() + "%");
-//        }
-//
-//        if (statusID != null) {
-//            sql.append(" AND StatusID = ?");
-//            parameters.add(statusID);
-//        }
-//
-//        try {
-//            PreparedStatement ps = connect.prepareStatement(sql.toString());
-//            for (int i = 0; i < parameters.size(); i++) {
-//                ps.setObject(i + 1, parameters.get(i));
-//            }
-//            ResultSet rs = ps.executeQuery();
-//            if (rs.next()) {
-//                total = rs.getInt(1);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return total;
-//    }
+
 
 }

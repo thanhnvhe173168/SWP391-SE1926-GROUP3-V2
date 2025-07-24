@@ -41,7 +41,7 @@ public class WishListServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            response.sendRedirect("guest/Login.jsp");
+            response.sendRedirect("login");
             return;
         }
 

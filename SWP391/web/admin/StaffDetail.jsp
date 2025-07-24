@@ -13,7 +13,7 @@
         <style>
             body {
                 font-family: 'Segoe UI', sans-serif;
-                background-color: #f3f4f6;
+                background-color: #f8f9fa;
                 margin: 0;
                 padding: 40px;
             }
@@ -22,38 +22,48 @@
                 max-width: 600px;
                 background-color: #ffffff;
                 padding: 30px 40px;
-                border-radius: 16px;
+                border-radius: 12px;
                 margin: auto;
                 box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+                border-top: 4px solid #D70018;
             }
 
             h2 {
                 text-align: center;
                 margin-bottom: 30px;
-                color: #111827;
+                color: #D70018;
                 font-weight: 600;
             }
 
             .detail-item {
                 margin-bottom: 16px;
-                font-size: 16px;
-                color: #374151;
+                font-size: 15px;
+                color: #333;
             }
 
             .detail-item strong {
-                color: #111827;
                 display: inline-block;
                 width: 160px;
+                font-weight: 600;
+                color: #111;
             }
 
             .status-active {
+                background-color: #d1fae5;
                 color: #065f46;
+                padding: 5px 10px;
+                border-radius: 12px;
                 font-weight: 600;
+                font-size: 14px;
             }
 
             .status-locked {
+                background-color: #fde2e2;
                 color: #991b1b;
+                padding: 5px 10px;
+                border-radius: 12px;
                 font-weight: 600;
+                font-size: 14px;
             }
 
             .btn-group {
@@ -61,42 +71,31 @@
                 margin-top: 30px;
             }
 
-            .btn-edit {
-                background-color: #facc15;
-                color: #111827;
-                border: none;
-                padding: 10px 18px;
-                font-weight: 600;
-                border-radius: 8px;
-                margin-right: 12px;
-                transition: background-color 0.3s;
-            }
-
-            .btn-edit:hover {
-                background-color: #eab308;
-            }
-
             .btn-back {
-                background-color: #6b7280;
+                background-color: #D70018;
                 color: white;
                 border: none;
-                padding: 10px 18px;
+                padding: 10px 20px;
                 font-weight: 600;
-                border-radius: 8px;
+                border-radius: 6px;
                 transition: background-color 0.3s;
             }
 
             .btn-back:hover {
-                background-color: #4b5563;
+                background-color: #b10014;
             }
 
             .error-message {
-                color: red;
+                color: #b91c1c;
+                background-color: #fee2e2;
+                padding: 10px;
+                border-radius: 6px;
                 text-align: center;
                 font-weight: 500;
                 margin-bottom: 20px;
             }
         </style>
+
     </head>
     <body>
 
@@ -125,7 +124,7 @@
                 </div>
 
                 <div class="btn-group">
-                    
+
                     <button class="btn-back" onclick="location.href = 'staffList'">
                         <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
                     </button>
