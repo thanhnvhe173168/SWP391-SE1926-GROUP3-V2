@@ -11,76 +11,130 @@
         <title>Tạo tài khoản nhân viên</title>
         <style>
             body {
-                font-family: Arial;
-                padding: 20px;
-                background-color: #f8f9fa;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f5f5f5;
+                margin: 0;
+                padding: 0;
             }
-            .form-container {
+
+            .form-wrapper {
                 max-width: 500px;
-                background-color: #fff;
-                padding: 25px;
-                margin: auto;
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                border-radius: 8px;
+                margin: 60px auto;
+                background-color: #ffffff;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                padding: 30px;
             }
+
             h2 {
                 text-align: center;
+                color: #d70018;
+                margin-bottom: 25px;
             }
+
             label {
-                display: block;
+                font-weight: 500;
                 margin-top: 15px;
+                display: block;
+                color: #333;
             }
-            input, select {
+
+            input[type="text"],
+            input[type="password"],
+            select {
                 width: 100%;
-                padding: 8px;
-                margin-top: 5px;
+                padding: 10px 12px;
+                margin-top: 6px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                transition: border-color 0.2s;
             }
+
+            input:focus,
+            select:focus {
+                outline: none;
+                border-color: #d70018;
+            }
+
             .btn-submit {
-                margin-top: 20px;
-                background-color: #28a745;
-                color: white;
-                border: none;
-                padding: 10px;
-                width: 100%;
-                cursor: pointer;
-                border-radius: 5px;
+                background-color: #D70018;
+                color: #fff;
             }
+
             .btn-submit:hover {
-                background-color: #218838;
+                background-color: #b80014;
             }
+
+            .btn-cancel {
+                background-color: #ccc;
+                color: #333;
+            }
+
+            .btn-cancel:hover {
+                background-color: #b3b3b3;
+            }
+            .form-actions {
+                display: flex;
+                justify-content: space-between;
+                gap: 16px;
+                margin-top: 24px;
+            }
+
+            .btn-submit, .btn-cancel {
+                flex: 1;
+                padding: 12px;
+                font-size: 16px;
+                font-weight: 500;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+            }
+
         </style>
+
     </head>
     <body>
-        <div class="form-container">
+        <div class="form-wrapper">
             <h2>Tạo tài khoản nhân viên</h2>
-            <form action="/swp391/createAccountStaff" method="post">
 
+            <form action="/swp391/createAccountStaff" method="post">
                 <label>Họ và tên:</label>
                 <input type="text" name="fullName" required />
-                
+
                 <label>Email:</label>
                 <input type="text" name="email" required />
 
+                <c:if test="${not empty error}">
+                    <div id="email-error" class="error" style="color:red; font-size:13px;">${emailError}</div>
+                </c:if>
+
                 <label>Số điện thoại:</label>
                 <input type="text" name="phoneNumber" required />
+                <c:if test="${not empty phoneError}">
+                    <div id="phone-error" class="error" style="color:red; font-size:13px;">${phoneError}</div>
+                </c:if>
+
 
                 <label>Mật khẩu:</label>
                 <input type="password" name="password" required />
-                
-                <label>Vai trò:</label>
-                <select name="roleId">
-                    <option value="2">Staff</option> 
-                </select>
-                
+
+                <input type="hidden" name="roleId" value="2" />
+
+
                 <label>Trạng thái:</label>
                 <select name="statusId">
                     <option value="1">Đang hoạt động</option>
                     <option value="2">Đã khóa</option>
                 </select>
 
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Tạo tài khoản</button>
+                    <button type="button" class="btn-cancel" onclick="window.history.back();">Hủy</button>
+                </div>
 
-                <button type="submit" class="btn-submit">Tạo tài khoản</button>
             </form>
         </div>
     </body>
 </html>
+

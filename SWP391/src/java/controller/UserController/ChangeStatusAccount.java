@@ -10,6 +10,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
@@ -29,47 +31,47 @@ public class ChangeStatusAccount extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Log request
-        System.out.println("Received request: userId=" + request.getParameter("userId") + ", statusId=" + request.getParameter("statusId"));
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
-        // Lấy thông tin từ request
         String userIdStr = request.getParameter("userId");
         String statusIdStr = request.getParameter("statusId");
+        String redirectPage = request.getParameter("redirectPage");
 
-        if (userIdStr == null || statusIdStr == null) {
-            System.out.println("Missing parameters!");
-            response.sendRedirect(request.getContextPath() + "/staffList?message=Missing Information require!");
-            return;
+        if (userIdStr == null || statusIdStr == null || redirectPage == null) {
+            response.sendRedirect("home");
         }
-
-        int userId;
-        int statusId;
-        try {
-            userId = Integer.parseInt(userIdStr);
-            statusId = Integer.parseInt(statusIdStr);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid ID format: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/staffList?message=ID is not vaLid!");
-            return;
-        }
-
-        // Tạo đối tượng UserDAO
         UserDAO dao = new UserDAO();
+        try {
+            int userId = Integer.parseInt(userIdStr);
+            int statusId = Integer.parseInt(statusIdStr);
+            boolean isChanged = dao.changeStatus(userId, statusId);
+            String message = "";
+            if (isChanged) {
+                message = "Change status is successfull!";
+            } else {
+                message = "Change status is failed!";
+            }
 
-        // Thay đổi trạng thái
-        boolean isChanged = dao.changeStatus(userId, statusId);
-        String message = "";
-        if (isChanged) {
-            message = "Change status is successfull!";
-        } else {
-            message = "Change status is failed!";
+            if ("staff".equalsIgnoreCase(redirectPage)) {
+                if (user == null || user.getRoleID() > 1) {
+                    request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+                    return;
+                }
+                response.sendRedirect("staffList");
+            } else if ("user".equalsIgnoreCase(redirectPage)) {
+                if (user == null || user.getRoleID() > 2) {
+                    request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+                    return;
+                }
+                response.sendRedirect("userList");
+            } else {
+                response.sendRedirect("home");
+            }
+        } catch (NumberFormatException e) {
+            response.sendRedirect("home");
         }
 
-        // Log kết quả
-        System.out.println("Change status result: " + message);
-
-        // Chuyển hướng về trang danh sách với thông báo
-        response.sendRedirect(request.getContextPath() + "/staffList?message=" + message);
     }
 
     /**

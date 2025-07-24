@@ -40,8 +40,11 @@ public class WishListServlet extends HttpServlet {
        HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         if (user == null) {
-            response.sendRedirect("guest/Login.jsp");
+            response.sendRedirect("login");
             return;
         }
 

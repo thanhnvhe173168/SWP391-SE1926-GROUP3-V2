@@ -81,7 +81,7 @@ public class Login extends HttpServlet {
                 response.sendRedirect("dashboard");
                 break;
             case 2: // Staff
-                response.sendRedirect("dashboard");
+                response.sendRedirect("getListLaptop");
                 break;
             case 3: // Customer
                 response.sendRedirect("home");

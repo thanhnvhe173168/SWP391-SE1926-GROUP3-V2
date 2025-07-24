@@ -65,9 +65,13 @@ public class AddToWishList extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        
+        if (user == null || user.getRoleID() != 3) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
 
         if (user == null) {
-            response.sendRedirect("guest/Login.jsp");
+            response.sendRedirect("login");
             return;
         }
 
@@ -89,7 +93,7 @@ public class AddToWishList extends HttpServlet {
             session.setAttribute("mess", "Sản phẩm đã có trong danh sách yêu thích!");
         }
 
-        response.sendRedirect("wishList"); // Chuyển hướng đến trang wishlist
+        response.sendRedirect("wishList"); 
     }
 
     /**

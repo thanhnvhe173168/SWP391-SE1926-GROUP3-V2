@@ -12,81 +12,146 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
         <style>
             body {
-                font-family: 'Arial', sans-serif;
-                background-color: #f8f9fa;
-                color: #333;
+                font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+                background-color: #f5f5f5;
+                color: #212529;
             }
+
             .wishlist-container {
                 max-width: 1200px;
                 margin: 0 auto;
                 padding: 20px;
             }
+
             .wishlist-header {
-                background-color: #007bff;
+                background-color: #d70018;
                 color: white;
-                padding: 15px;
-                border-radius: 10px 10px 0 0;
+                padding: 18px 25px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 20px;
                 margin-bottom: 20px;
             }
+
             .wishlist-table {
                 background-color: white;
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                border-radius: 6px;
+                box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
             }
+
             .wishlist-table th {
-                background-color: #007bff;
+                background-color: #d70018;
                 color: white;
-                padding: 12px;
                 text-align: center;
+                padding: 14px;
+                font-weight: 500;
+                font-size: 15px;
             }
+
             .wishlist-table td {
                 vertical-align: middle;
-                padding: 15px;
-                border-bottom: 1px solid #dee2e6;
+                padding: 16px;
+                border-bottom: 1px solid #eee;
+                font-size: 15px;
             }
+
             .wishlist-table img {
-                width: 100px;
-                height: 100px;
+                width: 90px;
+                height: 90px;
                 object-fit: cover;
-                border-radius: 5px;
+                border-radius: 4px;
+                border: 1px solid #ddd;
             }
+
             .btn-custom {
-                padding: 5px 15px;
+                padding: 6px 16px;
                 font-size: 14px;
+                border-radius: 4px;
+                font-weight: 500;
             }
+
             .btn-danger {
                 background-color: #dc3545;
                 border-color: #dc3545;
             }
+
             .btn-danger:hover {
-                background-color: #c82333;
-                border-color: #c82333;
+                background-color: #b52a37;
+                border-color: #b52a37;
             }
+
             .btn-success {
                 background-color: #28a745;
                 border-color: #28a745;
             }
+
             .btn-success:hover {
                 background-color: #218838;
                 border-color: #218838;
             }
+
+            .btn-primary {
+                background-color: #d70018;
+                border-color: #d70018;
+            }
+
+            .btn-primary:hover {
+                background-color: #bb0015;
+                border-color: #bb0015;
+            }
+
             .empty-wishlist {
                 text-align: center;
-                padding: 50px;
-                color: #666;
+                padding: 60px 30px;
+                color: #777;
+                font-size: 17px;
             }
+
             .continue-shopping {
-                text-align: center;
-                margin-top: 20px;
+                display: flex;
+                justify-content: center; 
+                margin-top: 30px;
             }
+
             .continue-shopping .btn {
-                background-color: #6c757d;
+                background-color: #007bff; 
+                color: white;
+                padding: 10px 25px;
+                font-size: 16px;
+                border-radius: 4px;
+                transition: background-color 0.3s;
+                font-weight: 500;
+                border: none;
+                text-decoration: none;
+            }
+
+            .continue-shopping .btn:hover {
+                background-color: #0056b3;
+            }
+            .pagination .page-link {
+                color: #d70018;
+                font-weight: 500;
+                border-radius: 4px !important;
+            }
+
+            .pagination .page-item.active .page-link {
+                background-color: #d70018;
+                border-color: #d70018;
                 color: white;
             }
-            .continue-shopping .btn:hover {
-                background-color: #5a6268;
+
+            .pagination .page-item.disabled .page-link {
+                color: #ccc;
+            }
+
+            .alert-info {
+                background-color: #e6f0ff;
+                color: #004085;
+                border-color: #b8daff;
+                font-size: 15px;
             }
         </style>
+
     </head>
     <body>
         <jsp:include page="/components/Header.jsp"></jsp:include>
@@ -127,7 +192,7 @@
                                     <td>${w.laptop.price} VNĐ</td>
                                     <td>
                                         <a href="productDetail?productId=${w.laptop.laptopID}" class="btn btn-primary btn-custom">Xem chi tiết</a>
-                                        <button onclick="addtocart(<%=rsLaptop.getInt("LaptopID")%>,<%=rsLaptop.getDouble("Price")%>)" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</button>
+                                        <button onclick="addtocart(${laptop.laptopID}, ${laptop.price})" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</button>
                                         <a href="removeWishList?id=${w.wishlistId}" class="btn btn-danger btn-custom ms-2" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
                                             <i class="fas fa-trash"></i> Xóa
                                         </a>
@@ -144,7 +209,6 @@
                     </div>
                 </c:otherwise>
             </c:choose>
-
             <c:if test="${totalPages > 1}">
                 <nav aria-label="Pagination" class="mt-4">
                     <ul class="pagination justify-content-center">

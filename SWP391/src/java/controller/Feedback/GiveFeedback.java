@@ -42,7 +42,13 @@ public class GiveFeedback extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String orderId = request.getParameter("orderID");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+         String orderId = request.getParameter("orderID");
         String laptopId = request.getParameter("laptopID");
         System.out.println("orderId:" + orderId);
         System.out.println("laptopId:" + laptopId);
@@ -55,22 +61,17 @@ public class GiveFeedback extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session == null) {
+        if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect("login");
             return;
         }
 
         User user = (User) session.getAttribute("user");
-        if (user == null) {
-            response.sendRedirect("login");
-            return;
-        }
+
         int userID = user.getUserID();
 
         String orderIDRaw = request.getParameter("orderID");
         String laptopIDRaw = request.getParameter("laptopID");
-        System.out.println("orderIDRaw:" + orderIDRaw);
-        System.out.println("laptopIDRaw:" + laptopIDRaw);
         if (orderIDRaw == null || laptopIDRaw == null || orderIDRaw.isEmpty() || laptopIDRaw.isEmpty()) {
             request.setAttribute("mess", "Thiếu thông tin đánh giá.");
             request.getRequestDispatcher("user/GiveFeedback.jsp").forward(request, response);
@@ -84,24 +85,18 @@ public class GiveFeedback extends HttpServlet {
         String content = request.getParameter("content");
 
         int rating = Integer.parseInt(request.getParameter("productRating"));
-
         int sellerRating = Integer.parseInt(request.getParameter("sellerRating"));
-        System.out.println("seller" + sellerRating);
         int shippingRating = Integer.parseInt(request.getParameter("shippingRating"));
-        System.out.println("Shipping" + shippingRating);
         int statusID = 30;
 
         //file upload
         Part filePart = request.getPart("productImage");
         String fileName = extractFileName(filePart);
-
-        // Đường dẫn lưu file trên server 
         String uploadPath = "C:/MyUploads/Feedback";
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
-
         // file trùng tên
         File file = new File(uploadDir, fileName);
         int count = 0;
@@ -113,7 +108,6 @@ public class GiveFeedback extends HttpServlet {
         }
 
         filePart.write(file.getAbsolutePath());
-
         // Link để lưu DB
         String imageURL = "Feedback/" + fileName;
 
@@ -132,10 +126,8 @@ public class GiveFeedback extends HttpServlet {
 
         // Ghi DB
         FeedbackDAO dao = new FeedbackDAO();
-        boolean giveF = dao.addFeedback(fb);
 
-        if (giveF) {
-            System.out.println("Đã vào đây");
+        if (dao.addFeedback(fb)) {
             session.setAttribute("mess", "Cảm ơn bạn đã gửi phản hồi!");
             response.sendRedirect("home");
         } else {
@@ -143,8 +135,7 @@ public class GiveFeedback extends HttpServlet {
             request.getRequestDispatcher("user/GiveFeedback.jsp").forward(request, response);
         }
     }
-
-    // Tách tên file từ part
+  // Tách tên file từ part
     private String extractFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         for (String cd : contentDisp.split(";")) {
@@ -155,7 +146,6 @@ public class GiveFeedback extends HttpServlet {
         }
         return "";
     }
-
     @Override
     public String getServletInfo() {
         return "Short description";

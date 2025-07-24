@@ -12,7 +12,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.ResultSet;
+import model.User;
 
 /**
  *
@@ -34,6 +36,11 @@ public class GetListContribute extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         ContributeDAO contributeDao = new ContributeDAO();
         int currentPage = request.getParameter("currentPage") != null
                 ? Integer.parseInt(request.getParameter("currentPage"))

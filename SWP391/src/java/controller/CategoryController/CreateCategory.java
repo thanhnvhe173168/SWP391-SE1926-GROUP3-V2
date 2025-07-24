@@ -12,6 +12,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 import org.json.JSONObject;
 
 /**
@@ -46,6 +48,11 @@ public class CreateCategory extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4 || user.getRoleID() == 2) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         request.getRequestDispatcher("/admin/CreateCategory.jsp").forward(request, response);
     }
 
@@ -60,11 +67,16 @@ public class CreateCategory extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4 || user.getRoleID() == 2) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         CategoryDAO categoryDao = new CategoryDAO();
         String categoryName = request.getParameter("categoryName");
         boolean checkExist = categoryDao.checkExistCategoryName(categoryName, 0);
         if (checkExist) {
-           JSONObject json = new JSONObject();
+            JSONObject json = new JSONObject();
             json.put("message", "Tên danh mục sản phẩm đã tồn tại");
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

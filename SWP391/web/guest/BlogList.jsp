@@ -29,6 +29,32 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
+            .latest-news {
+                font-size: 36px; /* Kích thước chữ */
+                font-weight: bold; /* Chữ đậm */
+                color: #1a1a1a; /* Màu chữ (đen đậm) */
+                position: relative; /* Để định vị đường kẻ */
+                padding-bottom: 10px; /* Khoảng cách giữa chữ và đường kẻ */
+            }
+
+            .latest-news::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 30px;
+                transform: translateX(-50%); /* Căn giữa đường kẻ */
+                width: 50px; /* Độ dài đường kẻ */
+                height: 3px; /* Độ dày đường kẻ */
+                background-color: #ff0000; /* Màu đỏ */
+            }
+            input {
+                padding: 8px 12px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                background-color: #ffffff;
+                width: 60%;
+                margin-bottom: 12px;
+            }
         </style>
     </head>
     <body>
@@ -37,8 +63,16 @@
         %>
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <div class="container my-5">
-                <h1 class="text-center mb-4">Danh sách Blog</h1>
-                <div class="row">
+                <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 30px">
+                    <h1 class="latest-news">Tin tức mới nhất</h1>
+                    <input 
+                        type="text" 
+                        id="title" 
+                        placeholder="Tìm kiếm" 
+                        value="<%=request.getParameter("title") != null ? request.getParameter("title") : ""%>" 
+                    />
+            </div>
+            <div class="row">
                 <%if (rsBlog != null) {
                                  int index = 0;
                                  while (rsBlog.next()) {
@@ -61,5 +95,17 @@
         </div>
         <jsp:include page="/components/Footer.jsp"></jsp:include>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.getElementById('title').addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    const inputValue = this.value;
+                    if(!!inputValue) {
+                        window.location.href = "blogList?title=" + inputValue;
+                    } else {
+                        window.location.href = "blogList";
+                    }
+                }
+            });
+        </script>
     </body>
 </html>
