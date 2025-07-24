@@ -43,46 +43,103 @@
                 font-size: 15px;
             }
 
+            input[readonly] {
+                background-color: #f0f0f0;
+                color: #777;
+            }
+
             input[type="text"]:focus, select:focus {
                 border-color: #D70018;
                 outline: none;
                 box-shadow: 0 0 0 2px rgba(215, 0, 24, 0.2);
             }
 
-            .btn-submit {
+            .form-actions {
+                display: flex;
+                justify-content: space-between;
+                gap: 16px;
                 margin-top: 28px;
-                width: 100%;
+            }
+
+            .btn-submit,
+            .btn-cancel {
+                flex: 1;
                 padding: 12px;
-                background-color: #D70018;
-                color: #fff;
-                border: none;
-                border-radius: 8px;
                 font-size: 16px;
                 font-weight: 500;
+                border: none;
+                border-radius: 8px;
                 cursor: pointer;
                 transition: background-color 0.2s ease;
+            }
+
+            .btn-submit {
+                background-color: #D70018;
+                color: #fff;
             }
 
             .btn-submit:hover {
                 background-color: #b80014;
             }
+
+            .btn-cancel {
+                background-color: #ccc;
+                color: #333;
+            }
+
+            .btn-cancel:hover {
+                background-color: #b3b3b3;
+            }
+            .password-row {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+                margin-top: 6px;
+            }
+
+            .password-row input {
+                flex: 1;
+            }
+
+            .btn-reset {
+                padding: 10px 14px;
+                background-color: #fff;
+                color: #d70018;
+                border: 1px solid #d70018;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .btn-reset:hover {
+                background-color: #d70018;
+                color: white;
+            }
+
         </style>
     </head>
     <body>
         <div class="form-container">
-            <h2>Chỉnh sửa nhân viên</h2>
-            <form method="post" action="staffEditAccount">
-                <input type="hidden" name="action" value="save"/>
-                <input type="hidden" name="userId" value="${user.userID}"/>
+            <h2>Chỉnh sửa thông tin nhân viên</h2>
+            <form method="post" action="resetPassword">
+                <label for="password">Mật khẩu:</label>
+                <div class="password-row">
+                    <input type="text" id="password" name="password" value="${user.password}" readonly class="readonly-input" />
+                    <input type="hidden" name="userId" value="${user.userID}" />
+                    <button type="submit" class="btn-reset">Reset</button>
+                </div>
+            </form>            
+
+            <form method="post" action="editStaff">
+                <input type="hidden" name="userId" value="${user.userID}" />
 
                 <label>Họ và tên:</label>
-                <input type="text" name="fullName" value="${user.fullName}" required/>
+                <input type="text" name="fullName" value="${user.fullName}" required />
 
                 <label>Số điện thoại:</label>
-                <input type="text" name="phoneNumber" value="${user.phoneNumber}" required/>
-
-                <label>Mật khẩu:</label>
-                <input type="text" name="password" value="${user.password}" required/>
+                <input type="text" name="phoneNumber" value="${user.phoneNumber}" required />
 
                 <label>Trạng thái:</label>
                 <select name="statusId">
@@ -96,7 +153,10 @@
                     <option value="2" ${user.roleID == 2 ? 'selected' : ''}>Staff</option>
                 </select>
 
-                <button type="submit" class="btn-submit">Lưu thay đổi</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Lưu thay đổi</button>
+                    <button type="button" class="btn-cancel" onclick="window.history.back();">Hủy</button>
+                </div>
             </form>
         </div>
     </body>

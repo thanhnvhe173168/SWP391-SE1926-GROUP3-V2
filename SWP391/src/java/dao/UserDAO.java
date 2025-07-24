@@ -63,7 +63,6 @@ public class UserDAO extends ConnectDB {
 
     }
 
-
     //Linh: StaffList
     public List<User> getListStaffWithPaging(int offset, int pageSize) {
         List<User> list = new ArrayList<>();
@@ -153,20 +152,32 @@ public class UserDAO extends ConnectDB {
                 user.setUserID(rs.getInt("UserID"));
                 user.setFullName(rs.getString("FullName"));
                 user.setPhoneNumber(rs.getString("PhoneNumber"));
-
                 user.setPassword(rs.getString("Password"));
                 user.setStatusID(rs.getInt("StatusID"));
                 user.setRoleID(rs.getInt("RoleID"));
-
-                // add more fields if needed
             }
         } catch (SQLException e) {
             System.out.println("getUserByID: " + e.getMessage());
         }
         return user;
     }
-//Linh: CreateAccountStaff
 
+    public void updateStaffInfo(User user) {
+        String sql = "UPDATE Users SET FullName = ?, PhoneNumber = ?, RoleID = ?, StatusID = ? WHERE UserID = ?";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getPhoneNumber());
+            ps.setInt(3, user.getRoleID());
+            ps.setInt(4, user.getStatusID());
+            ps.setInt(5, user.getUserID());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("updateStaffInfo: " + e.getMessage());
+        }
+    }
+
+//Linh: CreateAccountStaff
     public int createUser(User user) {
 
         String sql = "Insert into Users(FullName, Email, PhoneNumber, Password, RoleID, StatusID) values (?, ?, ?, ?, ?, ?)";
@@ -186,7 +197,7 @@ public class UserDAO extends ConnectDB {
         return n;
     }
 
-    // Linh: Tìm kiếm User theo FullName + StatusID
+    // Linh: Search User theo FullName + StatusID
     public List<User> searchStaff(String search, Integer statusID) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users WHERE RoleID= ? ";
@@ -202,7 +213,7 @@ public class UserDAO extends ConnectDB {
             PreparedStatement ps = connect.prepareStatement(sql);
 
             int index = 1;
-            ps.setInt(index++, 2);//roleID=2
+            ps.setInt(index++, 2);
             if (search != null && !search.trim().isEmpty()) {
                 ps.setString(index++, "%" + search.trim() + "%");
             }
@@ -283,14 +294,13 @@ public class UserDAO extends ConnectDB {
             ps.setInt(1, statusID);
             ps.setInt(2, userID);
             int rowsAffected = ps.executeUpdate();
-            ps.close(); // Đóng PreparedStatement
+            ps.close();
             return true;
         } catch (Exception e) {
             System.out.println("changeStatus error: " + e.getMessage());
             return false;
         }
     }
-
 
     //Linh: UserList
     public List<User> getListUserWithPaging(int offset, int pageSize) {
@@ -384,6 +394,16 @@ public class UserDAO extends ConnectDB {
         return userID;
     }
 
-
-
+//reset password
+    public void resetPassword(int userId, String newPassword){
+        String sql = "Update Users SET Password = ? WHERE UserID = ? ";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setString(1, newPassword);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

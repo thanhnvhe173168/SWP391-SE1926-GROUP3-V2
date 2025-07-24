@@ -57,21 +57,40 @@
             }
 
             .btn-submit {
-                background-color: #d70018;
+                background-color: #D70018;
                 color: #fff;
-                font-weight: bold;
-                padding: 12px;
-                width: 100%;
-                border: none;
-                border-radius: 8px;
-                margin-top: 25px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
             }
 
             .btn-submit:hover {
-                background-color: #a80013;
+                background-color: #b80014;
             }
+
+            .btn-cancel {
+                background-color: #ccc;
+                color: #333;
+            }
+
+            .btn-cancel:hover {
+                background-color: #b3b3b3;
+            }
+            .form-actions {
+                display: flex;
+                justify-content: space-between;
+                gap: 16px;
+                margin-top: 24px;
+            }
+
+            .btn-submit, .btn-cancel {
+                flex: 1;
+                padding: 12px;
+                font-size: 16px;
+                font-weight: 500;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+            }
+
         </style>
 
     </head>
@@ -109,7 +128,11 @@
                     <option value="2">Đã khóa</option>
                 </select>
 
-                <button type="submit" class="btn-submit">Tạo tài khoản</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Tạo tài khoản</button>
+                    <button type="button" class="btn-cancel" onclick="window.history.back();">Hủy</button>
+                </div>
+
             </form>
         </div>
     </body>
