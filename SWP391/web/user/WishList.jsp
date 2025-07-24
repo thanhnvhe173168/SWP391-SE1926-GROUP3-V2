@@ -13,7 +13,7 @@
         <style>
             body {
                 font-family: 'Arial', sans-serif;
-                background-color: #f4f4f4;
+                background-color: #f8f9fa;
                 color: #333;
             }
             .wishlist-container {
@@ -22,7 +22,7 @@
                 padding: 20px;
             }
             .wishlist-header {
-                background-color: #d70018;
+                background-color: #007bff;
                 color: white;
                 padding: 15px;
                 border-radius: 10px 10px 0 0;
@@ -34,7 +34,7 @@
                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             }
             .wishlist-table th {
-                background-color: #d70018;
+                background-color: #007bff;
                 color: white;
                 padding: 12px;
                 text-align: center;
@@ -42,7 +42,7 @@
             .wishlist-table td {
                 vertical-align: middle;
                 padding: 15px;
-                border-bottom: 1px solid #eee;
+                border-bottom: 1px solid #dee2e6;
             }
             .wishlist-table img {
                 width: 100px;
@@ -53,14 +53,6 @@
             .btn-custom {
                 padding: 5px 15px;
                 font-size: 14px;
-            }
-            .btn-primary {
-                background-color: #d70018;
-                border-color: #d70018;
-            }
-            .btn-primary:hover {
-                background-color: #b30014;
-                border-color: #b30014;
             }
             .btn-danger {
                 background-color: #dc3545;
@@ -88,38 +80,21 @@
                 margin-top: 20px;
             }
             .continue-shopping .btn {
-                background-color: #d70018;
-                color: white;
-                padding: 10px 24px;
-                border-radius: 6px;
-                font-size: 14px;
-                font-weight: 500;
-                transition: background-color 0.3s, transform 0.2s;
-            }
-            .continue-shopping .btn:hover {
-                background-color: #b30014;
-                transform: translateY(-2px);
-            }
-            .pagination .page-link {
-                color: #d70018;
-            }
-            .pagination .active .page-link {
-                background-color: #d70018;
-                border-color: #d70018;
+                background-color: #6c757d;
                 color: white;
             }
-            .pagination .page-link:hover {
-                background-color: #fce4e4;
+.continue-shopping .btn:hover {
+                background-color: #5a6268;
             }
         </style>
     </head>
     <body>
         <jsp:include page="/components/Header.jsp"></jsp:include>
 
-        <div class="wishlist-container">
-            <div class="wishlist-header">
-                <h2>Danh sách yêu thích</h2>
-            </div>
+            <div class="wishlist-container">
+                <div class="wishlist-header">
+                    <h2>Danh sách yêu thích</h2>
+                </div>
 
             <% 
                 String mess = (String) session.getAttribute("mess");
@@ -152,7 +127,7 @@
                                     <td>${w.laptop.price} VNĐ</td>
                                     <td>
                                         <a href="productDetail?productId=${w.laptop.laptopID}" class="btn btn-primary btn-custom">Xem chi tiết</a>
-                                        <a href="AddToCart?id=${w.laptop.laptopID}" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</a>
+                                        <button onclick="addtocart(<%=rsLaptop.getInt("LaptopID")%>,<%=rsLaptop.getDouble("Price")%>)" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</button>
                                         <a href="removeWishList?id=${w.wishlistId}" class="btn btn-danger btn-custom ms-2" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
                                             <i class="fas fa-trash"></i> Xóa
                                         </a>
@@ -169,8 +144,7 @@
                     </div>
                 </c:otherwise>
             </c:choose>
-
-            <c:if test="${totalPages > 1}">
+<c:if test="${totalPages > 1}">
                 <nav aria-label="Pagination" class="mt-4">
                     <ul class="pagination justify-content-center">
                         <!-- Nút Trước -->
@@ -182,7 +156,7 @@
                         <c:if test="${currentPage > 3}">
                             <li class="page-item"><a class="page-link" href="wishList?page=1">1</a></li>
                             <li class="page-item disabled"><span class="page-link">...</span></li>
-                        </c:if>
+                            </c:if>
 
                         <!-- Các trang gần current -->
                         <c:forEach begin="${currentPage - 2 < 1 ? 1 : currentPage - 2}" 
@@ -197,7 +171,7 @@
                         <c:if test="${currentPage + 2 < totalPages}">
                             <li class="page-item disabled"><span class="page-link">...</span></li>
                             <li class="page-item"><a class="page-link" href="wishList?page=${totalPages}">${totalPages}</a></li>
-                        </c:if>
+                            </c:if>
 
                         <!-- Nút Sau -->
                         <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
@@ -214,5 +188,24 @@
 
         <jsp:include page="/components/Footer.jsp"></jsp:include>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+                                            function addtocart(laptopid, price) {
+                                                const url = 'AddToCart?id=' + encodeURIComponent(laptopid) + '&price=' + encodeURIComponent(price);
+                                                fetch(url)
+                                                        .then(res => res.json())
+                                                        .then(data => {
+                                                            Swal.fire({
+icon: data.icon,
+                                                                title: data.mess,
+                                                                showConfirmButton: false,
+                                                                timer: 2000
+                                                            });
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('Lỗi:', error);
+                                                        });
+                                            }
+        </script>
     </body>
+
 </html>

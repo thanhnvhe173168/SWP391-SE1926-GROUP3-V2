@@ -75,6 +75,7 @@ public class UpdateBlog extends HttpServlet {
         String title = request.getParameter("title");
         String avatar = request.getParameter("avatar");
         String content = request.getParameter("content");
+         String blogStatus = request.getParameter("blogStatus");
         boolean checkExistTitle = blogDao.checkExistBlogTitle(title, blogId);
         JSONObject json = new JSONObject();
         if (checkExistTitle) {
@@ -84,7 +85,13 @@ public class UpdateBlog extends HttpServlet {
             response.getWriter().write(json.toString());
             return;
         }
-        Blog newBlog = new Blog(blogId, avatar, title, content);
+        Blog newBlog = new Blog();
+        newBlog.setBlogID(blogId);
+        newBlog.setAvatar(avatar);
+        newBlog.setTitle(title);
+        newBlog.setAvatar(avatar);
+        newBlog.setContent(content);
+        newBlog.setBlogStatus(blogStatus);
         int check = blogDao.updateBlog(newBlog);
         if (check <= 0) {
             json.put("message", "Có lỗi xảy ra");

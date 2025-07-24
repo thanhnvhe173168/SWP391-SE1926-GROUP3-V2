@@ -32,7 +32,7 @@
     <body>
         <div class="d-flex">
             <jsp:include page="/components/AdminSidebar.jsp"></jsp:include>
-            <div style="height: calc(100vh - 86px); overflow: hidden auto;" class="container">
+            <div style="height: calc(100vh - 0px); overflow: hidden auto;" class="container">
                 <p style="color: #dd3726; font-size: 40px; font-weight: 700">Thêm mới blog</p>
                 <div class="container">
                     <form id="formCreateBlog" accept-charset="UTF-8">
@@ -70,7 +70,8 @@
                                 >
                                 Trở lại
                             </button>
-                            <button type="submit" class="btn btn-primary">Thêm mới</button>
+                            <button type="button" style="margin-right: 12px" class="btn btn-primary" onclick="handleSubmit('draft')">Lưu nháp</button>
+                            <button type="button" class="btn btn-primary" onclick="handleSubmit('active')">Lưu</button>
                         </div>
                     </form>
                 </div>
@@ -82,6 +83,7 @@
                     .create(document.querySelector('#editor'))
                     .then(editor => {
                         console.log('Editor was initialized', editor);
+                        window.editor = editor;
                     })
                     .catch(error => {
                         console.error(error);
@@ -91,27 +93,34 @@
                 window.location.href = "getListBlog";
             }
 
-            $(document).ready(function () {
-                $('#formCreateBlog').submit((function (e) {
-                    e.preventDefault();
-                    $.ajax(({
-                        url: "createBlog",
-                        type: 'POST',
-                        data: $('#formCreateBlog').serialize(),
-                        success: function (data) {
-                            if (data.message) {
-                                $("#message").text(data.message);
-                            } else {
-                                handleRedirect();
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error:', error.toString());
-                            $("#result").text('Có lỗi xảy ra!');
+            function handleSubmit(blogStatus) {
+                if (window.editor) {
+                    var content = window.editor.getData(); // Lấy nội dung từ CKEditor
+                    document.getElementById('editor').value = content; // Gán vào <textarea>
+                    console.log("Content synchronized:", content);
+                } else {
+                    console.warn("CKEditor instance not found");
+                }
+                var formData = $('#formCreateBlog').serialize();
+                var data = formData + '&blogStatus=' + encodeURIComponent(blogStatus);
+
+                $.ajax({
+                    url: 'createBlog',
+                    type: 'POST',
+                    data: data,
+                    success: function (data) {
+                        if (data.message) {
+                            $("#message").text(data.message);
+                        } else {
+                            handleRedirect();
                         }
-                    }));
-                }));
-            });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error.toString());
+                        $("#result").text('Có lỗi xảy ra!');
+                    }
+                });
+            }
         </script>
     </body>
 </html>

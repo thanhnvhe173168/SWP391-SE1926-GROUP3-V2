@@ -124,7 +124,7 @@
         %>
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <div class="container my-5">
-            <%if(rsLaptop.next()) {%>
+            <%if(rsLaptop != null && rsLaptop.next()) {%>
             <div class="row">
                 <div class="col-md-8">
                     <img src="images/<%=rsLaptop.getString("ImageURL")%>" class="product-image" alt="">
@@ -155,6 +155,7 @@
                     <form id="addToCartForm" action="AddToCart" method="post">
                         <input type="hidden" name="productId" id="productId" value="<%=rsLaptop.getInt("LaptopID")%>">
                         <input type="hidden" name="quantity" id="quantityhidden">
+                        <input type="hidden" name="price" id="price" value="?">
                     </form>
                     <br>
                     <button class="buy-now-btn" onclick="buyNow()">

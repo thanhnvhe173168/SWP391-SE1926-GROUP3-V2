@@ -62,13 +62,29 @@ public class PromotionDAO extends ConnectDB {
         }
     }
 
-    public ResultSet getListPromotion() {
+    public ResultSet getListPromotion(String title, String status) {
         ResultSet rs = null;
         try {
-            String sql = "select p.ID, p.Image, p.Title, p.StartDate, p.EndDate, p.Status, Count(pp.ID) as NumberProduct from Promotion p "
-                    + "inner join PromotionProduct pp on pp.PromotionID = p.ID "
-                    + "group by p.ID, p.Image, p.Title, p.StartDate, p.EndDate, p.Status";
+            String prefixSql = "select p.ID, p.Image, p.Title, p.StartDate, p.EndDate, p.Status, Count(pp.ID) as NumberProduct from Promotion p "
+                    + "inner join PromotionProduct pp on pp.PromotionID = p.ID ";
+            String suffixSql = "group by p.ID, p.Image, p.Title, p.StartDate, p.EndDate, p.Status";
+            if (title != null && !title.trim().isEmpty() && status == null) {
+                prefixSql += "where p.Title like ? ";
+            } else if (title == null && status != null && !status.trim().isEmpty()) {
+                prefixSql += "where p.Status = ? ";
+            } else if (title != null && !title.trim().isEmpty() && status != null && !status.trim().isEmpty()) {
+                prefixSql += "where p.Title like ? and p.Status = ? ";
+            }
+            String sql = prefixSql + suffixSql;
             PreparedStatement pre = connect.prepareStatement(sql);
+            if (title != null && !title.trim().isEmpty() && status == null) {
+                pre.setString(1, "%" + title + "%");
+            } else if (title == null && status != null && !status.trim().isEmpty()) {
+                pre.setString(1, status);
+            } else if (title != null && !title.trim().isEmpty() && status != null && !status.trim().isEmpty()) {
+                pre.setString(1, "%" + title + "%");
+                pre.setString(2, status);
+            }
             rs = pre.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -194,26 +210,30 @@ public class PromotionDAO extends ConnectDB {
         }
     }
 
-    public void deletePromotion(int promotionId) {
+    public void deletePromotion(int promotionId, String status) {
         try {
-            connect.setAutoCommit(false);
-            String sqlPromotionProduct = "DELETE FROM PromotionProduct WHERE PromotionID = ?";
-            PreparedStatement prePromotionProduct = connect.prepareStatement(sqlPromotionProduct);
-            prePromotionProduct.setInt(1, promotionId);
-            prePromotionProduct.executeUpdate();
-            
-            String sqlPromotion = "DELETE FROM Promotion WHERE ID = ?";
+            String sqlPromotion = "Update Promotion SET Status = ? WHERE ID = ?";
             PreparedStatement prePromotion = connect.prepareStatement(sqlPromotion);
-            prePromotion.setInt(1, promotionId);
+            prePromotion.setString(1, status);
+            prePromotion.setInt(2, promotionId);
             prePromotion.executeUpdate();
-            connect.commit();
         } catch (Exception e) {
-            try {
-                connect.rollback();
-            } catch (SQLException ex) {
-                Logger.getLogger(PromotionDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
             e.printStackTrace();
         }
+    }
+
+    public ResultSet promotionDetail(int promotionId) {
+        ResultSet rs = null;
+        String sqlPromotion = "select p.DiscountPrice, l.LaptopID, l.ImageURL, l.LaptopName, l.HardDrive, l.RAM, l.Price from PromotionProduct p "
+                + "inner join Laptop l on p.LaptopID = l.LaptopID "
+                + "where p.PromotionID = ?";
+        try {
+            PreparedStatement prePromotion = connect.prepareStatement(sqlPromotion);
+            prePromotion.setInt(1, promotionId);
+            rs = prePromotion.executeQuery();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rs;
     }
 }

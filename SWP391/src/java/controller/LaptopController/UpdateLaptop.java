@@ -5,6 +5,7 @@
 package controller.LaptopController;
 
 import dao.LaptopDAO;
+import dao.StockDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import model.Laptop;
+import model.Stock;
 import model.User;
 import org.json.JSONObject;
 
@@ -79,6 +81,7 @@ public class UpdateLaptop extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         LaptopDAO laptopDao = new LaptopDAO();
+        StockDAO stockDao = new StockDAO();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         int laptopId = Integer.parseInt(request.getParameter("laptopId"));
@@ -105,7 +108,10 @@ public class UpdateLaptop extends HttpServlet {
         }
         Laptop laptop = laptopDao.getLaptopById(laptopId);
         Laptop newLaptop = new Laptop(laptopId, laptopName, price, stock, description, imageUrl, hardDrive, 3, warrantyPeriod, cpuId, screenId, ram, brandId, categoryId);
-        int checck = laptopDao.updateLaptop(newLaptop, user.getUserID(), stock - laptop.getStock());
+        int checck = laptopDao.updateLaptop(newLaptop);
+        if (stock - laptop.getStock() > 0) {
+            stockDao.createStock(new Stock(laptopId, user.getUserID(), stock - laptop.getStock(), "add"));
+        }
         if (checck <= 0) {
             json.put("message", "Có lỗi xảy ra");
             response.setContentType("application/json");

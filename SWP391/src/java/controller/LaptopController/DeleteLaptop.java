@@ -33,7 +33,8 @@ public class DeleteLaptop extends HttpServlet {
             throws ServletException, IOException {
         LaptopDAO laptopDao = new LaptopDAO();
         int laptopId = Integer.parseInt(request.getParameter("laptopId"));
-        laptopDao.deleteLaptop(laptopId);
+        int statusId = Integer.parseInt(request.getParameter("statusId"));
+        laptopDao.deleteLaptop(laptopId, statusId);
         response.sendRedirect("getListLaptop");
     }
 

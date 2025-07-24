@@ -54,7 +54,7 @@ public class LaptopDAO extends ConnectDB {
     public ResultSet getListLaptop(int currentPage, int pageSize, String laptopName, int brandId, int categoryId, int cpuId, int screenId, int statusId) {
         ResultSet rs = null;
         StringBuilder sql = new StringBuilder(
-                "select l.LaptopID, l.LaptopName, l.Price, l.ImageURL, l.HardDrive, l.WarrantyPeriod, c.CPUInfo, s.Size, l.RAM, l.Stock from Laptop l "
+                "select l.LaptopID, l.LaptopName, l.Price, l.ImageURL, l.HardDrive, l.WarrantyPeriod, c.CPUInfo, s.Size, l.RAM, l.Stock, l.StatusID from Laptop l "
                 + "inner join CPU c on l.CPUID = c.CPUID "
                 + "inner join ScreenSize s on s.ScreenID = l.ScreenID "
         );
@@ -228,13 +228,12 @@ public class LaptopDAO extends ConnectDB {
         }
     }
 
-    public int updateLaptop(Laptop laptop, int userId, int quantityGap) {
+    public int updateLaptop(Laptop laptop) {
         int n = 0;
         String sql = "Update Laptop set LaptopName = ?, Price = ?, Stock = ?, Description = ?, ImageURL = ?, "
                 + "HardDrive = ?, StatusID = ?, WarrantyPeriod = ?, CPUID = ?, "
                 + "ScreenID = ?, RAM = ?, BrandID = ?, CategoryID = ? where LaptopID = ?";
         try {
-            connect.setAutoCommit(false);
             PreparedStatement pre = connect.prepareStatement(sql);
             pre.setString(1, laptop.getLaptopName());
             pre.setBigDecimal(2, laptop.getPrice());
@@ -251,27 +250,18 @@ public class LaptopDAO extends ConnectDB {
             pre.setInt(13, laptop.getCategory());
             pre.setInt(14, laptop.getLaptopID());
             n = pre.executeUpdate();
-            if (n > 0 && quantityGap > 0) {
-                StockDAO stockDao = new StockDAO();
-                stockDao.createStock(new Stock(laptop.getLaptopID(), userId, quantityGap, "add"));
-            }
-            connect.commit();
         } catch (SQLException e) {
-            try {
-                connect.rollback();
-            } catch (SQLException ex) {
-                Logger.getLogger(PromotionDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
             e.printStackTrace();
         }
         return n;
     }
 
-    public void deleteLaptop(int id) {
-        String sql = "Delete from Laptop where LaptopID = ?";
+    public void deleteLaptop(int id, int statusId) {
+        String sql = "Update Laptop set StatusID = ? where LaptopID = ?";
         try {
             PreparedStatement pre = connect.prepareStatement(sql);
-            pre.setInt(1, id);
+            pre.setInt(1, statusId);
+            pre.setInt(2, id);
             pre.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -280,9 +270,13 @@ public class LaptopDAO extends ConnectDB {
 
     public ResultSet getDetailLaptop(int id) {
         ResultSet rs = null;
-        String sql = "select l.LaptopID, l.LaptopName, l.Price, l.ImageURL, l.HardDrive, l.WarrantyPeriod, c.CPUInfo, s.Size, l.RAM, l.Stock from Laptop l "
+        String sql = "select l.LaptopID, l.LaptopName, l.Price, l.ImageURL, l.HardDrive, l.WarrantyPeriod, c.CPUInfo, s.Size, l.RAM, l.Stock, "
+                + "cate.CategoryName, b.BrandName, st.StatusName from Laptop l "
                 + "inner join CPU c on l.CPUID = c.CPUID "
                 + "inner join ScreenSize s on s.ScreenID = l.ScreenID "
+                + "inner join Category cate on cate.CategoryID = l.CategoryID "
+                + "inner join Brand b on b.BrandID = l.BrandID "
+                + "inner join Statuses st on st.StatusID = l.StatusID "
                 + "where l.LaptopID = ?";
         try {
             PreparedStatement pre = connect.prepareStatement(sql);
@@ -298,10 +292,9 @@ public class LaptopDAO extends ConnectDB {
         ArrayList<Laptop> list = new ArrayList<>();
         StockDAO stockDao = new StockDAO();
         try {
-            PreparedStatement pre = connect.prepareStatement("Select * from Laptop");
+            PreparedStatement pre = connect.prepareStatement("Select * from Laptop where StatusID not in (4, 31)");
             ResultSet rs = pre.executeQuery();
             while (rs.next()) {
-                stockDao.createStock(new Stock(rs.getInt("LaptopID"), userId, rs.getInt("Stock"), "set"));
                 list.add(new Laptop(
                         rs.getInt("LaptopID"),
                         rs.getString("LaptopName"),

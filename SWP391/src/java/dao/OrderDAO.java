@@ -160,7 +160,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 orderlist.add(od);
@@ -202,7 +202,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
@@ -244,7 +244,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
@@ -287,7 +287,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
@@ -413,7 +413,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
@@ -500,7 +500,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-               
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
@@ -543,7 +543,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
@@ -654,7 +654,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-               
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
@@ -699,7 +699,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
@@ -743,7 +743,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
@@ -782,7 +782,7 @@ public class OrderDAO extends ConnectDB {
         }
         return count;
     }
-    
+
     public int countReturnOrdersByStatusID(int statusid1, int statusid2) {
         int count = 0;
         String sql = "select COUNT(*) from Orders where StatusID=? or StatusID=?";
@@ -799,7 +799,7 @@ public class OrderDAO extends ConnectDB {
         }
         return count;
     }
-    
+
     public int countShipOrders() {
         int count = 0;
         String sql = "select COUNT(*) from Orders where StatusID=15 or StatusID=10 or StatusID=11 or StatusID=12 or StatusID=13 or StatusID=14 or StatusID=23 or StatusID=24 or StatusID=25";
@@ -819,17 +819,16 @@ public class OrderDAO extends ConnectDB {
         String sql = "update Orders\n"
                 + "set ReasonCancel=?\n"
                 + "where OrderID=?";
-        try{
+        try {
             PreparedStatement st = connect.prepareStatement(sql);
             st.setNString(1, reason);
             st.setInt(2, id);
             st.executeUpdate();
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    
+
     public List<Order> getListOrderHaveEvaluate() {
         String sql = "select * from Orders o \n"
                 + "join OrderDetail od on o.OrderID=od.OrderID\n"
@@ -871,7 +870,7 @@ public class OrderDAO extends ConnectDB {
         }
         return list;
     }
-    
+
     public List<Order> getOrdersByPageandStatus(int offset, int pageSize, int statusid) {
         List<Order> list = new ArrayList<>();
         String sql = "select * from Orders\n"
@@ -906,7 +905,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
@@ -916,7 +915,7 @@ public class OrderDAO extends ConnectDB {
         }
         return list;
     }
-    
+
     public List<Order> getReturnOrdersByPageandStatus(int offset, int pageSize, int statusid1, int statusid2) {
         List<Order> list = new ArrayList<>();
         String sql = "select * from Orders\n"
@@ -952,7 +951,7 @@ public class OrderDAO extends ConnectDB {
                     od.setVoucher(null);
                 }
                 od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
-                
+
                 String reasonCancel = rs.getNString("ReasonCancel");
                 od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
                 list.add(od);
@@ -961,6 +960,55 @@ public class OrderDAO extends ConnectDB {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public double getTotalRevenue() {
+        double total = 0;
+        String sql = "select SUM(TotalAmount) as TotalAmount from Orders where StatusID=22 and PaymentStatusID=27 group by OrderID";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                total = rs.getDouble("TotalAmount");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
+    public ArrayList<Double> getRevenueByMonth(int year) {
+        ArrayList<MonthlyRevenue> listMonthlyRevenue = new ArrayList<>();      
+        ArrayList<Double> listRevenue = new ArrayList<>();
+        String sql = "SELECT MONTH(OrderDate) AS Month, SUM(TotalAmount) AS TotalRevenue FROM Orders "
+                + "WHERE YEAR(orderdate) = ? AND StatusID = 22 and PaymentStatusID = 27"
+                + "GROUP BY MONTH(OrderDate) ORDER BY Month";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, year);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                listMonthlyRevenue.add(new MonthlyRevenue(
+                        rs.getInt("Month"),
+                        rs.getDouble("TotalRevenue"))
+                );
+            };
+            for (int i = 1; i <= 12; i++) {
+                int flag = 0;
+                for (MonthlyRevenue m : listMonthlyRevenue) {
+                    if (m.getMonth() == i) {
+                        listRevenue.add(m.getRevenue());
+                        flag++;
+                    }
+                }
+                if (flag == 0) {
+                    listRevenue.add(0.0);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listRevenue;
     }
 
 }

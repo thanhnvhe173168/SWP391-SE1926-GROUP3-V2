@@ -49,7 +49,9 @@ public class vnpayRefund extends HttpServlet {
         String vnp_TmnCode = Config.vnp_TmnCode;
         String vnp_TransactionType = req.getParameter("trantype");
         String vnp_TxnRef = req.getParameter("order_id");
-        BigDecimal amounts = new BigDecimal(req.getParameter("amount"));
+        String amount_req = req.getParameter("amount");
+        String cleanedAmount = amount_req.replaceAll("[^\\d.]", "");
+        BigDecimal amounts = new BigDecimal(cleanedAmount);
         long amount = BigDecimal.valueOf(100).multiply(amounts).longValue();
         String vnp_Amount = String.valueOf(amount);
         String vnp_OrderInfo = "Hoan tien GD OrderId:" + vnp_TxnRef;

@@ -11,7 +11,7 @@ package model;
 import java.sql.Timestamp;
 
 public class Feedback {
-     private int feedbackID;
+    private int feedbackID;
     private int laptopID;
     private int orderID;
     private int userID;

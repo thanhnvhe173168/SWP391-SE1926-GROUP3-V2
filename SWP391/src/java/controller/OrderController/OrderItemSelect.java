@@ -79,7 +79,7 @@ public class OrderItemSelect extends HttpServlet {
                 total=total.add(cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity())));
             }
         }
-        request.setAttribute("listordering", listordering);
+        session.setAttribute("listordering", listordering);
         request.setAttribute("total", total);
         request.getRequestDispatcher("user/order.jsp").forward(request, response);
     }

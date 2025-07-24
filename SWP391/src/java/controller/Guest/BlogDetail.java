@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.ResultSet;
 import model.Blog;
 
 /**
@@ -33,8 +34,8 @@ public class BlogDetail extends HttpServlet {
     throws ServletException, IOException {
         BlogDAO blogDao = new BlogDAO();
         int blogId = Integer.parseInt(request.getParameter("blogId"));
-        Blog blog = blogDao.getBlogById(blogId);
-        request.setAttribute("blog", blog);
+        ResultSet rsBlog = blogDao.blogDetail(blogId);
+        request.setAttribute("rsBlog", rsBlog);
         request.getRequestDispatcher("/guest/BlogDetail.jsp").forward(request, response);
     } 
 

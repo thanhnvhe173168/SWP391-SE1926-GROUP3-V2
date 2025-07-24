@@ -32,7 +32,8 @@ public class DeletePromotion extends HttpServlet {
     throws ServletException, IOException {
         PromotionDAO promotionDao = new PromotionDAO();
         int promotionId = Integer.parseInt(request.getParameter("promotionId"));
-        promotionDao.deletePromotion(promotionId);
+        String status = request.getParameter("status");
+        promotionDao.deletePromotion(promotionId,status);
         response.sendRedirect("getListPromotion");
     } 
 

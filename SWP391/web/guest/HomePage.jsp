@@ -148,9 +148,9 @@
                         <div class="card-body">
                             <h5 class="card-title"><%=rsLaptop.getString("LaptopName")%></h5>
                             <p class="card-text"><%=rsLaptop.getString("Size")%>, <%=rsLaptop.getString("CPUInfo")%>, <%=rsLaptop.getString("RAM")%>, <%=rsLaptop.getString("HardDrive")%></p>
-                            <p class="card-text fw-bold"><%=rsLaptop.getInt("Price")%></p>
+                            <p class="card-text fw-bold"><%=String.format("%,.0f VNĐ", rsLaptop.getDouble("Price"))%></p>
                             <a href="productDetail?productId=<%=rsLaptop.getInt("LaptopID")%>" class="btn btn-primary">View Details</a>
-                            <button class="btn btn-success ms-2" onclick="addtocart(<%=rsLaptop.getInt("LaptopID")%>)">
+                            <button class="btn btn-success ms-2" onclick="addtocart(<%=rsLaptop.getInt("LaptopID")%>,<%=rsLaptop.getDouble("Price")%>)">
                                 Add to Cart
                             </button>   
                             <button class="btn btn-outline-danger ms-2" onclick="addToWishlist(<%=rsLaptop.getInt("LaptopID")%>)">
@@ -166,17 +166,19 @@
             </div>
             <h1 class="text-center mb-4" style="margin-top: 40px">Blog</h1>
             <div class="row row-cols-1 row-cols-md-3 g-4">
+                <%if(rsBlog != null) {%>
                 <%while(rsBlog.next()) {%>
                 <div class="col">
                     <div class="card laptop-card">
-                        <img src="images/<%=rsBlog.getString("Avatar")%>" class="card-img-top laptop-image" alt="Dell XPS 133456246524">
+                        <img src="<%=rsBlog.getString("Avatar")%>" class="card-img-top laptop-image" alt="Dell XPS 133456246524">
                         <div class="card-body">
                             <h5 class="card-title"><%=rsBlog.getString("Title")%></h5>
                             <a href="blogDetail?blogId=<%=rsBlog.getInt("BlogID")%>" class="btn btn-primary">View Details</a>
                         </div>
                     </div>
                 </div>
-                <%}%>
+                <%}
+}%>
             </div> 
             <div class="d-flex justify-content-center">
                 <button type="button" class="btn btn-outline-primary" onclick="handleRedirectBlog()">Xem thêm</button>
@@ -201,8 +203,9 @@
                 window.location.href = '/swp391/addToWishList?id=' + laptopId;
             }
 
-            function addtocart(laptopid) {
-                fetch('AddToCart?id=' + encodeURIComponent(laptopid))
+            function addtocart(laptopid, price) {
+                const url = 'AddToCart?id=' + encodeURIComponent(laptopid) + '&price=' + encodeURIComponent(price);
+                fetch(url)
                         .then(res => res.json())
                         .then(data => {
                             Swal.fire({

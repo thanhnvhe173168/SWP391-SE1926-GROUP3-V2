@@ -9,43 +9,184 @@
 <html>
     <head>
         <title>Mua lại</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 
         <style>
+            :root {
+                --main-red: #d70018;
+                --gray-bg: #f5f5f5;
+                --text-dark: #212121;
+                --text-light: #757575;
+                --border-color: #e0e0e0;
+                --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'Roboto', sans-serif;
+                background-color: var(--gray-bg);
+                color: var(--text-dark);
+            }
+
+            h2 {
+                font-size: 26px;
+                font-weight: 700;
+                color: var(--main-red);
+                margin: 40px 0 20px;
+                text-align: center;
+                text-transform: uppercase;
+            }
+
+            main {
+                width: 96%;
+                max-width: 1200px;
+                margin: 0 auto 60px auto;
+            }
+
             table {
-                width: 80%;
-                margin: auto;
+                width: 100%;
                 border-collapse: collapse;
+                background-color: #fff;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: var(--box-shadow);
             }
-            table th, td {
-                padding: 10px;
+
+            thead {
+                background-color: #d70018;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            th, td {
+                padding: 16px;
                 text-align: center;
+                font-size: 15px;
+                color: var(--text-dark);
             }
-            input[type=number] {
-                width: 50px;
+
+            th {
+                font-weight: 600;
+                color: white;
+            }
+
+            tbody tr {
+                border-bottom: 1px solid var(--border-color);
+                transition: background-color 0.2s ease;
+            }
+
+            tbody tr:hover {
+                background-color: #fff1f2;
+            }
+
+            td img {
+                width: 80px;
+                height: auto;
+                border-radius: 8px;
+                border: 1px solid #eee;
+            }
+
+            input[type="number"] {
+                width: 60px;
+                padding: 6px;
+                border: 1px solid #ccc;
+                border-radius: 6px;
                 text-align: center;
+                font-size: 14px;
             }
+
+            input[type="checkbox"] {
+                transform: scale(1.2);
+                cursor: pointer;
+            }
+
             button {
-                padding: 5px 10px;
+                border: none;
+                padding: 8px 14px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            button.update-btn {
+                background-color: #eeeeee;
+                color: #333;
+            }
+
+            button[onclick*='Order'] {
+                background-color: var(--main-red);
+                color: white;
+            }
+
+            button[onclick*='Order']:hover {
+                background-color: #b40013;
+            }
+
+            button:disabled {
+                background-color: #ccc;
+                cursor: not-allowed;
+            }
+
+            tfoot td {
+                font-weight: 600;
+                font-size: 16px;
+                color: var(--main-red);
+                background-color: #fff9fa;
+            }
+
+            /* Footer */
+            footer {
+                background-color: #1f1f1f;
+                color: #aaa;
+                padding: 20px 0;
+                text-align: center;
+                font-size: 13px;
+            }
+
+            /* Responsive */
+            @media screen and (max-width: 768px) {
+                table, thead, tbody, th, td, tr {
+                    font-size: 13px;
+                }
+
+                td img {
+                    width: 60px;
+                }
+
+                input[type="number"] {
+                    width: 45px;
+                }
+
+                button {
+                    padding: 6px 10px;
+                    font-size: 13px;
+                }
             }
         </style>
+
+
     </head>
     <body>
         <jsp:include page="/components/Header.jsp"></jsp:include>
 
-            <h2 style="text-align: center;">Chọn sản phẩm muốn mua</h2>
+            <h2 style="text-align: center;">Select the product you want to buy</h2>
             <main>
             <c:set var="lists" value="${sessionScope.listReOrder}" />
             <table>
                 <thead>
                     <tr>
-                        <th>Chọn</th>
-                        <th>Hình ảnh</th>
-                        <th>Tên Laptop</th>
-                        <th>Giá</th>
-                        <th>Số lượng</th>
-                        <th>Thành tiền</th>
-                        <th>Mua</th>    </tr>
+                        <th>Select</th>
+                        <th>Image</th>
+                        <th>Laptop Name</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Order</th>    </tr>
                 </thead>
                 <tbody>
                     <c:forEach var="item" items="${lists}">
@@ -69,16 +210,16 @@
                             <td id="price-${item.laptop.laptopID}">
                                 <fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ
                             </td>
-                            <td><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?id=${item.getLaptop().getLaptopID()}&ids=1'">Mua</button></td>
+                            <td><button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?id=${item.getLaptop().getLaptopID()}&ids=1'">Order</button></td>
                         </tr>
                     </c:forEach>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td>
-                            <button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?ids=2'">Mua</button>
+                            <button type="button" style=" background-color: greenyellow" onclick="window.location.href = 'Order?ids=2'">Order</button>
                         </td>
-                        <td colspan="3"><strong>Tổng tiền:</strong></td>
+                        <td colspan="3"><strong>Total amount:</strong></td>
                         <td id="total-price">
                             <fmt:formatNumber value="${totalPrice}" type="number" groupingUsed="true"/> VNĐ
                         </td>

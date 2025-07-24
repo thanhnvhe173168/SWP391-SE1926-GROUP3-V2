@@ -121,7 +121,7 @@ public class Ordering extends HttpServlet {
         else{
         try{
            int id=Integer.parseInt(id_raw);
-           cd=cartdetaildao.GetCartDetail(id);
+           cd=cartdetaildao.GetCartDetail(id, cdao.GetCartByUserID(user.getUserID()).getCartID());
            listordering.add(cd);
            total=cd.getUnitPrice().multiply(BigDecimal.valueOf(cd.getQuantity()));
         }
@@ -130,7 +130,7 @@ public class Ordering extends HttpServlet {
         }
         }
         request.setAttribute("total", total);
-        request.setAttribute("listordering", listordering);
+        session.setAttribute("listordering", listordering);
         request.getRequestDispatcher("user/order.jsp").forward(request, response);
     }
 
