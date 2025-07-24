@@ -64,9 +64,12 @@ public class CreateContribute extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ContributeDAO contributeDao = new ContributeDAO();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+        ContributeDAO contributeDao = new ContributeDAO();
         String content = request.getParameter("content");
         Contribute newContribute = new Contribute(user.getUserID(), content);
         contributeDao.createContribute(newContribute);

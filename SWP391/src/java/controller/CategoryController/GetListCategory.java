@@ -12,7 +12,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.ResultSet;
+import model.User;
 
 /**
  *
@@ -46,6 +48,11 @@ public class GetListCategory extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4 || user.getRoleID() == 2) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         CategoryDAO categoryDao = new CategoryDAO();
         ResultSet rsCategory = categoryDao.getListCategory();
         request.setAttribute("rsCategory", rsCategory);

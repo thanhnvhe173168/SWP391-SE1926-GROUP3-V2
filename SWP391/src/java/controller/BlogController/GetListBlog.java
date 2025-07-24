@@ -12,7 +12,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.ResultSet;
+import model.User;
 
 /**
  *
@@ -20,7 +22,7 @@ import java.sql.ResultSet;
  */
 @WebServlet(name = "GetListBlog", urlPatterns = {"/getListBlog"})
 public class GetListBlog extends HttpServlet {
-
+    
     private static final int PAGE_SIZE = 9;
 
     /**
@@ -34,8 +36,13 @@ public class GetListBlog extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+        
         BlogDAO blogDao = new BlogDAO();
-
         int currentPage = request.getParameter("currentPage") != null
                 ? Integer.parseInt(request.getParameter("currentPage"))
                 : 1;
@@ -49,7 +56,7 @@ public class GetListBlog extends HttpServlet {
         } else {
             totalPage = totalRecord / PAGE_SIZE;
         }
-
+        
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("rsBlog", rsBlog);

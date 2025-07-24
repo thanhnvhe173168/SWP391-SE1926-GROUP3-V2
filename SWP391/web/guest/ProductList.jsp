@@ -27,6 +27,31 @@
                 height: 200px;
                 object-fit: cover;
             }
+            .filter-select {
+                width: 100%; /* Độ rộng cố định cho mỗi dropdown */
+                padding: 10px 15px;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px; /* Bo góc */
+                font-size: 16px;
+                background-color: #ffffff;
+                appearance: none; /* Xóa style mặc định của select */
+                cursor: pointer;
+                transition: all 0.3s ease;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7 10l5-5-1.5-1.5L7 7 2.5 2.5 1 4l5 5z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 10px center;
+            }
+
+            .filter-select:hover {
+                border-color: #007bff; /* Màu viền khi hover */
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
+            }
+
+            .filter-select:focus {
+                outline: none;
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Hiệu ứng focus */
+            }
         </style>
     </head>
     <body>
@@ -49,7 +74,7 @@
             <div class="container my-5">
                 <div class="row mb-4">
                     <div class="col-md-3">
-                        <select name="brandId" id="brandId" style="width: 100%" onchange="handleFilter('brandId', this.value)">
+                        <select name="brandId" id="brandId" class="filter-select" onchange="handleFilter('brandId', this.value)">
                             <option value="0" <%="0".equals(request.getParameter("brandId")) ? "selected" : "" %>>Nhãn hiệu</option>
                         <%while(rsBrand.next()) {%>
                         <option 
@@ -62,7 +87,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <select name="categoryId" id="categoryId" style="width: 100%" onchange="handleFilter('categoryId', this.value)">
+                    <select name="categoryId" id="categoryId" class="filter-select" style="width: 100%" onchange="handleFilter('categoryId', this.value)">
                         <option value="0" <%="0".equals(request.getParameter("categoryId")) ? "selected" : "" %>>Loại laptop</option>
                         <%while(rsCategory.next()) {%>
                         <option
@@ -75,7 +100,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <select name="cpuId" id="cpuId" style="width: 100%" onchange="handleFilter('cpuId', this.value)">
+                    <select name="cpuId" id="cpuId" class="filter-select" onchange="handleFilter('cpuId', this.value)">
                         <option value="0" <%="0".equals(request.getParameter("cpuId")) ? "selected" : "" %>>CPU</option>
                         <%while(rsCPU.next()) {%>
                         <option 
@@ -88,7 +113,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <select name="screenId" id="screenId" style="width: 100%" onchange="handleFilter('screenId', this.value)">
+                    <select name="screenId" id="screenId" class="filter-select" onchange="handleFilter('screenId', this.value)">
                         <option value="0" <%="0".equals(request.getParameter("screenId")) ? "selected" : "" %>>Màn hình</option>
                         <%while(rsScreen.next()) {%>
                         <option 
@@ -101,7 +126,6 @@
                     </select>
                 </div>
             </div>
-            <h1 class="text-center mb-4">Our Laptops</h1>
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <%while(rsLaptop.next()) {%>
                 <div class="col">

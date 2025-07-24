@@ -60,6 +60,43 @@
                     display: none;
                 }
             }
+
+            .container-brand {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                padding: 20px;
+            }
+            .button {
+                background-color: #ffffff;
+                border: 1px solid #ddd;
+                border-radius: 20px;
+                padding: 10px 20px;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                white-space: nowrap;
+            }
+
+            .button:hover {
+                background-color: #f5f5f5;
+            }
+
+            .container-promotion {
+                background: linear-gradient(rgb(248, 62, 96), rgb(254, 80, 72)) 0% 0% / cover;
+                padding: 18px;
+                margin-bottom: 30px;
+            }
+            .promotion-card {
+                background: white;
+                padding: 12px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: transform 0.2s;
+            }
+            .promotion-card:hover {
+                transform: scale(1.05);
+            }
         </style>
 
 
@@ -83,63 +120,37 @@
 
         <%
            ResultSet rsBrand = (ResultSet) request.getAttribute("rsBrand");
-           ResultSet rsCategory = (ResultSet) request.getAttribute("rsCategory");
-           ResultSet rsCPU = (ResultSet) request.getAttribute("rsCPU");
-           ResultSet rsScreen = (ResultSet) request.getAttribute("rsScreen");
            ResultSet rsLaptop = (ResultSet) request.getAttribute("rsLaptop");
            ResultSet rsBlog = (ResultSet) request.getAttribute("rsBlog");
+           ResultSet rsPromotion = (ResultSet) request.getAttribute("rsPromotion");
         %>
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <div class="container my-5">
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <select name="brandId" id="brandId" style="width: 100%" onchange="handleRedirectProduct('brandId', this.value)">
-                            <option value="0">Brand</option>
-                        <%while(rsBrand.next()) {%>
-                        <option value="<%=rsBrand.getInt("BrandID")%>">
-                            <%=rsBrand.getString("BrandName")%>
-                        </option>
-                        <%}%>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select name="categoryId" id="categoryId" style="width: 100%" onchange="handleRedirectProduct('categoryId', this.value)">
-                        <option value="0">Categories</option>
-                        <%while(rsCategory.next()) {%>
-                        <option
-                            value="<%=rsCategory.getInt("CategoryID")%>"
-                            >
-                            <%=rsCategory.getString("CategoryName")%>
-                        </option>
-                        <%}%>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select name="cpuId" id="cpuId" style="width: 100%" onchange="handleRedirectProduct('cpuId', this.value)">
-                        <option value="0">CPU</option>
-                        <%while(rsCPU.next()) {%>
-                        <option 
-                            value="<%=rsCPU.getInt("CPUID")%>"
-                            >
-                            <%=rsCPU.getString("CPUInfo")%>
-                        </option>
-                        <%}%>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select name="screenId" id="screenId" style="width: 100%" onchange="handleRedirectProduct('screenId', this.value)">
-                        <option value="0">Screen</option>
-                        <%while(rsScreen.next()) {%>
-                        <option 
-                            value="<%=rsScreen.getInt("ScreenID")%>"
-                            >
-                            <%=rsScreen.getString("Size")%>
-                        </option>
-                        <%}%>
-                    </select>
+                <div class="container-promotion">
+                    <h4 class="mb-4" style="color: white">Chương trình khuyến mãi</h4>
+                    <div class="row row-cols-1 row-cols-md-4 g-4">
+                    <%while(rsPromotion.next()) {%>
+                    <div class="col">
+                        <div class="promotion-card" onclick="window.location.href='promotionDetail?promotionId=<%=rsPromotion.getInt("ID")%>'">
+                            <img src="<%=rsPromotion.getString("Image")%>" style="width: 100%" alt="Promotion Image">
+                            <div class="card-body">
+                                <h5 class="text-center"><%=rsPromotion.getString("Title")%></h5>
+                                <p class="text-center" style="margin-bottom: 4px">Từ ngày: <%=rsPromotion.getString("StartDate")%></p>
+                                <p class="text-center">Đến ngày: <%=rsPromotion.getString("EndDate")%></p>
+                            </div>
+                        </div>
+                    </div>
+                    <%}%>
+                </div> 
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="text-center mb-4">Laptop</h4>
+                <div class="container-brand">
+                    <%while(rsBrand.next()) {%>
+                    <button class="button" onclick="window.location.href='productList?brandId=<%=rsBrand.getInt("BrandID")%>'"><%=rsBrand.getString("BrandName")%></button>
+                    <%}%>
                 </div>
             </div>
-            <h1 class="text-center mb-4">Laptop</h1>
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <%while(rsLaptop.next()) {%>
                 <div class="col">
@@ -164,7 +175,7 @@
             <div class="d-flex justify-content-center">
                 <button type="button" class="btn btn-outline-primary" onclick="handleRedirectProduct()">Xem thêm</button>
             </div>
-            <h1 class="text-center mb-4" style="margin-top: 40px">Blog</h1>
+            <h4 class="mb-4" style="margin-top: 40px">Blog</h4>
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <%if(rsBlog != null) {%>
                 <%while(rsBlog.next()) {%>
