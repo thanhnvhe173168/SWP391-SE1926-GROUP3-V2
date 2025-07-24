@@ -16,69 +16,89 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
         <style>
+            * {
+                box-sizing: border-box;
+            }
+
             body {
-                font-family: 'Segoe UI', sans-serif;
-                background-color: #f3f4f6;
+                font-family: 'Roboto', 'Arial', sans-serif;
                 margin: 0;
-                padding: 0;
-                overflow-x: hidden; /* Ngăn cuộn ngang */
+                background-color: #f4f4f4;
+                color: #333;
+                overflow-x: hidden;
             }
 
-            /* Sidebar cố định */
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 250px;
-                height: 100%;
-                background-color: #222;
-                color: white;
-                padding: 20px 0;
-                z-index: 1000; /* Đảm bảo sidebar luôn ở trên cùng */
+            .d-flex {
+                display: flex;
+                min-height: 100vh;
             }
 
-            .sidebar a {
-                color: #bbb;
-                padding: 10px 20px;
+            
+           
+
+            .sidebar .nav-link {
+                display: flex;
+                align-items: center;
+                color: #fff;
+                padding: 12px 24px;
+                font-size: 15px;
+                transition: background-color 0.3s, color 0.3s;
                 text-decoration: none;
-                display: block;
+                font-weight: 500;
             }
 
-            .sidebar a:hover {
+            .sidebar .nav-link i {
+                margin-right: 12px;
+                font-size: 16px;
+                width: 20px;
+                text-align: center;
+            }
+
+            .sidebar .nav-link:hover {
+                background-color: #d70018;
                 color: #fff;
-                background-color: #333;
             }
 
-            .sidebar .active {
+            .sidebar .nav-link.active {
+                background-color: #d70018;
                 color: #fff;
-                background-color: #555;
+                font-weight: 600;
             }
 
-            /* Main content với padding-left để tránh chồng lên sidebar */
+            
+            @media (max-width: 768px) {
+                .sidebar {
+                    display: none;
+                }
+            }
+
+
+            
             .main-content {
-                margin-left: 250px; /* Độ rộng của sidebar */
-                padding: 30px;
-                background-color: #ffffff;
-                border-radius: 12px;
-                min-height: calc(100vh - 40px); /* Điều chỉnh chiều cao */
+                margin: auto;
+                padding: 40px;
+                width: calc(100% - 260px);
+                background-color: #fff;
+                min-height: 100vh;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
             }
 
             h2 {
-                color: #111827;
-                font-size: 26px;
-                font-weight: 600;
-                margin-bottom: 20px;
+                font-size: 28px;
+                color: #d70018;
+                font-weight: 700;
+                margin-bottom: 30px;
+                border-bottom: 2px solid #d70018;
+                padding-bottom: 10px;
             }
 
-            /* Toolbar */
+           
             .toolbar {
                 display: flex;
+                gap: 15px;
                 flex-wrap: wrap;
-                justify-content: space-between;
+                margin-bottom: 25px;
                 align-items: center;
-                margin-bottom: 20px;
-                gap: 10px;
             }
 
             .toolbar .left-controls {
@@ -89,39 +109,50 @@
 
             .toolbar .left-controls input,
             .toolbar .left-controls select {
-                padding: 8px 12px;
-                border: 1px solid #d1d5db;
-                border-radius: 8px;
-                background-color: #ffffff;
-                min-width: 180px;
+                border-radius: 6px;
+                padding: 10px 15px;
+                border: 1px solid #ddd;
+                font-size: 14px;
+                min-width: 200px;
+                transition: border-color 0.3s;
             }
 
-            .toolbar .btn-primary {
-                background-color: #2563eb;
+            .toolbar .left-controls input:focus,
+            .toolbar .left-controls select:focus {
+                border-color: #d70018;
+                outline: none;
+                box-shadow: 0 0 5px rgba(215, 0, 24, 0.3);
+            }
+
+            .btn-primary {
+                background-color: #d70018;
                 border: none;
-                padding: 8px 16px;
-                border-radius: 8px;
+                color: #fff;
+                padding: 10px 24px;
+                border-radius: 6px;
+                font-size: 14px;
                 font-weight: 500;
-                transition: background-color 0.3s ease;
+                transition: background-color 0.3s, transform 0.2s;
             }
 
-            .toolbar .btn-primary:hover {
-                background-color: #1d4ed8;
+            .btn-primary:hover {
+                background-color: #b30014;
+                transform: translateY(-2px);
             }
 
             .toolbar .right-controls button {
-                background-color: #22c55e;
+                background-color: #d70018;
                 border: none;
-                padding: 8px 16px;
-                border-radius: 8px;
-                color: #ffffff;
-                font-weight: 600;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
+                padding: 10px 24px;
+                border-radius: 6px;
+                color: #fff;
+                font-weight: 500;
+                transition: background-color 0.3s, transform 0.2s;
             }
 
             .toolbar .right-controls button:hover {
-                background-color: #16a34a;
+                background-color: #b30014;
+                transform: translateY(-2px);
             }
 
             /* Back button */
@@ -131,80 +162,86 @@
 
             .back-home button {
                 background-color: #6b7280;
-                color: white;
+                color: #fff;
                 border: none;
-                padding: 8px 16px;
-                border-radius: 8px;
-                cursor: pointer;
+                padding: 10px 20px;
+                border-radius: 6px;
+                font-size: 14px;
                 font-weight: 500;
+                transition: background-color 0.3s, transform 0.2s;
             }
 
             .back-home button:hover {
                 background-color: #4b5563;
+                transform: translateY(-2px);
             }
 
             /* Table */
             table {
                 width: 100%;
-                border-collapse: collapse;
-                border-radius: 12px;
+                background-color: #fff;
+                border-collapse: separate;
+                border-spacing: 0;
+                border-radius: 10px;
                 overflow: hidden;
-                background-color: white;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             }
 
             thead {
-                background-color: #2563eb;
-                color: white;
+                background-color: #d70018;
+                color: #fff;
             }
 
             thead th {
-                padding: 14px;
+                padding: 16px;
                 text-align: left;
-                font-size: 14px;
+                font-weight: 600;
+                font-size: 15px;
             }
 
             tbody td {
                 padding: 14px;
                 font-size: 14px;
-                border-bottom: 1px solid #f3f4f6;
+                border-bottom: 1px solid #eee;
                 vertical-align: middle;
             }
 
-            tbody tr:nth-child(even) {
-                background-color: #f9fafb;
+            tbody tr:hover {
+                background-color: #f9f9f9;
             }
 
-            /* Status */
+            
             .status {
-                padding: 6px 12px;
-                border-radius: 999px;
-                font-weight: 600;
+                padding: 6px 14px;
+                border-radius: 20px;
                 font-size: 13px;
+                font-weight: 500;
                 display: inline-block;
             }
 
             .status-active {
-                background-color: #d1fae5;
-                color: #065f46;
+                background-color: #e6f4ea;
+                color: #15803d;
             }
 
             .status-locked {
-                background-color: #fee2e2;
-                color: #991b1b;
+                background-color: #fde8e8;
+                color: #b91c1c;
             }
 
             /* Action buttons */
             .actions a {
-                margin-right: 8px;
-                color: #2563eb;
-                font-weight: 500;
+                color: #d70018;
                 text-decoration: none;
-                transition: color 0.2s ease;
+                font-weight: 500;
+                margin-right: 15px;
+                font-size: 14px;
+                transition: color 0.3s;
             }
 
             .actions a:hover {
-                color: #1e40af;
+                color: #b30014;
+                text-decoration: underline;
             }
 
             .actions i {
@@ -213,83 +250,63 @@
 
             /* Pagination */
             .pagination {
-                margin-top: 24px;
-                text-align: center;
+                justify-content: center;
+                margin-top: 30px;
             }
 
-            .pagination a {
-                display: inline-block;
-                margin: 0 4px;
+            .pagination .page-link {
+                color: #d70018;
+                border-radius: 6px;
+                font-size: 14px;
                 padding: 8px 14px;
-                border-radius: 8px;
-                border: 1px solid #d1d5db;
-                background-color: white;
-                color: #2563eb;
-                font-weight: 500;
-                text-decoration: none;
-                transition: all 0.3s ease;
+                margin: 0 4px;
+                transition: background-color 0.3s, transform 0.2s;
             }
 
-            .pagination a:hover {
-                background-color: #2563eb;
-                color: white;
+            .pagination .page-item.active .page-link {
+                background-color: #d70018;
+                border-color: #d70018;
+                color: #fff;
             }
 
-            .pagination a.active {
-                background-color: #2563eb;
-                color: white;
-                font-weight: bold;
-                pointer-events: none;
+            .pagination .page-link:hover {
+                background-color: #fce4e4;
+                transform: translateY(-2px);
             }
 
-            /* Responsive fix */
-            @media (max-width: 768px) {
-                .sidebar {
-                    display: none; /* Ẩn sidebar trên màn hình nhỏ */
-                }
-                .main-content {
-                    margin-left: 0; /* Xóa margin khi sidebar ẩn */
-                    margin: 0;
-                    border-radius: 0;
-                }
-                .toolbar {
-                    flex-direction: column;
-                    align-items: stretch;
-                }
-                .toolbar .left-controls,
-                .toolbar .right-controls {
-                    width: 100%;
-                    justify-content: space-between;
-                }
-                .toolbar .right-controls button {
-                    width: 100%;
-                }
+            .pagination .page-item.disabled .page-link {
+                color: #6b7280;
+                cursor: not-allowed;
             }
 
             /* Thông báo */
             .message {
-                margin-bottom: 10px;
-                padding: 10px;
-                border-radius: 5px;
+                padding: 12px 20px;
+                border-radius: 6px;
                 font-weight: 500;
+                margin-bottom: 20px;
+                font-size: 14px;
             }
+
             .success {
-                background-color: #d1fae5;
-                color: #065f46;
+                background-color: #e6f4ea;
+                color: #15803d;
             }
+
             .error {
-                background-color: #fee2e2;
-                color: #991b1b;
+                background-color: #fde8e8;
+                color: #b91c1c;
             }
+
+            
         </style>
     </head>
     <body>
         <!-- Layout container -->
         <div class="d-flex">
-            <!-- Sidebar -->
-            <div class="sidebar">
+            
                 <jsp:include page="/components/AdminSidebar.jsp" />
-            </div>
+           
 
             <!-- Main Content -->
             <div class="main-content">
@@ -372,13 +389,13 @@
 
                                     <c:choose>
                                         <c:when test="${o.statusID == 1}">
-                                            <a href="changeStatusAccount?userId=${o.userID}&statusId=2"
+                                            <a href="changeStatusAccount?userId=${o.userID}&statusId=2&redirectPage=staff"
                                                onclick="return confirm('Bạn có chắc muốn khóa tài khoản này không?')">
                                                 <i class="fas fa-lock"></i> Khóa
                                             </a>
                                         </c:when>
                                         <c:otherwise>
-                                            <a href="changeStatusAccount?userId=${o.userID}&statusId=1"
+                                            <a href="changeStatusAccount?userId=${o.userID}&statusId=1&redirectPage=staff"
                                                onclick="return confirm('Bạn có chắc muốn kích hoạt tài khoản này không?')">
                                                 <i class="fas fa-unlock"></i> Kích hoạt
                                             </a>
@@ -393,11 +410,9 @@
                     </tbody>
                 </table>
 
-
                 <c:if test="${totalPages > 1}">
                     <c:set var="startPage" value="${currentPage - 2 < 1 ? 1 : currentPage - 2}" />
                     <c:set var="endPage" value="${currentPage + 2 > totalPages ? totalPages : currentPage + 2}" />
-
 
                     <nav aria-label="Pagination" class="mt-4">
                         <ul class="pagination justify-content-center">
@@ -445,8 +460,6 @@
                     </nav>
                 </c:if>
             </div>
-
-
         </div>
     </body>
 </html>
