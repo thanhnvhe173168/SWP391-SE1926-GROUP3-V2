@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.User;
 
 /**
@@ -58,35 +59,56 @@ public class StaffEditAccount extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
-        String action = request.getParameter("action");
-        UserDAO dao = new UserDAO();
+         if (user == null ||user.getRoleID() != 1 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+            UserDAO dao = new UserDAO();
 
+    try {
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        User userSt = dao.getStaffByID(userId);
+
+        request.setAttribute("user", userSt);
+        request.getRequestDispatcher("admin/StaffEditAccount.jsp").forward(request, response);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        response.sendRedirect("staffList");
+    }
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
             int userId = Integer.parseInt(request.getParameter("userId"));
+            String fullName = request.getParameter("fullName");
+            String phone = request.getParameter("phoneNumber");
+            int statusId = Integer.parseInt(request.getParameter("statusId"));
+            int roleId = Integer.parseInt(request.getParameter("roleId"));
 
-            if ("save".equals(action)) {
-               String fullName = request.getParameter("fullName");
-                String phone = request.getParameter("phoneNumber");
-                int statusId = Integer.parseInt(request.getParameter("statusId"));
-                int roleId = Integer.parseInt(request.getParameter("roleId"));
-                
-                  User user = new User();
-                user.setUserID(userId);
-                user.setFullName(fullName);
-                user.setPhoneNumber(phone);
-                user.setStatusID(statusId);
-                user.setRoleID(roleId);
+            User userS = new User();
+            userS.setUserID(userId);
+            userS.setFullName(fullName);
+            userS.setPhoneNumber(phone);
+            userS.setStatusID(statusId);
+            userS.setRoleID(roleId);
 
-                dao.updateStaffInfo(user);
-               
-                response.sendRedirect("staffList");
-                return;
-            }
-            User user = dao.getStaffByID(userId);
+            UserDAO dao = new UserDAO();
+            dao.updateStaffInfo(userS);
 
-            request.setAttribute("user", user);
-            request.getRequestDispatcher("admin/StaffEditAccount.jsp").forward(request, response);
+            response.sendRedirect("staffList");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,27 +116,13 @@ public class StaffEditAccount extends HttpServlet {
         }
     }
 
-
-/**
- * Handles the HTTP <code>POST</code> method.
- *
- * @param request servlet request
- * @param response servlet response
- * @throws ServletException if a servlet-specific error occurs
- * @throws IOException if an I/O error occurs
- */
-@Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-       doGet(request, response);
-    }
-
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
-public String getServletInfo() {
+    public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 

@@ -10,6 +10,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
@@ -29,6 +31,8 @@ public class ChangeStatusAccount extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
         String userIdStr = request.getParameter("userId");
         String statusIdStr = request.getParameter("statusId");
@@ -50,18 +54,24 @@ public class ChangeStatusAccount extends HttpServlet {
             }
 
             if ("staff".equalsIgnoreCase(redirectPage)) {
+                if (user == null || user.getRoleID() > 1) {
+                    request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+                    return;
+                }
                 response.sendRedirect("staffList");
             } else if ("user".equalsIgnoreCase(redirectPage)) {
+                if (user == null || user.getRoleID() > 2) {
+                    request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+                    return;
+                }
                 response.sendRedirect("userList");
             } else {
-              
                 response.sendRedirect("home");
             }
         } catch (NumberFormatException e) {
-             response.sendRedirect("home");
+            response.sendRedirect("home");
         }
 
-      
     }
 
     /**

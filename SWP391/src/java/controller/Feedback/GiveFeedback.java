@@ -42,6 +42,12 @@ public class GiveFeedback extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
          String orderId = request.getParameter("orderID");
         String laptopId = request.getParameter("laptopID");
         System.out.println("orderId:" + orderId);
@@ -66,8 +72,6 @@ public class GiveFeedback extends HttpServlet {
 
         String orderIDRaw = request.getParameter("orderID");
         String laptopIDRaw = request.getParameter("laptopID");
-        System.out.println("orderIDRaw:" + orderIDRaw);
-        System.out.println("laptopIDRaw:" + laptopIDRaw);
         if (orderIDRaw == null || laptopIDRaw == null || orderIDRaw.isEmpty() || laptopIDRaw.isEmpty()) {
             request.setAttribute("mess", "Thiếu thông tin đánh giá.");
             request.getRequestDispatcher("user/GiveFeedback.jsp").forward(request, response);

@@ -61,8 +61,14 @@ public class DeleteFeedback extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        
+        if (user == null  || user.getRoleID() == 4) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+        
 
         if (user != null) {
             int roleID = user.getRoleID(); 
@@ -81,7 +87,7 @@ public class DeleteFeedback extends HttpServlet {
                 dao.deleteFeedbackByCustomer(feedbackID, userID, laptopID, orderID);
             }
 
-            response.sendRedirect("productDetail?productId=" + productID);
+            response.sendRedirect("productDetail");
         } else {
             response.sendRedirect("login");
         }

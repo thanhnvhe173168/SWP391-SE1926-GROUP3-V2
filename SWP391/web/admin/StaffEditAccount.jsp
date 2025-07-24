@@ -132,7 +132,7 @@
                 </div>
             </form>            
 
-            <form method="post" action="editStaff">
+            <form method="post" action="staffEditAccount">
                 <input type="hidden" name="userId" value="${user.userID}" />
 
                 <label>Họ và tên:</label>

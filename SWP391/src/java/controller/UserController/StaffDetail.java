@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.User;
 
 /**
@@ -57,11 +58,17 @@ public class StaffDetail extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        
+        if (user == null ||user.getRoleID() != 1 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         String idParam = request.getParameter("id");
         int userId = Integer.parseInt(idParam);
        UserDAO dao = new UserDAO();
-       User user = dao.getStaffByIDForView(userId);
-      request.setAttribute("user", user);
+       User userS = dao.getStaffByIDForView(userId);
+      request.setAttribute("user", userS);
        request.getRequestDispatcher("admin/StaffDetail.jsp").forward(request, response);
     } 
 

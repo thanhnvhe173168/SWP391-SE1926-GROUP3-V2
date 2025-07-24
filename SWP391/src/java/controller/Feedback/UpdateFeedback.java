@@ -61,6 +61,12 @@ public class UpdateFeedback extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
         String id = request.getParameter("feedbackID");
         if(id==null || id.isEmpty() ){
             System.out.println("Thiếu tham số feedBackID");
@@ -68,16 +74,16 @@ public class UpdateFeedback extends HttpServlet {
         try {
             int feedbackID = Integer.parseInt(id);
         FeedbackDAO dao = new FeedbackDAO();
+        
         Feedback fb = dao.getFeedbackByID(feedbackID);
-
         if (fb != null) {
             request.setAttribute("feedback", fb);
             request.getRequestDispatcher("user/UpdateFeedback.jsp").forward(request, response);
         } else {
-            response.getWriter().println("Feedback không tồn tại!");
+            System.out.println("Feedback k tồn tại");
         }
         } catch (NumberFormatException e) {
-            System.out.println("ID không hợp lệ " + id);
+           e.printStackTrace();
         }
         
     }

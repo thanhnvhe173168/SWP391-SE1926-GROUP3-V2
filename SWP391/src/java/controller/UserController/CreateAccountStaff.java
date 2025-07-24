@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.User;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -71,6 +72,12 @@ public class CreateAccountStaff extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        
+        if (user == null || user.getRoleID() != 1) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
       try {
             String fullName = request.getParameter("fullName");
             String email = request.getParameter("email");
@@ -96,15 +103,15 @@ public class CreateAccountStaff extends HttpServlet {
                 return;
             }
             String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
-            User user = new User();
-            user.setFullName(fullName);
-            user.setEmail(email);
-            user.setPhoneNumber(phoneNumber);
-            user.setPassword(hashPassword);
-            user.setRoleID(roleID);
-            user.setStatusID(statusID);
+            User newStaff = new User();
+            newStaff.setFullName(fullName);
+            newStaff.setEmail(email);
+            newStaff.setPhoneNumber(phoneNumber);
+            newStaff.setPassword(hashPassword);
+            newStaff.setRoleID(roleID);
+            newStaff.setStatusID(statusID);
             
-            int result = dao.createUser(user);
+            int result = dao.createUser(newStaff);
             if(result>0){
                 response.sendRedirect("staffList");
             }else{
