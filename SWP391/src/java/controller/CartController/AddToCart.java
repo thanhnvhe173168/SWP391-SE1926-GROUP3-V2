@@ -79,6 +79,7 @@ public class AddToCart extends HttpServlet {
         BigDecimal total = cart.getTotal();
         try {
             String price_raw = request.getParameter("price");
+            BigDecimal price = new BigDecimal(price_raw);
             String id_raw = request.getParameter("id");
             int id = Integer.parseInt(id_raw);
             Laptop lap = ldao.getLaptopById(id);
@@ -99,7 +100,7 @@ public class AddToCart extends HttpServlet {
             cartdetail.setCart(cart);
             cartdetail.setLaptop(lap);
             cartdetail.setQuantity(1);
-            cartdetail.setUnitPrice(lap.getPrice());
+            cartdetail.setUnitPrice(price);
             cartdetail.setIsSelect(true);
             cddao.AddCart(cartdetail);
             total = total.add(cartdetail.getUnitPrice());
@@ -141,6 +142,7 @@ public class AddToCart extends HttpServlet {
         BigDecimal total = cart.getTotal();
         try {
             int quantity = Integer.parseInt(quantity_raw);
+            BigDecimal price = new BigDecimal(price_raw);
             int id = Integer.parseInt(id_raw);
             Laptop lap = ldao.getLaptopById(id);
             List<CartDetail> listcartdetail = cddao.ListCart(cart.getCartID());
@@ -157,7 +159,7 @@ public class AddToCart extends HttpServlet {
             cartdetail.setCart(cart);
             cartdetail.setLaptop(lap);
             cartdetail.setQuantity(quantity);
-            cartdetail.setUnitPrice(lap.getPrice());
+            cartdetail.setUnitPrice(price);
             cartdetail.setIsSelect(true);
             cddao.AddCart(cartdetail);
             total = total.add(cartdetail.getUnitPrice().multiply(BigDecimal.valueOf(quantity)));

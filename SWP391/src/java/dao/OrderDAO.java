@@ -710,6 +710,145 @@ public class OrderDAO extends ConnectDB {
         return list;
     }
 
+    public List<Order> getUserOrdersByPageAndStatusID(int offset, int pageSize, int userId, int statusid) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from Orders\n"
+                + "where UserID=? and Statusid=?\n"
+                + "order by OrderID desc\n"
+                + "offset ? rows fetch next ? rows only";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, userId);
+            st.setInt(2, statusid);
+            st.setInt(3, offset);
+            st.setInt(4, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<Order> getUserOrdersByPageAndPaymentstatusID(int offset, int pageSize, int userId, int paymentstatusid) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from Orders\n"
+                + "where UserID=? and paymentstatusid=?\n"
+                + "order by OrderID desc\n"
+                + "offset ? rows fetch next ? rows only";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, userId);
+            st.setInt(2, paymentstatusid);
+            st.setInt(3, offset);
+            st.setInt(4, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    
+    
+    public List<Order> getOrdersByPageAndPaymentstatusID(int offset, int pageSize, int paymentstatusid) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from Orders\n"
+                + "where paymentstatusid=?\n"
+                + "order by OrderID desc\n"
+                + "offset ? rows fetch next ? rows only";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, paymentstatusid);
+            st.setInt(2, offset);
+            st.setInt(3, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public List<Order> getShipOrdersByPage(int offset, int pageSize) {
         List<Order> list = new ArrayList<>();
         String sql = "select * from Orders\n"
@@ -760,7 +899,9 @@ public class OrderDAO extends ConnectDB {
         try {
             PreparedStatement st = connect.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
-            count = rs.getInt("count");
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -782,6 +923,56 @@ public class OrderDAO extends ConnectDB {
         }
         return count;
     }
+    
+    public int countOrdersByStatusIDAndUserID(int statusid, int userid) {
+        int count = 0;
+        String sql = "select COUNT(*) from Orders where StatusID=? and userid=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, statusid);
+            st.setInt(2, userid);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+    
+    public int countOrdersByPaymentstatusIDAndUserID(int paymentstatusid, int userid) {
+        int count = 0;
+        String sql = "select COUNT(*) from Orders where paymentstatusID=? and userid=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, paymentstatusid);
+            st.setInt(2, userid);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+    
+    public int countOrdersByPaymentstatusID(int paymentstatusid) {
+        int count = 0;
+        String sql = "select COUNT(*) from Orders where paymentstatusID=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, paymentstatusid);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
 
     public int countReturnOrdersByStatusID(int statusid1, int statusid2) {
         int count = 0;
@@ -790,6 +981,24 @@ public class OrderDAO extends ConnectDB {
             PreparedStatement st = connect.prepareStatement(sql);
             st.setInt(1, statusid1);
             st.setInt(2, statusid2);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+    
+    public int countReturnOrdersByStatusIDAndUserID(int statusid1, int statusid2, int userid) {
+        int count = 0;
+        String sql = "select COUNT(*) from Orders where (StatusID=? or StatusID=?) and userid=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, statusid1);
+            st.setInt(2, statusid2);
+            st.setInt(3, userid);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 count = rs.getInt(1);
@@ -961,6 +1170,53 @@ public class OrderDAO extends ConnectDB {
         }
         return list;
     }
+    
+    public List<Order> getReturnOrdersByPageAndStatusAndUserID(int offset, int pageSize, int statusid1, int statusid2, int userid) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from Orders\n"
+                + "where (StatusID= ? or statusid = ?) and userid=?\n"
+                + "order by OrderID desc\n"
+                + "offset ? rows fetch next ? rows only";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, statusid1);
+            st.setInt(2, statusid2);
+            st.setInt(3, userid);
+            st.setInt(4, offset);
+            st.setInt(5, pageSize);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Order od = new Order();
+                String address = rs.getNString("Address");
+                od.setAddress(address != null ? address : "");
+                String note = rs.getNString("Note");
+                od.setNote(note != null ? note : "");
+                od.setOrderDate(rs.getDate("OrderDate").toLocalDate());
+                od.setOrderID(rs.getInt("OrderID"));
+                od.setPaymentmethod(pmdao.GetPaymentMethodByID(rs.getInt("PaymentMethodID")));
+                String phone = rs.getString("PhoneNumber");
+                od.setPhoneNumber(phone != null ? phone : "");
+                od.setShipfee(fsdao.getFeeShipByID(rs.getInt("ShipFeeID")));
+                od.setOrderstatus(sdao.GetStatus(rs.getInt("StatusID")));
+                od.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                od.setUserID(rs.getInt("UserID"));
+                int voucherID = rs.getInt("VoucherID");
+                if (!rs.wasNull()) {
+                    od.setVoucher(voudao.GetVoucherByID(voucherID));
+                } else {
+                    od.setVoucher(null);
+                }
+                od.setPaymentstatus(sdao.GetStatus(rs.getInt("PaymentStatusID")));
+
+                String reasonCancel = rs.getNString("ReasonCancel");
+                od.setReasonCancel(reasonCancel != null ? reasonCancel : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     public double getTotalRevenue() {
         double total = 0;
@@ -978,7 +1234,7 @@ public class OrderDAO extends ConnectDB {
     }
 
     public ArrayList<Double> getRevenueByMonth(int year) {
-        ArrayList<MonthlyRevenue> listMonthlyRevenue = new ArrayList<>();      
+        ArrayList<MonthlyRevenue> listMonthlyRevenue = new ArrayList<>();
         ArrayList<Double> listRevenue = new ArrayList<>();
         String sql = "SELECT MONTH(OrderDate) AS Month, SUM(TotalAmount) AS TotalRevenue FROM Orders "
                 + "WHERE YEAR(orderdate) = ? AND StatusID = 22 and PaymentStatusID = 27"
