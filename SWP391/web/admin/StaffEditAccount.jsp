@@ -123,15 +123,6 @@
     <body>
         <div class="form-container">
             <h2>Chỉnh sửa thông tin nhân viên</h2>
-            <form method="post" action="resetPassword">
-                <label for="password">Mật khẩu:</label>
-                <div class="password-row">
-                    <input type="text" id="password" name="password" value="${user.password}" readonly class="readonly-input" />
-                    <input type="hidden" name="userId" value="${user.userID}" />
-                    <button type="submit" class="btn-reset">Reset</button>
-                </div>
-            </form>            
-
             <form method="post" action="staffEditAccount">
                 <input type="hidden" name="userId" value="${user.userID}" />
 

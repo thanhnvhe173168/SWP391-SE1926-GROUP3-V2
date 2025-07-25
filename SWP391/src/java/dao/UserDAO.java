@@ -395,16 +395,5 @@ public class UserDAO extends ConnectDB {
         return userID;
     }
 
-//reset password
-    public void resetPassword(int userId, String newPassword) {
-        String sql = "Update Users SET Password = ? WHERE UserID = ? ";
-        try {
-            PreparedStatement ps = connect.prepareStatement(sql);
-            ps.setString(1, newPassword);
-            ps.setInt(2, userId);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 }

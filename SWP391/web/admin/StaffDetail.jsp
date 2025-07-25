@@ -111,7 +111,6 @@
                 <div class="detail-item"><strong>Full Name:</strong> ${user.fullName}</div>
                 <div class="detail-item"><strong>Email:</strong> ${user.email}</div>
                 <div class="detail-item"><strong>Phone Number:</strong> ${user.phoneNumber}</div>
-                <div class="detail-item"><strong>Password:</strong> ${user.password}</div>
                 <div class="detail-item"><strong>Registration Date:</strong> ${user.registrationDate}</div>
                 <div class="detail-item">
                     <strong>Status:</strong>
