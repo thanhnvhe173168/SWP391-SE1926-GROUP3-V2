@@ -74,6 +74,14 @@ public class QuantityChange extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+        if (user == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
         CartDAO cdao = new CartDAO();
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         StringBuilder sb = new StringBuilder();

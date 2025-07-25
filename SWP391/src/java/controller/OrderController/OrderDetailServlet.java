@@ -66,18 +66,20 @@ public class OrderDetailServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        //String[] list_id = (String[]) request.getAttribute("list_id");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         OrderDetail ord = new OrderDetail();
         CartDetailDAO cddao = new CartDetailDAO();
         OrderDAO odao = new OrderDAO();
         OrderDetailDAO orddao = new OrderDetailDAO();
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
         List<CartDetail> listordering = (List<CartDetail>) session.getAttribute("listordering");
         CartDAO cdao = new CartDAO();
         LaptopDAO ldao = new LaptopDAO();
         StatusDAO sdao = new StatusDAO();
-        //for (String id : list_id) {
         List<CartDetail> listcartdetail = cddao.ListCart(cdao.GetCartByUserID(user.getUserID()).getCartID());
         Iterator<CartDetail> iterator = listordering.iterator();
         while (iterator.hasNext()) {

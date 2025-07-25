@@ -73,10 +73,13 @@ public class reOrder extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         CartDAO cdao =new CartDAO();
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         String ids = request.getParameter("id");
-        OrderDAO odao = new OrderDAO();
         OrderDetailDAO oddao = new OrderDetailDAO();
         BigDecimal total = BigDecimal.valueOf(0);
         List<CartDetail> lists = new ArrayList<>();

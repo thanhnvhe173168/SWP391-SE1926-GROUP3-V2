@@ -175,6 +175,26 @@ public class StatusDAO extends ConnectDB {
         }
         return list;
     }
+    
+    public List<Status> getListStatusSelectWhenWaitTake() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Statuses\n"
+                + "where StatusID=10";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Status status = new Status();
+                status.setStatusID(rs.getInt("StatusID"));
+                status.setStatusName(rs.getNString("statusName"));
+                status.setStatusType(rs.getNString("statustype"));
+                list.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     public List<Status> getListStatusSelectWhenDVVCtakesuccess() {
         List<Status> list = new ArrayList<>();

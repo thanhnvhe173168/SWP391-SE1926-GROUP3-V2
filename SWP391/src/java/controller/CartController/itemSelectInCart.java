@@ -84,10 +84,17 @@ public class itemSelectInCart extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        User user = (User)session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+        if (user == null) {
+            response.sendRedirect("login");
+            return;
+        }
         CartDetailDAO cddao = new CartDetailDAO();
         CartDAO cdao = new CartDAO();
         BigDecimal total = BigDecimal.valueOf(0);
-        User user = (User)session.getAttribute("user");
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         try {
             // Đọc JSON từ request body

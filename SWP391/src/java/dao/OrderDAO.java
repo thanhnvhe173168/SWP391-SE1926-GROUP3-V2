@@ -852,7 +852,7 @@ public class OrderDAO extends ConnectDB {
     public List<Order> getShipOrdersByPage(int offset, int pageSize) {
         List<Order> list = new ArrayList<>();
         String sql = "select * from Orders\n"
-                + "where StatusID=15 or StatusID=10 or StatusID=11 or StatusID=12 or StatusID=13 or StatusID=14 or StatusID=23 or StatusID=24 or StatusID=25 or StatusID=18 or StatusID=19\n"
+                + "where StatusID=15 or StatusID=9 or StatusID=10 or StatusID=11 or StatusID=12 or StatusID=13 or StatusID=14 or StatusID=23 or StatusID=24 or StatusID=25 or StatusID=18 or StatusID=19\n"
                 + "order by OrderID desc\n"
                 + "offset ? rows fetch next ? rows only";
         try {
@@ -1011,7 +1011,7 @@ public class OrderDAO extends ConnectDB {
 
     public int countShipOrders() {
         int count = 0;
-        String sql = "select COUNT(*) from Orders where StatusID=15 or StatusID=10 or StatusID=11 or StatusID=12 or StatusID=13 or StatusID=14 or StatusID=23 or StatusID=24 or StatusID=25";
+        String sql = "select COUNT(*) from Orders where StatusID=15 or StatusID=9 or StatusID=10 or StatusID=11 or StatusID=12 or StatusID=13 or StatusID=14 or StatusID=23 or StatusID=24 or StatusID=25 or StatusID=18 or StatusID=19";
         try {
             PreparedStatement st = connect.prepareStatement(sql);
             ResultSet rs = st.executeQuery();

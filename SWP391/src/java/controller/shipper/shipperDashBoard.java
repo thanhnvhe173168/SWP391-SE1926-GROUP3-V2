@@ -62,10 +62,14 @@ public class shipperDashBoard extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        
-        if (user == null || user.getRoleID() == 1 || user.getRoleID() == 2 || user.getRoleID() == 3) {
+        if (user == null || user.getRoleID() != 4) {
             request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
         }
+        if (user == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
         OrderDAO odao = new OrderDAO();
         int dilivering = odao.countOrdersByStatusID(11);
         int dilivered = odao.countOrdersByStatusID(12);

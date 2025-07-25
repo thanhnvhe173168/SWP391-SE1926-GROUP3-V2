@@ -42,13 +42,17 @@ public class delivering extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         StatusDAO sdao = new StatusDAO();
         OrderDAO odao = new OrderDAO();
         OrderDetailDAO oddao = new OrderDetailDAO();
         CategoryDAO cdao = new CategoryDAO();
         String id_raw = request.getParameter("id");
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
         UserDAO udao = new UserDAO();
         int page = 1;
         int pageSize = 10;

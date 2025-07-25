@@ -66,10 +66,17 @@ public class RemoveFromCart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CartDetailDAO cartdetaildao = new CartDetailDAO();
-        String id_raw = request.getParameter("id");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+        if (user == null) {
+            response.sendRedirect("login");
+            return;
+        }
+        CartDetailDAO cartdetaildao = new CartDetailDAO();
+        String id_raw = request.getParameter("id");
         CartDAO cdao = new CartDAO();
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         List<CartDetail> listcartdetail = new ArrayList<>();

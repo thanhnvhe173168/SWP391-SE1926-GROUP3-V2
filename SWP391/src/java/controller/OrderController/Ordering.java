@@ -65,7 +65,11 @@ public class Ordering extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-        User user = (User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         List<CartDetail> listReOrder =(List<CartDetail>) session.getAttribute("listReOrder");
         LaptopDAO lapdao = new LaptopDAO();
         String quantity_raw = request.getParameter("quantity2");

@@ -12,9 +12,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import model.OrderDetail;
+import model.User;
 
 /**
  *
@@ -75,6 +77,12 @@ public class ItemSelectReturn extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         OrderDetailDAO oddao = new OrderDetailDAO();
         String orderID = request.getParameter("orderid");
         String[] selectedLaptopIDs = request.getParameterValues("selectedLaptopIDs");

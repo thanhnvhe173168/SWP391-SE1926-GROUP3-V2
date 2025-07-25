@@ -85,6 +85,11 @@ public class itemSelectReOrder extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         List<CartDetail> listreorder = (List<CartDetail>) session.getAttribute("listReOrder");
 
         BigDecimal total = BigDecimal.valueOf(0);

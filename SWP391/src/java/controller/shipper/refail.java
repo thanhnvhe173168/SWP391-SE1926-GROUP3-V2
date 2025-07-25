@@ -6,6 +6,7 @@ package controller.shipper;
 
 import dao.OrderDAO;
 import dao.StatusDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,16 +14,18 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Order;
 import model.Status;
+import model.User;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "redel2", urlPatterns = {"/redel2"})
-public class redel2 extends HttpServlet {
+@WebServlet(name = "refail", urlPatterns = {"/refail"})
+public class refail extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,7 +44,7 @@ public class redel2 extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet redel2</title>");            
+            out.println("<title>Servlet redel2</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet redel2 at " + request.getContextPath() + "</h1>");
@@ -62,6 +65,15 @@ public class redel2 extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 4) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+        if (user == null) {
+            response.sendRedirect("login");
+            return;
+        }
         int page = 1;
         int pageSize = 5;
         StatusDAO sdao = new StatusDAO();
@@ -71,15 +83,17 @@ public class redel2 extends HttpServlet {
         }
         int offset = (page - 1) * pageSize;
         OrderDAO orderdao = new OrderDAO();
-        List<Status> liststatus = sdao.getListStatusSelectWhenShip();
+        UserDAO udao = new UserDAO();
+        List<Status> selectWhenReShipFail = sdao.getListStatusSelectWhenReShipFail();
         int totalShipOrders = orderdao.countOrdersByStatusID(15);
         int totalPages = (int) Math.ceil((double) totalShipOrders / pageSize);
         List<Order> shipperorderlist = orderdao.getOrdersByPageandStatus(offset, pageSize, 15);
-        request.setAttribute("OrderStatus", "redel2");
-        request.setAttribute("liststatus", liststatus);
+        request.setAttribute("OrderStatus", "refail");
+        request.setAttribute("selectWhenReShipFail", selectWhenReShipFail);
         request.setAttribute("shipperorderlist", shipperorderlist);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("udao", udao);
         request.getRequestDispatcher("shipper/shipperOrderList.jsp").forward(request, response);
     }
 

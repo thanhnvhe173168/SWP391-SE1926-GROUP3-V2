@@ -68,11 +68,15 @@ public class confirmed extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() ==4) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         StatusDAO sdao = new StatusDAO();
         OrderDAO odao = new OrderDAO();
         OrderDetailDAO oddao = new OrderDetailDAO();
         CategoryDAO cdao = new CategoryDAO();
-        User user = (User) session.getAttribute("user");
         String id_raw = request.getParameter("id");
         UserDAO udao = new UserDAO();
         int page = 1;

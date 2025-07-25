@@ -11,7 +11,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.User;
 import model.Voucher;
 
 /**
@@ -32,6 +34,15 @@ public class VoucherList extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 1) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+        if (user == null) {
+            response.sendRedirect("login");
+            return;
+        }
         response.setContentType("text/html;charset=UTF-8");
         VoucherDAO voudao = new VoucherDAO();
         List<Voucher> voucherlist = voudao.GetListVoucher();

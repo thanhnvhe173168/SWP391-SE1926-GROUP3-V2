@@ -71,6 +71,14 @@ public class AddToCart extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+        if (user == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
         LaptopDAO ldao = new LaptopDAO();
         CartDAO cdao = new CartDAO();
         CartDetailDAO cddao = new CartDetailDAO();

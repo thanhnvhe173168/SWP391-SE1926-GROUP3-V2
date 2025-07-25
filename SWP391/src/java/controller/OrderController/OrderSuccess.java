@@ -77,9 +77,13 @@ public class OrderSuccess extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         VoucherDAO voudao = new VoucherDAO();
-        HttpSession session = request.getSession(); 
-        User user = (User)session.getAttribute("user");
         PaymentMethodDAO paydao = new PaymentMethodDAO();
         OrderDAO oddao = new OrderDAO();
         FeeShipDAO fsdao=new FeeShipDAO();

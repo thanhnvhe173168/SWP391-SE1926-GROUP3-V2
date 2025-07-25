@@ -10,6 +10,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             body {
                 font-family: 'Segoe UI', Roboto, Arial, sans-serif;
@@ -192,7 +193,7 @@
                                     <td>${w.laptop.price} VNĐ</td>
                                     <td>
                                         <a href="productDetail?productId=${w.laptop.laptopID}" class="btn btn-primary btn-custom">Xem chi tiết</a>
-                                        <button onclick="addtocart(${laptop.laptopID}, ${laptop.price})" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</button>
+                                        <button onclick="addtocart(${w.laptop.laptopID}, ${w.laptop.price})" class="btn btn-success btn-custom ms-2">Thêm vào giỏ</button>
                                         <a href="removeWishList?id=${w.wishlistId}" class="btn btn-danger btn-custom ms-2" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
                                             <i class="fas fa-trash"></i> Xóa
                                         </a>

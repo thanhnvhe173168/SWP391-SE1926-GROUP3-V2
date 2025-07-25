@@ -13,11 +13,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import model.Order;
 import model.OrderDetail;
 import model.Status;
+import model.User;
 
 /**
  *
@@ -67,6 +69,12 @@ public class OrderManager extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() ==3 || user.getRoleID() ==4) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         String mess = (String) request.getAttribute("mess");
         OrderDAO odao = new OrderDAO();
         UserDAO udao = new UserDAO();

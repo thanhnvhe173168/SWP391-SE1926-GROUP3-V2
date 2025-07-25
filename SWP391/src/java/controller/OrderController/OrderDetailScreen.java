@@ -12,9 +12,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Order;
 import model.OrderDetail;
+import model.User;
 
 /**
  *
@@ -34,6 +36,12 @@ public class OrderDetailScreen extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         response.setContentType("text/html;charset=UTF-8");
         String id_raw = request.getParameter("id");
         String ids_req = request.getParameter("ids");
@@ -49,6 +57,12 @@ public class OrderDetailScreen extends HttpServlet {
                     request.setAttribute("od", od);
                     request.setAttribute("list", list);
                     request.getRequestDispatcher("admin/OrderdetailAdmin.jsp").forward(request, response);
+                    return;
+                }
+                else if(ids == 2){
+                    request.setAttribute("od", od);
+                    request.setAttribute("list", list);
+                    request.getRequestDispatcher("shipper/OrderdetailShipper.jsp").forward(request, response);
                     return;
                 }
             }

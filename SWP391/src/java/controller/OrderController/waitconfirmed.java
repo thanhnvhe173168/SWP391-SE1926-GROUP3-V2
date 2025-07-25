@@ -39,6 +39,12 @@ public class waitconfirmed extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 4) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         response.setContentType("text/html;charset=UTF-8");
         String id_raw = request.getParameter("id");
         StatusDAO sdao = new StatusDAO();
@@ -46,8 +52,6 @@ public class waitconfirmed extends HttpServlet {
         UserDAO udao = new UserDAO();
         OrderDetailDAO oddao = new OrderDetailDAO();
         CategoryDAO cdao = new CategoryDAO();
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
         int page = 1;
         int pageSize = 10;
         String pageParam = request.getParameter("page");
@@ -76,7 +80,7 @@ public class waitconfirmed extends HttpServlet {
                 List<Order> list = odao.getOrdersByPageandStatus(offset, pageSize, 5);
                 List<Status> selectWaitConfirm = sdao.getListStatusSelectWaitConfirm();
                 request.setAttribute("udao", udao);
-               request.setAttribute("selectWaitConfirm", selectWaitConfirm);
+                request.setAttribute("selectWaitConfirm", selectWaitConfirm);
                 request.setAttribute("cdao", cdao);
                 request.setAttribute("oddao", oddao);
                 request.setAttribute("currentPage", page);

@@ -13,10 +13,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import model.Order;
 import model.OrderDetail;
+import model.User;
 
 /**
  *
@@ -63,6 +65,13 @@ public class ViewReasonReturn extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() == 3 || user.getRoleID() == 4) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
+
         String orderid = request.getParameter("id");
         OrderDAO odao = new OrderDAO();
         OrderDetailDAO oddao = new OrderDetailDAO();

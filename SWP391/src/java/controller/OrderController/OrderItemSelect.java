@@ -65,9 +65,13 @@ public class OrderItemSelect extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3 ) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
         CartDetailDAO cartdetaildao = new CartDetailDAO();
-        HttpSession session = request.getSession(); 
-        User user = (User)session.getAttribute("user");
         CartDAO cdao = new CartDAO();
         Cart cart = cdao.GetCartByUserID(user.getUserID());
         List<CartDetail> listordering =new ArrayList<>();

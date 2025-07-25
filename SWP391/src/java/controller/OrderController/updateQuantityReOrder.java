@@ -18,6 +18,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import model.CartDetail;
+import model.User;
 import org.json.JSONObject;
 
 /**
@@ -80,6 +81,12 @@ public class updateQuantityReOrder extends HttpServlet {
      @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 3) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+            return;
+        }
 
         // Đọc dữ liệu JSON từ body
         StringBuilder sb = new StringBuilder();
@@ -95,7 +102,6 @@ public class updateQuantityReOrder extends HttpServlet {
             int productId = json.getInt("productId");
             int quantity = json.getInt("quantity");
 
-            HttpSession session = request.getSession();
             List<CartDetail> listReOrder = (List<CartDetail>) session.getAttribute("listReOrder");
 
             BigDecimal total = BigDecimal.ZERO;

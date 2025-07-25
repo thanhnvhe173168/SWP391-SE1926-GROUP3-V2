@@ -6,6 +6,7 @@ package controller.shipper;
 
 import dao.OrderDAO;
 import dao.StatusDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,9 +14,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Order;
 import model.Status;
+import model.User;
 
 /**
  *
@@ -41,7 +44,7 @@ public class returnbycus extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet returnbycus</title>");            
+            out.println("<title>Servlet returnbycus</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet returnbycus at " + request.getContextPath() + "</h1>");
@@ -62,6 +65,15 @@ public class returnbycus extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getRoleID() != 4) {
+            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
+        }
+        if (user == null) {
+            response.sendRedirect("login");
+            return;
+        }
         int page = 1;
         int pageSize = 5;
         StatusDAO sdao = new StatusDAO();
@@ -71,15 +83,17 @@ public class returnbycus extends HttpServlet {
         }
         int offset = (page - 1) * pageSize;
         OrderDAO orderdao = new OrderDAO();
-        List<Status> liststatus = sdao.getListStatusSelectWhenShip();
+        UserDAO udao = new UserDAO();
+        List<Status> selectWhenRequestReturnPass = sdao.getListStatusSelectWhenRequestReturnPass();
         int totalShipOrders = orderdao.countReturnOrdersByStatusID(18, 19);
         int totalPages = (int) Math.ceil((double) totalShipOrders / pageSize);
         List<Order> shipperorderlist = orderdao.getReturnOrdersByPageandStatus(offset, pageSize, 18, 19);
         request.setAttribute("OrderStatus", "returnbycus");
-        request.setAttribute("liststatus", liststatus);
+        request.setAttribute("selectWhenRequestReturnPass", selectWhenRequestReturnPass);
         request.setAttribute("shipperorderlist", shipperorderlist);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("udao", udao);
         request.getRequestDispatcher("shipper/shipperOrderList.jsp").forward(request, response);
     }
 
