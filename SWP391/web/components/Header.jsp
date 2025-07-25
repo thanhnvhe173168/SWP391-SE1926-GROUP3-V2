@@ -38,7 +38,7 @@
             <div class="container-fluid">
                 <!-- Logo -->
                 <a class="navbar-brand" href="home">
-                    <img src="https://via.placeholder.com/150x40?text=Laptop+Store" alt="Laptop Store Logo">
+                    <img src="images/logo.jpg" alt="Laptop Store Logo">
                 </a>
                 <!-- Toggle button for mobile -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

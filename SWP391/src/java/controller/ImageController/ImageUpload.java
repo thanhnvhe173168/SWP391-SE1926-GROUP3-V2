@@ -21,7 +21,7 @@ import java.nio.file.Files;
 @WebServlet("/uploads/*")
 public class ImageUpload extends HttpServlet {
 
-    private final String UPLOAD_DIR = "D:\\GitHub\\SWP391-SE1926-GROUP3-V2\\SWP391\\ImageUploads";
+    private final String UPLOAD_DIR = "D:\\GitHub\\SWP391-SE1926-GROUP3-V2\\SWP391\\Uploads";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

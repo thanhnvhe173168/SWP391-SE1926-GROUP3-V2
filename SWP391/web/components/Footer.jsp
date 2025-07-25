@@ -5,84 +5,113 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <style>
-            footer {
-                background-color: #ffffff; /* ??ng b? v?i header n?n tr?ng */
-                color: #333;
-                padding: 40px 0 20px;
-                font-family: 'Roboto', sans-serif;
-                border-top: 1px solid #e0e0e0;
-            }
+    /* ========== NAVBAR ========== */
+    .navbar-brand img {
+        height: 40px;
+    }
 
-            footer a {
-                color: #005566; /* Gi? màu xanh d??ng ch? ??o */
-                text-decoration: none;
-                transition: color 0.3s ease;
-            }
+    .navbar {
+        background: linear-gradient(rgb(228, 84, 100) -13%, rgb(215, 0, 24));
+    }
 
-            footer a:hover {
-                color: #003d4c;
-            }
+    .navbar-nav .nav-link {
+        color: #ffffff !important;
+    }
 
-            .footer-title {
-                font-size: 1.1rem;
-                font-weight: 700;
-                color: #005566;
-                margin-bottom: 20px;
-                text-transform: uppercase;
-            }
+    .dropdown-menu {
+        background-color: #ffffff;
+    }
 
-            .footer-section p,
-            .footer-section li {
-                font-size: 0.95rem;
-                line-height: 1.8;
-                color: #555;
-            }
+    .dropdown-item {
+        color: #000000;
+    }
 
-            .footer-section ul {
-                list-style: none;
-                padding: 0;
-            }
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
 
-            .footer-section ul li {
-                margin-bottom: 10px;
-            }
+    /* ========== FOOTER ========== */
+    footer {
+        background: linear-gradient(rgb(228, 84, 100) -13%, rgb(215, 0, 24)); /* ??ng b? v?i navbar */
+        color: #ffffff;
+        padding: 40px 0 20px;
+        font-family: 'Roboto', sans-serif;
+        border-top: 1px solid #e0e0e0;
+    }
 
-            .footer-bottom {
-                background-color: #005566; /* Gi? ph?n d??i footer màu xanh d??ng */
-                color: #fff;
-                padding: 15px 0;
-                font-size: 0.9rem;
-                margin-top: 20px;
-            }
+    footer a {
+        color: #ffffff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
 
-            .footer-bottom a {
-                color: #17a2b8;
-            }
+    footer a:hover {
+        color: #f8f9fa;
+    }
 
-            .footer-bottom a:hover {
-                color: #fff;
-            }
+    .footer-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
 
-            hr.bg-light {
-                border-color: #e0e0e0;
-                margin: 20px 0;
-            }
+    .footer-section p,
+    .footer-section li {
+        font-size: 0.95rem;
+        line-height: 1.8;
+        color: #f0f0f0;
+    }
 
-            /* Responsive */
-            @media (max-width: 768px) {
-                .footer-section {
-                    margin-bottom: 20px;
-                    text-align: center;
-                }
-                .footer-title {
-                    font-size: 1rem;
-                }
-                .footer-section p,
-                .footer-section li {
-                    font-size: 0.9rem;
-                }
-            }
-        </style>
+    .footer-section ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer-section ul li {
+        margin-bottom: 10px;
+    }
+
+    .footer-bottom {
+        background-color: #b3001a; /* màu ?? ??m t??ng ph?n, không c?n xanh n?a */
+        color: #fff;
+        padding: 15px 0;
+        font-size: 0.9rem;
+        margin-top: 20px;
+    }
+
+    .footer-bottom a {
+        color: #ffd1d6;
+    }
+
+    .footer-bottom a:hover {
+        color: #ffffff;
+    }
+
+    hr.bg-light {
+        border-color: #e0e0e0;
+        margin: 20px 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .footer-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .footer-title {
+            font-size: 1rem;
+        }
+
+        .footer-section p,
+        .footer-section li {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
     </head>
     <body>
         <footer>

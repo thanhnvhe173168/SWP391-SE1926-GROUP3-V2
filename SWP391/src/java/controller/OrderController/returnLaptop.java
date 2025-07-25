@@ -57,7 +57,7 @@ public class returnLaptop extends HttpServlet {
                         String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
                         String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
 
-                        String uploadDir = "D:/ImageUploads/";
+                        String uploadDir = "D:\\GitHub\\SWP391-SE1926-GROUP3-V2\\SWP391\\Uploads";
                         File uploadFolder = new File(uploadDir);
                         if (!uploadFolder.exists()) {
                             uploadFolder.mkdirs();
