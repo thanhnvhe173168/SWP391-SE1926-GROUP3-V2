@@ -62,24 +62,23 @@ public class StaffList extends HttpServlet {
             throws ServletException, IOException {
          HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-
          if (user == null ||user.getRoleID() != 1 ) {
             request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
         }
         String search = request.getParameter("search");
-        String statusParam = request.getParameter("statusId");
+        String statusId = request.getParameter("statusId");
         String reset = request.getParameter("reset");
         Integer statusID = null;
 
         if ("true".equals(reset)) {
             search = null;
-            statusParam = null;
+            statusId = null;
         }
-        if (statusParam != null && !statusParam.trim().isEmpty()) {
+        if (statusId != null && !statusId.trim().isEmpty()) {
             try {
-                statusID = Integer.parseInt(statusParam.trim());
+                statusID = Integer.parseInt(statusId.trim());
             } catch (NumberFormatException e) {
-                request.setAttribute("errorMessage", "Giá trị trạng thái không hợp lệ: " + statusParam);
+                request.setAttribute("errorMessage", "Giá trị trạng thái không hợp lệ ");
             }
         }
         int pageSize = 5;
