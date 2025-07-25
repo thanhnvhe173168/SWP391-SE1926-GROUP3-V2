@@ -243,11 +243,6 @@
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="form-label">Hình ảnh minh họa:</label>
-                    <input type="file" class="form-control" name="productImage" accept="image/*">
-                </div>
-
                 <div class="text-center">
                     <button type="submit" class="btn btn-submit">Gửi đánh giá</button>
                 </div>

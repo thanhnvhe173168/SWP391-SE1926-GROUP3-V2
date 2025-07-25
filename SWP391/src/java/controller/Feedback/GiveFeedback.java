@@ -88,29 +88,6 @@ public class GiveFeedback extends HttpServlet {
         int shippingRating = Integer.parseInt(request.getParameter("shippingRating"));
         int statusID = 30;
 
-        //file upload
-        Part filePart = request.getPart("productImage");
-        String fileName = extractFileName(filePart);
-        String uploadPath = "C:/MyUploads/Feedback";
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-        // file trùng tên
-        File file = new File(uploadDir, fileName);
-        int count = 0;
-        String baseName = fileName;
-        while (file.exists()) {
-            count++;
-            fileName = count + "_" + baseName;
-            file = new File(uploadDir, fileName);
-        }
-
-        filePart.write(file.getAbsolutePath());
-        // Link để lưu DB
-        String imageURL = "Feedback/" + fileName;
-
-       
         Feedback fb = new Feedback();
         fb.setUserID(userID);
         fb.setLaptopID(laptopID);
@@ -120,7 +97,6 @@ public class GiveFeedback extends HttpServlet {
         fb.setRating(rating);
         fb.setSellerRating(sellerRating);
         fb.setShippingRating(shippingRating);
-        fb.setImageURL(imageURL);
         fb.setStatusID(statusID);
 
         
