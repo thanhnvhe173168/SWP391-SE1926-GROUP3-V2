@@ -69,8 +69,6 @@ public class DeleteFeedback extends HttpServlet {
             request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
         }
         
-
-        if (user != null) {
             int roleID = user.getRoleID(); 
             int feedbackID = Integer.parseInt(request.getParameter("feedbackId"));
             int productID = Integer.parseInt(request.getParameter("productId"));
@@ -79,19 +77,17 @@ public class DeleteFeedback extends HttpServlet {
 
             if (roleID == 1) {
                 dao.deleteFeedbackByAdmin(feedbackID);
+                response.sendRedirect("feedBackList");
             } else { 
                 int userID = user.getUserID();
                 int laptopID = Integer.parseInt(request.getParameter("laptopId"));
                 int orderID = Integer.parseInt(request.getParameter("orderId"));
 
                 dao.deleteFeedbackByCustomer(feedbackID, userID, laptopID, orderID);
+                response.sendRedirect("productDetail?productId=" + productID);
             }
-
-            response.sendRedirect("productDetail");
-        } else {
-            response.sendRedirect("login");
         }
-    }
+    
 
     /**
      * Handles the HTTP <code>POST</code> method.

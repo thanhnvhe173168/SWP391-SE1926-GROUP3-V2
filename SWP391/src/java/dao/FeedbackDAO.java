@@ -21,8 +21,8 @@ public class FeedbackDAO extends ConnectDB {
 
 //Give feedback    
     public boolean addFeedback(Feedback fb) {
-        String sql = "INSERT INTO Feedback (UserID, OrderID, LaptopID, Title, Content, Rating, SellerRating, ShippingRating, ImageURL, StatusID) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      String sql = "INSERT INTO Feedback (UserID, OrderID, LaptopID, Title, Content, Rating, SellerRating, ShippingRating, ImageURL, StatusID, CreatedAt, UpdatedAt) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setInt(1, fb.getUserID());

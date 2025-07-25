@@ -69,7 +69,7 @@ public class ReviewOrder extends HttpServlet {
             request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
         } 
         try {
-            int orderID = Integer.parseInt(request.getParameter("orderID"));
+            int orderID = Integer.parseInt(request.getParameter("id"));
 
             OrderDetailDAO dao = new OrderDetailDAO();
             List<OrderDetail> orderDetails = dao.getOrderDetailsByOrderID(orderID);

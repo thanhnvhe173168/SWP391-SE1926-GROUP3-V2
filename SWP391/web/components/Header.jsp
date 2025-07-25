@@ -69,14 +69,14 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="logout">Logout</a>
+                            <a class="nav-link" href="logout">Đăng xuất</a>
                         </li>
                         <%} else {%>      
                         <li class="nav-item">
-                            <a class="nav-link" href="login">Login</a>
+                            <a class="nav-link" href="login">Đăng nhập</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="register">Register</a>
+                            <a class="nav-link" href="register">Đăng ký</a>
                         </li>
                         <%}%>
                     </ul>
