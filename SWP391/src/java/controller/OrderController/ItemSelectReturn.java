@@ -95,17 +95,8 @@ public class ItemSelectReturn extends HttpServlet {
         if (selectedLaptopIDs != null) {
             for (String laptopID : selectedLaptopIDs) {
                 int laptopid = Integer.parseInt(laptopID);
-                String quantity_req = request.getParameter("qty-"+laptopid);
-                int quantity = Integer.parseInt(quantity_req);
-                if(quantity<oddao.getOrderDetailByLapID(laptopid, orderid).getQuantity()){
-                   OrderDetail lapreturn = new OrderDetail();
-                   lapreturn.setOrderID(orderid);
-                   lapreturn.setLaptop(ldao.getLaptopById(laptopid));
-                   lapreturn.setQuantity(quantity);
-                   lapreturn.setOrderDetailStatus(oddao.getOrderDetailByLapID(laptopid, orderid).getOrderDetailStatus());
-                   lapreturn.setUnitPrice(oddao.getOrderDetailByLapID(laptopid, orderid).getUnitPrice());
+                   OrderDetail lapreturn = oddao.getOrderDetailByLapID(laptopid, orderid);
                    listreturn.add(lapreturn);
-                }
             }
         }
         request.setAttribute("orderid", orderid);

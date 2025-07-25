@@ -37,10 +37,10 @@ public class returnLaptop extends HttpServlet {
         String orderIDStr = request.getParameter("orderID");
         String[] laptopIDs = request.getParameterValues("laptopIDs");
         int count = 0;
+        int orderID = Integer.parseInt(orderIDStr);
         OrderDetailDAO oddao = new OrderDetailDAO();
         OrderDAO odao = new OrderDAO();
         if (laptopIDs != null && orderIDStr != null) {
-            int orderID = Integer.parseInt(orderIDStr);
 
             for (String lapidStr : laptopIDs) {
                 int laptopID = Integer.parseInt(lapidStr);
@@ -84,6 +84,13 @@ public class returnLaptop extends HttpServlet {
             else{
                 odao.upDateOrderStatus(17, orderID);
             }
+        }
+        if(laptopIDs == null){
+            odao.upDateOrderStatus(22, orderID);
+             List<OrderDetail> list = oddao.GetListOrderDetailByID(orderID);
+             for(OrderDetail od : list){
+                 oddao.upDateOrderDetailStatuswhenreturn(22, orderID, od.getLaptop().getLaptopID());
+             }
         }
         request.setAttribute("mess", "Gửi yêu cầu hoàn sản phẩm thành công!");
         request.getRequestDispatcher("OrderList").forward(request, response);
