@@ -100,7 +100,7 @@ public class ItemSelectReturn extends HttpServlet {
             }
         }
         request.setAttribute("orderid", orderid);
-        session.setAttribute("listreturn", listreturn);
+        request.setAttribute("listreturn", listreturn);
         request.getRequestDispatcher("user/reasonReturnLaptop.jsp").forward(request, response);
     }
 
