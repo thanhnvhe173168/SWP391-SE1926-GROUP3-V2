@@ -64,11 +64,10 @@
       <!-- Bọc tất cả trong 1 form -->
       <input type="hidden" name="orderID" value="${orderid}">
 
-      <c:forEach var="item" items="${listreturn}">
+      <c:forEach var="item" items="${sessionScope.listreturn}">
         <div class="product-item">
           <h4>${item.laptop.laptopName}</h4>
           <img src="images/${item.laptop.imageURL}" alt="${item.laptop.laptopName}">
-          <input type="hidden" name="laptopIDs" value="${item.laptop.laptopID}">
 
           <label>Reason for return:</label>
           <textarea name="reason_${item.laptop.laptopID}" placeholder="Enter reason for return"></textarea>

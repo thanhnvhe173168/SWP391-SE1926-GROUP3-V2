@@ -233,7 +233,7 @@
                                     </div>
                                 </td>                                    
                                 <td id="price-${item.laptop.laptopID}">
-                                    <fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ
+                                    <fmt:formatNumber value="${item.unitPrice * item.quantity}" type="number" groupingUsed="true"/> VNĐ</td>
                                 <td><button class="order-btn" onclick="window.location.href = 'Order?id=${item.getLaptop().getLaptopID()}'">Order</button></td>
                                 <td><button class="remove-btn" onclick="window.location.href = 'RemoveFromCart?id=${item.getLaptop().getLaptopID()}'">Remove</button></td>
                             </tr>

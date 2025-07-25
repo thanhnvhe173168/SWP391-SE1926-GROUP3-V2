@@ -31,68 +31,44 @@
                 background-color: #f4f6f9;
             }
 
-            /* Wrapper chung */
-            .wrapper {
-                display: flex;
-            }
-
-            /* Bên phải nội dung */
-            .page-container {
-                margin-left: 220px;
-                padding: 30px;
-                background-color: #f4f6f9;
-                width: calc(100% - 220px);
-                box-sizing: border-box;
-                max-width: 100vw; /* Không cho tràn ra ngoài */
-            }
-
-            /* Tabs đơn hàng */
             .order-tabs {
                 display: flex;
-                overflow-x: auto;
-                white-space: nowrap;
-                gap: 10px;
-                margin-bottom: 20px;
-                padding-bottom: 5px;
-                border-bottom: 2px solid #007bff;
-                scroll-behavior: smooth;
+                flex-wrap: wrap;                  /* ✅ Cho phép xuống dòng nếu cần */
+                justify-content: center;          /* Hoặc dùng space-between nếu muốn đều 2 bên */
+                gap: 12px;
+                margin: 20px auto;
+                padding: 8px 12px;
                 max-width: 100%;
                 box-sizing: border-box;
-
-                /* Ẩn scrollbar */
-                scrollbar-width: none;         /* Firefox */
-                -ms-overflow-style: none;      /* IE/Edge */
-            }
-            .order-tabs::-webkit-scrollbar {
-                display: none;                 /* Chrome/Safari */
             }
 
             .order-tabs .tab {
-                flex: 0 0 auto;
-                text-align: center;
-                min-width: 120px;
-                padding: 8px 12px;
-                background-color: #e3f2fd;
-                border-radius: 20px;
-                cursor: pointer;
-                font-weight: 500;
+                flex: 1 1 auto;                   /* ✅ Cho phép co giãn đều */
+                padding: 10px 16px;
+                background-color: #ffffff;
                 color: #007bff;
-                border: 1px solid transparent;
-                transition: 0.3s;
-                white-space: nowrap;
+                border: 1px solid #007bff;
+                border-radius: 999px;
+                font-weight: 500;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                text-align: center;
+                min-width: 100px;
+                max-width: 160px;
             }
 
             .order-tabs .tab:hover {
-                background-color: #cce4f6;
+                background-color: #e6f0ff;
             }
 
             .order-tabs .tab.active {
                 background-color: #007bff;
                 color: white;
                 font-weight: bold;
-                border: 1px solid #0056b3;
-                box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+                box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
             }
+
 
             /* Các phần khác giữ nguyên như bạn đã dùng */
 
@@ -187,7 +163,6 @@
                     <div class="tab ${currentStatus == 'returning' ? 'active' : ''}" onclick="window.location.href = 'returning?id=3'">Đang hoàn</div>
                     <div class="tab ${currentStatus == 'returned' ? 'active' : ''}" onclick="window.location.href = 'returntoshopsuccess'">Hoàn thành công</div>
                 </div>
-
                 <c:set var="orderlists" value="${shipperorderlist}"/>
                 <c:choose>
                     <c:when test="${empty orderlists}">
@@ -293,7 +268,7 @@
                                                         </select>
                                                     </form>
                                                 </c:when>
-                                                <c:when test="${order.orderstatus.statusID == 18 && order.orderstatus.statusID == 19}">
+                                                <c:when test="${order.orderstatus.statusID == 18 || order.orderstatus.statusID == 19}">
                                                     <form>
                                                         <input type="hidden" name="orderid" value="${order.orderID}"/>
                                                         <select name="OrderStatus" onchange="updateStatus(this)">
@@ -338,7 +313,14 @@
                                             </c:choose>
                                         </td>
                                         <td>${order.paymentstatus.statusName}</td>
-                                        <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}&ids=2'">View Order</button></td>
+                                        <c:choose>
+                                            <c:when test="${order.orderstatus.statusID == 18 || order.orderstatus.statusID == 19}">
+                                                <td><button onclick="window.location.href = 'ViewOrderDetailWhenReturn?id=${order.orderID}'">View Order</button></td>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <td><button onclick="window.location.href = 'OrderDetailScreen?id=${order.orderID}&ids=2'">View Order</button></td>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </tr>
                                 </c:forEach>
                             </tbody>

@@ -4,9 +4,8 @@
  */
 package controller.OrderController;
 
-import dao.LaptopDAO;
+import dao.OrderDAO;
 import dao.OrderDetailDAO;
-import dao.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,19 +13,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
-import model.Laptop;
+import model.Order;
 import model.OrderDetail;
-import model.User;
 
 /**
  *
  * @author Window 11
  */
-@WebServlet(name = "ItemSelectReturn", urlPatterns = {"/ItemSelectReturn"})
-public class ItemSelectReturn extends HttpServlet {
+@WebServlet(name = "ViewOrderDetailWhenReturn", urlPatterns = {"/ViewOrderDetailWhenReturn"})
+public class ViewOrderDetailWhenReturn extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +41,10 @@ public class ItemSelectReturn extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ItemSelectReturn</title>");
+            out.println("<title>Servlet ViewOrderDetailWhenReturn</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ItemSelectReturn at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ViewOrderDetailWhenReturn at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,7 +62,19 @@ public class ItemSelectReturn extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String id_req = request.getParameter("id");
+        OrderDetailDAO oddao = new OrderDetailDAO();
+        OrderDAO odao = new OrderDAO();
+        try {
+            int id = Integer.parseInt(id_req);
+            List<OrderDetail> list = oddao.getOrderDetailByStatusidAndOrderID(18, 19, id);
+            Order order = odao.GetOrderByID(id);
+            request.setAttribute("list", list);
+            request.setAttribute("order", order);
+            request.getRequestDispatcher("shipper/ViewOrderDetailReturnByShipper.jsp").forward(request, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -80,37 +88,7 @@ public class ItemSelectReturn extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        if (user == null || user.getRoleID() != 3 ) {
-            request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
-            return;
-        }
-        OrderDetailDAO oddao = new OrderDetailDAO();
-        LaptopDAO ldao = new LaptopDAO();
-        String orderID = request.getParameter("orderid");
-        String[] selectedLaptopIDs = request.getParameterValues("selectedLaptopIDs");
-        List<OrderDetail> listreturn = new ArrayList<>();
-        int orderid = Integer.parseInt(orderID);
-        if (selectedLaptopIDs != null) {
-            for (String laptopID : selectedLaptopIDs) {
-                int laptopid = Integer.parseInt(laptopID);
-                String quantity_req = request.getParameter("qty-"+laptopid);
-                int quantity = Integer.parseInt(quantity_req);
-                if(quantity<oddao.getOrderDetailByLapID(laptopid, orderid).getQuantity()){
-                   OrderDetail lapreturn = new OrderDetail();
-                   lapreturn.setOrderID(orderid);
-                   lapreturn.setLaptop(ldao.getLaptopById(laptopid));
-                   lapreturn.setQuantity(quantity);
-                   lapreturn.setOrderDetailStatus(oddao.getOrderDetailByLapID(laptopid, orderid).getOrderDetailStatus());
-                   lapreturn.setUnitPrice(oddao.getOrderDetailByLapID(laptopid, orderid).getUnitPrice());
-                   listreturn.add(lapreturn);
-                }
-            }
-        }
-        request.setAttribute("orderid", orderid);
-        session.setAttribute("listreturn", listreturn);
-        request.getRequestDispatcher("user/reasonReturnLaptop.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**

@@ -34,7 +34,7 @@ public class OrderDetailDAO extends ConnectDB {
             st.setInt(3, ord.getQuantity());
             st.setBigDecimal(4, ord.getUnitPrice());
 
-            if (ord.getFeedback()== null) {
+            if (ord.getFeedback() == null) {
                 st.setNull(5, java.sql.Types.INTEGER);
             } else {
                 st.setInt(5, ord.getFeedback().getFeedbackID());
@@ -62,6 +62,23 @@ public class OrderDetailDAO extends ConnectDB {
             }
             st.executeUpdate();
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updatequantitywhenreturn(int quantity, int lapid, int orderid, int statusid) {
+        String sql = "update OrderDetail\n"
+                + "set Quantity=?\n"
+                + "where LaptopID=? and OrderID=? and OrderDetailStatusID=?";
+        try{
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, quantity);
+            st.setInt(2, lapid);
+            st.setInt(3, orderid);
+            st.setInt(4, statusid);
+            st.executeUpdate();
+        }
+        catch(SQLException e){
             e.printStackTrace();
         }
     }
@@ -215,6 +232,61 @@ public class OrderDetailDAO extends ConnectDB {
         }
         return od;
     }
+    
+    public List<OrderDetail> getOrderDetailByStatusidAndOrderID(int statusid1, int statusid2, int orderid) {
+        List<OrderDetail> list = new ArrayList<>();
+        String sql = "select * from OrderDetail\n"
+                + "where (OrderDetailStatusID=? or OrderDetailStatusID=?)\n"
+                + "and OrderID=?";
+        OrderDetail od = new OrderDetail();
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, statusid1);
+            st.setInt(2, statusid2);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                od.setOrderID(orderid);
+
+                // LaptopID - không null
+                od.setLaptop(ldao.getLaptopById(rs.getInt("LaptopID")));
+
+                // Quantity, UnitPrice - không null
+                od.setQuantity(rs.getInt("Quantity"));
+                od.setUnitPrice(rs.getBigDecimal("UnitPrice"));
+
+                // ReviewID - có thể null
+                int reviewId = rs.getInt("ReviewID");
+                if (!rs.wasNull()) {
+                    od.setFeedback(fdao.getFeedbackByID(reviewId));
+                } else {
+                    od.setFeedback(null);
+                }
+
+                // OrderDetailStatusID - không null
+                od.setOrderDetailStatus(sdao.GetStatus(rs.getInt("OrderDetailStatusID")));
+
+                // ReturnDate - có thể null
+                Date returnDate = rs.getDate("ReturnDate");
+                if (returnDate != null) {
+                    od.setReturnDate(returnDate.toLocalDate());
+                } else {
+                    od.setReturnDate(null);
+                }
+
+                // ReasonReturn - có thể null
+                String reasonReturn = rs.getNString("ReasonReturn");
+                od.setReasonReturn(reasonReturn != null ? reasonReturn : null);
+                od.setIsSelect(rs.getBoolean("is_select"));
+
+                String imageReturn = rs.getNString("ImageReturn");
+                od.setImageReturn(imageReturn != null ? imageReturn : null);
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     public void updateReasonReturn(int orderid, int lapid, String reason, LocalDate returndate) {
         String sql = "update OrderDetail\n"
@@ -334,7 +406,7 @@ public class OrderDetailDAO extends ConnectDB {
                 laptop.setLaptopName(rs.getString("LaptopName"));
                 laptop.setImageURL(rs.getString("ImageURL"));
 
-                od.setLaptop(laptop);  
+                od.setLaptop(laptop);
 
                 list.add(od);
             }
