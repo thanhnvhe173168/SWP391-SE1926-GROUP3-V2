@@ -180,7 +180,8 @@ public class UserDAO extends ConnectDB {
 //Linh: CreateAccountStaff
     public int createUser(User user) {
 
-        String sql = "Insert into Users(FullName, Email, PhoneNumber, Password, RoleID, StatusID) values (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Users (FullName, Email, PhoneNumber, Password, RoleID, StatusID, RegistrationDate) " +
+                 "VALUES (?, ?, ?, ?, ?, ?, CAST(GETDATE() AS DATE))";
         int n = 0;
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
