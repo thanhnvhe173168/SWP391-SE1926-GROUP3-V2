@@ -1,6 +1,7 @@
 package controller.Feedback;
 
 import dao.FeedbackDAO;
+import dao.OrderDetailDAO;
 import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,14 +14,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import model.Feedback;
+import model.OrderDetail;
 import model.User;
 
 @WebServlet(name = "GiveFeedback", urlPatterns = {"/giveFeedback"})
-@MultipartConfig(
-        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-        maxFileSize = 1024 * 1024 * 10, // 10MB
-        maxRequestSize = 1024 * 1024 * 50 // 50MB
-)
+
+
 public class GiveFeedback extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -68,7 +67,7 @@ public class GiveFeedback extends HttpServlet {
         User user = (User) session.getAttribute("user");
 
         int userID = user.getUserID();
-
+        OrderDetailDAO oddao = new OrderDetailDAO();
         String orderIDRaw = request.getParameter("orderID");
         String laptopIDRaw = request.getParameter("laptopID");
         if (orderIDRaw == null || laptopIDRaw == null || orderIDRaw.isEmpty() || laptopIDRaw.isEmpty()) {
@@ -103,23 +102,15 @@ public class GiveFeedback extends HttpServlet {
         FeedbackDAO dao = new FeedbackDAO();
 
         if (dao.addFeedback(fb)) {
+            OrderDetail od = oddao.getOrderDetailByLapID(laptopID, orderID);
+            od.setFeedback(dao.getFeedbackByidAndLaptop(orderID, laptopID));
+            oddao.updateFeedback(laptopID, orderID, od.getFeedback().getFeedbackID());
             session.setAttribute("mess", "Cảm ơn bạn đã gửi phản hồi!");
             response.sendRedirect("home");
         } else {
             request.setAttribute("mess", "Có lỗi xảy ra! Vui lòng thử lại");
             request.getRequestDispatcher("user/GiveFeedback.jsp").forward(request, response);
         }
-    }
-  // Tách tên file từ part
-    private String extractFileName(Part part) {
-        String contentDisp = part.getHeader("content-disposition");
-        for (String cd : contentDisp.split(";")) {
-            if (cd.trim().startsWith("filename")) {
-                String fileName = cd.substring(cd.indexOf("=") + 2, cd.length() - 1);
-                return java.nio.file.Paths.get(fileName).getFileName().toString();
-            }
-        }
-        return "";
     }
     @Override
     public String getServletInfo() {

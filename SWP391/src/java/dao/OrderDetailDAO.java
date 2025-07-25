@@ -70,15 +70,14 @@ public class OrderDetailDAO extends ConnectDB {
         String sql = "update OrderDetail\n"
                 + "set Quantity=?\n"
                 + "where LaptopID=? and OrderID=? and OrderDetailStatusID=?";
-        try{
+        try {
             PreparedStatement st = connect.prepareStatement(sql);
             st.setInt(1, quantity);
             st.setInt(2, lapid);
             st.setInt(3, orderid);
             st.setInt(4, statusid);
             st.executeUpdate();
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -166,6 +165,21 @@ public class OrderDetailDAO extends ConnectDB {
         }
     }
 
+    public void updateFeedback(int laptopid, int orderid, int feedbackid) {
+        String sql = "update OrderDetail\n"
+                + "set ReviewID=?\n"
+                + "where OrderID=? and LaptopID=?";
+        try {
+            PreparedStatement st = connect.prepareStatement(sql);
+            st.setInt(1, feedbackid);
+            st.setInt(2, orderid);
+            st.setInt(3, laptopid);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void upDateOrderDetailStatusByAdmin(int statusid, int orderid) {
         String sql = "update OrderDetail\n"
                 + "set OrderDetailStatusID=?\n"
@@ -232,7 +246,7 @@ public class OrderDetailDAO extends ConnectDB {
         }
         return od;
     }
-    
+
     public List<OrderDetail> getOrderDetailByStatusidAndOrderID(int statusid1, int statusid2, int orderid) {
         List<OrderDetail> list = new ArrayList<>();
         String sql = "select * from OrderDetail\n"
@@ -388,8 +402,8 @@ public class OrderDetailDAO extends ConnectDB {
                 + "       l.LaptopID, l.LaptopName, l.ImageURL\n"
                 + "FROM OrderDetail od\n"
                 + "JOIN Laptop l ON od.LaptopID = l.LaptopID\n"
-                +"LEFT JOIN Feedback f ON f.OrderID = od.OrderID AND f.LaptopID = od.LaptopID\n " 
-                +"WHERE od.OrderID = ? AND f.FeedbackID IS NULL"; // Chỉ lấy laptop chưa feedback
+                + "LEFT JOIN Feedback f ON f.OrderID = od.OrderID AND f.LaptopID = od.LaptopID\n "
+                + "WHERE od.OrderID = ? AND f.FeedbackID IS NULL"; // Chỉ lấy laptop chưa feedback
 
         try {
             PreparedStatement ps = connect.prepareCall(sql);

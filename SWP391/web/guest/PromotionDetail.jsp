@@ -67,7 +67,7 @@
                 <div class="col">
                     <div class="product-container">
                         <div class="product-image">
-                            <img src="<%=rsLaptop.getString("ImageURL")%>" alt="Product Image">
+                            <img src="images/<%=rsLaptop.getString("ImageURL")%>" alt="Product Image">
                         </div>
                         <div class="product-specs">
                             <h4><%=rsLaptop.getString("LaptopName")%></h4>
@@ -110,6 +110,10 @@
                                         .catch(error => {
                                             console.error('Lỗi:', error);
                                         });
+                            }
+
+                            function addToWishlist(laptopId) {
+                                window.location.href = '/swp391/addToWishList?id=' + laptopId;
                             }
         </script>
     </body>

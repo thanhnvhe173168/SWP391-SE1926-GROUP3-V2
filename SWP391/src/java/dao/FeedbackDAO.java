@@ -78,6 +78,40 @@ public class FeedbackDAO extends ConnectDB {
         }
         return fb;
     }
+    
+    public Feedback getFeedbackByidAndLaptop(int orderid, int laptopid) {
+        Feedback fb = null;
+        String sql = "Select * from Feedback where orderID=? and laptopid=?";
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, orderid);
+            ps.setInt(2, laptopid);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                fb = new Feedback();
+                fb.setFeedbackID(rs.getInt("FeedbackID"));
+                fb.setLaptopID(rs.getInt("LaptopID"));
+                fb.setOrderID(rs.getInt("OrderID"));
+                fb.setUserID(rs.getInt("UserID"));
+                fb.setTitle(rs.getString("Title"));
+                fb.setContent(rs.getString("Content"));
+                fb.setRating(rs.getInt("Rating"));
+                fb.setSellerRating(rs.getInt("SellerRating"));
+                fb.setShippingRating(rs.getInt("ShippingRating"));
+                fb.setImageURL(rs.getString("ImageURL"));
+                fb.setStatusID(rs.getInt("StatusID"));
+                fb.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                fb.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+
+                return fb;
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fb;
+    }
 
     public int updateFeedback(int feedbackID, int laptopID, int orderID, int userID,
             String title, String content, int rating, int sellerRating, int shippingRating) {

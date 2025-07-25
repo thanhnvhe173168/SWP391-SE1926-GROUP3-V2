@@ -191,7 +191,7 @@
         <div class="form-section">
             <h2>Gửi Đánh Giá Sản Phẩm</h2>
 
-            <form action="${pageContext.request.contextPath}/giveFeedback" method="post" enctype="multipart/form-data">
+            <form action="${pageContext.request.contextPath}/giveFeedback" method="post">
 
                 <input type="hidden" name="orderID" value="${requestScope.orderId}" />
                 <input type="hidden" name="laptopID" value="${requestScope.laptopId}" />
