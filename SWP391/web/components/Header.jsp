@@ -62,7 +62,7 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="viewProfile">Thông tin cá nhân</a></li>
-                                <li><a class="dropdown-item" href="CartServlet">Giỏ hàng</a></li>
+                                <li><a class="dropdown-item" href="CartSeverlet">Giỏ hàng</a></li>
                                 <li><a class="dropdown-item" href="OrderList">Lịch sử mua hàng</a></li>
                                 <li><a class="dropdown-item" href="wishList">Sản phẩm yêu thích</a></li>
                                 <li><a class="dropdown-item" href="changePassword">Đổi mật khẩu</a></li>
