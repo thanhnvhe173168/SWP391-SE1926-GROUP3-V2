@@ -74,7 +74,6 @@ public class CreateAccountStaff extends HttpServlet {
     throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        
         if (user == null || user.getRoleID() != 1) {
             request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
         }
