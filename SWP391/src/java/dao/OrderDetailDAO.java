@@ -388,7 +388,8 @@ public class OrderDetailDAO extends ConnectDB {
                 + "       l.LaptopID, l.LaptopName, l.ImageURL\n"
                 + "FROM OrderDetail od\n"
                 + "JOIN Laptop l ON od.LaptopID = l.LaptopID\n"
-                + "WHERE od.OrderID = ?";
+                +"LEFT JOIN Feedback f ON f.OrderID = od.OrderID AND f.LaptopID = od.LaptopID\n " 
+                +"WHERE od.OrderID = ? AND f.FeedbackID IS NULL"; // Chỉ lấy laptop chưa feedback
 
         try {
             PreparedStatement ps = connect.prepareCall(sql);
