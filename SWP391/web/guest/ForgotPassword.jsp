@@ -39,7 +39,7 @@
         %>
         <jsp:include page="/components/Header.jsp"></jsp:include>
             <div class="login-container">
-                <h2 class="login-title">Quên mật khầu</h2>
+                <h2 class="login-title">Quên mật khẩu</h2>
                 <form action="forgotPassword" method="POST">
                     <!-- Email -->
                     <div class="mb-3">
