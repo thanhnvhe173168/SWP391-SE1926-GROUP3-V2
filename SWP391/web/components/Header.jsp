@@ -61,7 +61,8 @@
                                 <%=user.getFullName()%>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="CartSeverlet">Giỏ hàng</a></li>
+                                <li><a class="dropdown-item" href="viewProfile">Thông tin cá nhân</a></li>
+                                <li><a class="dropdown-item" href="CartServlet">Giỏ hàng</a></li>
                                 <li><a class="dropdown-item" href="OrderList">Lịch sử mua hàng</a></li>
                                 <li><a class="dropdown-item" href="wishList">Sản phẩm yêu thích</a></li>
                                 <li><a class="dropdown-item" href="changePassword">Đổi mật khẩu</a></li>
@@ -69,14 +70,14 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="logout">Logout</a>
+                            <a class="nav-link" href="logout">Đăng xuất</a>
                         </li>
                         <%} else {%>      
                         <li class="nav-item">
-                            <a class="nav-link" href="login">Login</a>
+                            <a class="nav-link" href="login">Đăng nhập</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="register">Register</a>
+                            <a class="nav-link" href="register">Đăng ký</a>
                         </li>
                         <%}%>
                     </ul>

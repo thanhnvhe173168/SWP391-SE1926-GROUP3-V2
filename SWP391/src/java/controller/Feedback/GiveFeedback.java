@@ -44,7 +44,6 @@ public class GiveFeedback extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        
         if (user == null || user.getRoleID() != 3 ) {
             request.getRequestDispatcher("/error/404err.jsp").forward(request, response);
         }
@@ -111,7 +110,7 @@ public class GiveFeedback extends HttpServlet {
         // Link để lưu DB
         String imageURL = "Feedback/" + fileName;
 
-        // Tạo Feedback object
+       
         Feedback fb = new Feedback();
         fb.setUserID(userID);
         fb.setLaptopID(laptopID);
@@ -124,7 +123,7 @@ public class GiveFeedback extends HttpServlet {
         fb.setImageURL(imageURL);
         fb.setStatusID(statusID);
 
-        // Ghi DB
+        
         FeedbackDAO dao = new FeedbackDAO();
 
         if (dao.addFeedback(fb)) {

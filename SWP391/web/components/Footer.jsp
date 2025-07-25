@@ -6,20 +6,81 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <style>
             footer {
-                background-color: #343a40;
-                color: white;
-                padding: 40px 0;
+                background-color: #ffffff; /* ??ng b? v?i header n?n tr?ng */
+                color: #333;
+                padding: 40px 0 20px;
+                font-family: 'Roboto', sans-serif;
+                border-top: 1px solid #e0e0e0;
             }
+
             footer a {
-                color: #17a2b8;
+                color: #005566; /* Gi? màu xanh d??ng ch? ??o */
                 text-decoration: none;
+                transition: color 0.3s ease;
             }
+
             footer a:hover {
-                color: #ffffff;
+                color: #003d4c;
             }
+
             .footer-title {
-                font-size: 1.2rem;
-                margin-bottom: 15px;
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #005566;
+                margin-bottom: 20px;
+                text-transform: uppercase;
+            }
+
+            .footer-section p,
+            .footer-section li {
+                font-size: 0.95rem;
+                line-height: 1.8;
+                color: #555;
+            }
+
+            .footer-section ul {
+                list-style: none;
+                padding: 0;
+            }
+
+            .footer-section ul li {
+                margin-bottom: 10px;
+            }
+
+            .footer-bottom {
+                background-color: #005566; /* Gi? ph?n d??i footer màu xanh d??ng */
+                color: #fff;
+                padding: 15px 0;
+                font-size: 0.9rem;
+                margin-top: 20px;
+            }
+
+            .footer-bottom a {
+                color: #17a2b8;
+            }
+
+            .footer-bottom a:hover {
+                color: #fff;
+            }
+
+            hr.bg-light {
+                border-color: #e0e0e0;
+                margin: 20px 0;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .footer-section {
+                    margin-bottom: 20px;
+                    text-align: center;
+                }
+                .footer-title {
+                    font-size: 1rem;
+                }
+                .footer-section p,
+                .footer-section li {
+                    font-size: 0.9rem;
+                }
             }
         </style>
     </head>
@@ -36,19 +97,18 @@
                     <div class="col-md-4">
                         <h5 class="footer-title">Quick Links</h5>
                         <ul class="list-unstyled">
-                            <li><a href="index.jsp">Home</a></li>
-                            <li><a href="products.jsp">Products</a></li>
-                            <li><a href="contact.jsp">Contact</a></li>
-                            <li><a href="login.jsp">Login</a></li>
-                            <li><a href="register.jsp">Register</a></li>
+                            <li><a href="home">Home</a></li>
+                            <li><a href="productList">Products</a></li>
+                            <li><a href="login">Login</a></li>
+                            <li><a href="register">Register</a></li>
                         </ul>
                     </div>
                     <!-- Contact Info -->
                     <div class="col-md-4">
                         <h5 class="footer-title">Contact Us</h5>
-                        <p>Email: support@laptopstore.com</p>
+                        <p>Email: laptop24h@gmail.com</p>
                         <p>Phone: +84 123 456 789</p>
-                        <p>Address: 123 Tech Street, Hanoi, Vietnam</p>
+                        <p>Address: Thach Hoa - Thach That - Ha Noi</p>
                     </div>
                 </div>
                 <hr class="bg-light">

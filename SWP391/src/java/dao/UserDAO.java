@@ -44,25 +44,6 @@ public class UserDAO extends ConnectDB {
         return null;
     }
 
-    //update in profile  
-    public int updateUser(User u) {
-        int n = 0;
-        String sql = "update Users set FullName = ?, PhoneNumber = ?, Password = ?, StatusID = ? where UserID = ?";
-        try {
-            PreparedStatement pre = connect.prepareStatement(sql);
-            pre.setString(1, u.getFullName());
-            pre.setString(2, u.getPhoneNumber());
-            pre.setString(3, u.getPassword());
-            pre.setInt(4, u.getStatusID());
-            pre.setInt(5, u.getUserID());
-            n = pre.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return n;
-
-    }
-
     //Linh: StaffList
     public List<User> getListStaffWithPaging(int offset, int pageSize) {
         List<User> list = new ArrayList<>();
@@ -114,29 +95,25 @@ public class UserDAO extends ConnectDB {
         return count;
     }
 
-    //Linh: StaffDetail
-    public User getStaffByIDForView(int userID) {
-        User user = null;
-        String sql = "SELECT * FROM Users WHERE UserID = ?";
+    //Linh: CreateAccountStaff
+    public int createUser(User user) {
+
+        String sql = "INSERT INTO Users (FullName, Email, PhoneNumber, Password, RoleID, StatusID, RegistrationDate) "
+                + "VALUES (?, ?, ?, ?, ?, ?, CAST(GETDATE() AS DATE))";
+        int n = 0;
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
-            ps.setInt(1, userID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                user = new User();
-                user.setUserID(rs.getInt("UserID"));
-                user.setFullName(rs.getString("FullName"));
-                user.setEmail(rs.getString("Email"));
-                user.setPhoneNumber(rs.getString("PhoneNumber"));
-                user.setPassword(rs.getString("Password"));
-                user.setRegistrationDate(rs.getDate("RegistrationDate"));
-                user.setRoleID(rs.getInt("RoleID"));
-                user.setStatusID(rs.getInt("StatusID"));
-            }
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPhoneNumber());
+            ps.setString(4, user.getPassword());
+            ps.setInt(5, user.getRoleID());
+            ps.setInt(6, user.getStatusID());
+            return ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("getUserByID: " + e.getMessage());
+            e.printStackTrace();
         }
-        return user;
+        return n;
     }
 //Linh: StaffEditAccount
 
@@ -177,30 +154,54 @@ public class UserDAO extends ConnectDB {
         }
     }
 
-//Linh: CreateAccountStaff
-    public int createUser(User user) {
-
-        String sql = "Insert into Users(FullName, Email, PhoneNumber, Password, RoleID, StatusID) values (?, ?, ?, ?, ?, ?)";
-        int n = 0;
+    //Linh: StaffDetail
+    public User getStaffByIDForView(int userID) {
+        User user = null;
+        String sql = "SELECT * FROM Users WHERE UserID = ?";
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
-            ps.setString(1, user.getFullName());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPhoneNumber());
-            ps.setString(4, user.getPassword());
-            ps.setInt(5, user.getRoleID());
-            ps.setInt(6, user.getStatusID());
-            return ps.executeUpdate();
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = new User();
+                user.setUserID(rs.getInt("UserID"));
+                user.setFullName(rs.getString("FullName"));
+                user.setEmail(rs.getString("Email"));
+                user.setPhoneNumber(rs.getString("PhoneNumber"));
+                user.setPassword(rs.getString("Password"));
+                user.setRegistrationDate(rs.getDate("RegistrationDate"));
+                user.setRoleID(rs.getInt("RoleID"));
+                user.setStatusID(rs.getInt("StatusID"));
+            }
+        } catch (SQLException e) {
+            System.out.println("getUserByID: " + e.getMessage());
+        }
+        return user;
+    }
+
+    //update in profile  
+    public int updateUser(User u) {
+        int n = 0;
+        String sql = "update Users set FullName = ?, PhoneNumber = ?, Password = ?, StatusID = ? where UserID = ?";
+        try {
+            PreparedStatement pre = connect.prepareStatement(sql);
+            pre.setString(1, u.getFullName());
+            pre.setString(2, u.getPhoneNumber());
+            pre.setString(3, u.getPassword());
+            pre.setInt(4, u.getStatusID());
+            pre.setInt(5, u.getUserID());
+            n = pre.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return n;
+
     }
 
     // Linh: Search User theo FullName + StatusID
     public List<User> searchStaff(String search, Integer statusID) {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users WHERE RoleID= ? ";
+        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users WHERE RoleID= 2 ";
         if (search != null && !search.trim().isEmpty()) {
             sql += " AND FullName LIKE ?";
         }
@@ -395,7 +396,7 @@ public class UserDAO extends ConnectDB {
     }
 
 //reset password
-    public void resetPassword(int userId, String newPassword){
+    public void resetPassword(int userId, String newPassword) {
         String sql = "Update Users SET Password = ? WHERE UserID = ? ";
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
