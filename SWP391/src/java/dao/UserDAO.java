@@ -201,7 +201,7 @@ public class UserDAO extends ConnectDB {
     // Linh: Search User theo FullName + StatusID
     public List<User> searchStaff(String search, Integer statusID) {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users WHERE RoleID= 2 ";
+        String sql = "SELECT UserID, FullName, Email, PhoneNumber, RegistrationDate, RoleID, StatusID FROM Users WHERE RoleID= ? ";
         if (search != null && !search.trim().isEmpty()) {
             sql += " AND FullName LIKE ?";
         }
