@@ -21,8 +21,8 @@ public class FeedbackDAO extends ConnectDB {
 
 //Give feedback    
     public boolean addFeedback(Feedback fb) {
-      String sql = "INSERT INTO Feedback (UserID, OrderID, LaptopID, Title, Content, Rating, SellerRating, ShippingRating, ImageURL, StatusID, CreatedAt, UpdatedAt) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
+      String sql = "INSERT INTO Feedback (UserID, OrderID, LaptopID, Title, Content, Rating, SellerRating, ShippingRating, StatusID, CreatedAt, UpdatedAt) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setInt(1, fb.getUserID());
@@ -33,8 +33,7 @@ public class FeedbackDAO extends ConnectDB {
             ps.setInt(6, fb.getRating());
             ps.setInt(7, fb.getSellerRating());
             ps.setInt(8, fb.getShippingRating());
-            ps.setString(9, fb.getImageURL());
-            ps.setInt(10, fb.getStatusID());
+            ps.setInt(9, fb.getStatusID());
 
             int rowsAffected = ps.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
